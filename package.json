@@ -4,8 +4,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "npm run lint --workspace=api && npm run lint --workspace=mobile",
+    "format": "npm run format --workspace=api && npm run format --workspace=mobile",
     "check-types": "turbo run check-types",
     "prepare": "husky"
   },
