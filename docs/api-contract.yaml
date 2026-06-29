@@ -1,0 +1,1086 @@
+openapi: 3.1.0
+info:
+  title: Chess AI API
+  version: 1.0.0
+  description: |
+    MVP API for an online chess application supporting:
+      - Player vs Player (WebSocket gameplay)
+      - Player vs AI
+      - AI Coach
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Authentication
+  - name: Matchmaking
+  - name: Games
+  - name: Moves
+  - name: AI Coach
+security:
+  - bearerAuth: []
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate a user
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current authenticated user
+      operationId: getCurrentUser
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /matchmaking/join:
+    post:
+      tags:
+        - Matchmaking
+      summary: Join the matchmaking queue
+      operationId: joinMatchmaking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JoinQueueRequest"
+      responses:
+        "202":
+          description: Successfully joined matchmaking queue
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          description: Already in matchmaking queue
+
+  /matchmaking/leave:
+    delete:
+      tags:
+        - Matchmaking
+      summary: Leave the matchmaking queue
+      operationId: leaveMatchmaking
+      responses:
+        "204":
+          description: Left matchmaking queue
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /matchmaking/status:
+    get:
+      tags:
+        - Matchmaking
+      summary: Get matchmaking status
+      operationId: getMatchmakingStatus
+      responses:
+        "200":
+          description: Queue status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchmakingStatus"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /games:
+    get:
+      tags:
+        - Games
+      summary: Get the authenticated user's games
+      operationId: listGames
+
+      parameters:
+        - in: query
+          name: status
+          schema:
+            $ref: "#/components/schemas/GameStatus"
+
+        - in: query
+          name: mode
+          schema:
+            $ref: "#/components/schemas/GameMode"
+
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+
+      responses:
+        "200":
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Game"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /games/ai:
+    post:
+      tags:
+        - Games
+
+      summary: Create a new AI game
+
+      operationId: createAiGame
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAIGameRequest"
+
+      responses:
+        "201":
+          description: AI game created
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /games/{gameId}:
+    get:
+      tags:
+        - Games
+
+      summary: Retrieve a game
+
+      operationId: getGame
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Game details
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/state:
+    get:
+      tags:
+        - Games
+
+      summary: Get current board state
+
+      operationId: getGameState
+
+      parameters:
+        - in: path
+
+          name: gameId
+
+          required: true
+
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Current board
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameState"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/moves:
+    post:
+      tags:
+        - Moves
+
+      summary: Submit a move
+
+      operationId: makeMove
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoveRequest"
+
+      responses:
+        "200":
+          description: Move accepted
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Move"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    get:
+      tags:
+        - Moves
+
+      summary: Get move history
+
+      operationId: getMoves
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Move history
+
+          content:
+            application/json:
+              schema:
+                type: array
+
+                items:
+                  $ref: "#/components/schemas/Move"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/actions:
+    post:
+      tags:
+        - Games
+
+      summary: Perform a game action
+
+      description: |
+        Supported actions:
+
+        * RESIGN
+        * OFFER_DRAW
+        * ACCEPT_DRAW
+        * DECLINE_DRAW
+
+      operationId: performGameAction
+
+      parameters:
+        - in: path
+
+          name: gameId
+
+          required: true
+
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameActionRequest"
+
+      responses:
+        "200":
+          description: Action completed
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameActionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/ai/hint:
+    post:
+      tags:
+        - AI Coach
+
+      summary: Request a hint
+
+      operationId: requestHint
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Hint generated
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HintResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/ai/evaluate:
+    post:
+      tags:
+        - AI Coach
+
+      summary: Evaluate a move before playing it
+
+      operationId: evaluateMove
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluationRequest"
+
+      responses:
+        "200":
+          description: Move evaluation
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/ai/explain:
+    post:
+      tags:
+        - AI Coach
+
+      summary: Explain the current position
+
+      operationId: explainPosition
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Position explanation
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExplanationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /games/{gameId}/analysis:
+    post:
+      tags:
+        - AI Coach
+
+      summary: Analyze a completed game
+
+      operationId: analyzeGame
+
+      parameters:
+        - in: path
+          name: gameId
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Full game analysis
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameAnalysisResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    #################################################
+    # ENUMS
+    #################################################
+
+    GameMode:
+      type: string
+      enum:
+        - PVP
+        - AI
+
+    GameStatus:
+      type: string
+      enum:
+        - WAITING
+        - ACTIVE
+        - FINISHED
+
+    GameResult:
+      type: string
+      enum:
+        - CHECKMATE
+        - STALEMATE
+        - DRAW
+        - RESIGNATION
+        - TIMEOUT
+
+    PlayerColor:
+      type: string
+      enum:
+        - WHITE
+        - BLACK
+
+    Difficulty:
+      type: string
+      enum:
+        - EASY
+        - MEDIUM
+        - HARD
+
+    AnalysisType:
+      type: string
+      enum:
+        - HINT
+        - EVALUATION
+        - EXPLANATION
+        - ANALYSIS
+
+    #################################################
+    # AUTH
+    #################################################
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+          example: hikaru
+
+        email:
+          type: string
+          format: email
+          example: hikaru@example.com
+
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: StrongPassword123!
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+
+      properties:
+        email:
+          type: string
+          format: email
+
+        password:
+          type: string
+          format: password
+
+    AuthResponse:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - expiresIn
+        - user
+
+      properties:
+        accessToken:
+          type: string
+
+        refreshToken:
+          type: string
+
+        expiresIn:
+          type: integer
+          example: 3600
+
+        user:
+          $ref: "#/components/schemas/User"
+
+    #################################################
+    # USER
+    #################################################
+
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - rating
+        - createdAt
+
+      properties:
+        id:
+          type: string
+          example: usr_123
+
+        username:
+          type: string
+          example: hikaru
+
+        email:
+          type: string
+          format: email
+
+        rating:
+          type: integer
+          example: 1200
+
+        createdAt:
+          type: string
+          format: date-time
+
+    #################################################
+    # MATCHMAKING
+    #################################################
+
+    JoinQueueRequest:
+      type: object
+
+      required:
+        - timeControl
+
+      properties:
+        timeControl:
+          type: string
+          example: "10+0"
+
+    MatchmakingStatus:
+      type: object
+
+      properties:
+        searching:
+          type: boolean
+
+        joinedAt:
+          type: string
+          format: date-time
+
+        estimatedWaitSeconds:
+          type: integer
+
+    #################################################
+    # GAME
+    #################################################
+
+    Game:
+      type: object
+      required:
+        - id
+        - mode
+        - status
+        - whitePlayer
+        - blackPlayer
+        - currentTurn
+        - fen
+        - winner
+        - result
+        - startedAt
+        - endedAt
+
+      properties:
+        id:
+          type: string
+          example: game_123
+
+        mode:
+          $ref: "#/components/schemas/GameMode"
+
+        status:
+          $ref: "#/components/schemas/GameStatus"
+
+        whitePlayer:
+          $ref: "#/components/schemas/User"
+
+        blackPlayer:
+          $ref: "#/components/schemas/User"
+
+        currentTurn:
+          $ref: "#/components/schemas/PlayerColor"
+
+        fen:
+          type: string
+
+        winner:
+          type:
+            - string
+            - "null"
+
+        result:
+          oneOf:
+            - $ref: "#/components/schemas/GameResult"
+            - type: "null"
+
+        startedAt:
+          type: string
+          format: date-time
+
+        endedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+
+    GameState:
+      type: object
+      required:
+        - gameId
+        - fen
+        - currentTurn
+        - status
+        - lastMove
+        - check
+        - result
+
+      properties:
+        gameId:
+          type: string
+
+        fen:
+          type: string
+
+        currentTurn:
+          $ref: "#/components/schemas/PlayerColor"
+
+        status:
+          $ref: "#/components/schemas/GameStatus"
+
+        lastMove:
+          type:
+            - string
+            - "null"
+
+        check:
+          type: boolean
+
+        result:
+          oneOf:
+            - $ref: "#/components/schemas/GameResult"
+            - type: "null"
+
+    #################################################
+    # MOVES
+    #################################################
+
+    MoveRequest:
+      type: object
+
+      required:
+        - from
+        - to
+
+      properties:
+        from:
+          type: string
+          example: e2
+
+        to:
+          type: string
+          example: e4
+
+        promotion:
+          type:
+            - string
+            - "null"
+          example: Q
+
+    Move:
+      type: object
+      required:
+        - id
+        - moveNumber
+        - from
+        - to
+        - san
+        - fenAfterMove
+        - playedAt
+
+      properties:
+        id:
+          type: string
+
+        moveNumber:
+          type: integer
+
+        from:
+          type: string
+
+        to:
+          type: string
+
+        san:
+          type: string
+          example: Nf3
+
+        fenAfterMove:
+          type: string
+
+        playedAt:
+          type: string
+          format: date-time
+
+    #################################################
+    # AI GAME
+    #################################################
+
+    CreateAIGameRequest:
+      type: object
+
+      required:
+        - difficulty
+        - playerColor
+
+      properties:
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
+
+        playerColor:
+          $ref: "#/components/schemas/PlayerColor"
+
+    #################################################
+    # AI COACH
+    #################################################
+
+    HintResponse:
+      type: object
+      required:
+        - bestMove
+        - score
+        - explanation
+
+      properties:
+        bestMove:
+          type: string
+          example: Nf3
+
+        score:
+          type: string
+          example: "+0.7"
+
+        explanation:
+          type: string
+
+    EvaluationRequest:
+      type: object
+
+      required:
+        - from
+        - to
+
+      properties:
+        from:
+          type: string
+
+        to:
+          type: string
+
+    EvaluationResponse:
+      type: object
+      required:
+        - classification
+        - score
+        - explanation
+
+      properties:
+        classification:
+          type: string
+          example: GOOD
+
+        score:
+          type: string
+          example: "+1.4"
+
+        explanation:
+          type: string
+
+    ExplanationResponse:
+      type: object
+      required:
+        - summary
+        - strengths
+        - weaknesses
+
+      properties:
+        summary:
+          type: string
+
+        strengths:
+          type: array
+          items:
+            type: string
+
+        weaknesses:
+          type: array
+          items:
+            type: string
+
+    GameAnalysisResponse:
+      type: object
+      required:
+        - accuracy
+        - blunders
+        - mistakes
+        - inaccuracies
+        - summary
+
+      properties:
+        accuracy:
+          type: number
+
+        blunders:
+          type: integer
+
+        mistakes:
+          type: integer
+
+        inaccuracies:
+          type: integer
+
+        summary:
+          type: string
+
+    #################################################
+    # ERRORS
+    #################################################
+
+    Error:
+      type: object
+
+      properties:
+        statusCode:
+          type: integer
+
+        error:
+          type: string
+
+        message:
+          type: string
+
+        timestamp:
+          type: string
+          format: date-time
+
+        path:
+          type: string
+
+    #################################################
+    # GAME ACTIONS
+    #################################################
+
+    GameAction:
+      type: string
+      enum:
+        - RESIGN
+        - OFFER_DRAW
+        - ACCEPT_DRAW
+        - DECLINE_DRAW
+
+    GameActionRequest:
+      type: object
+      required:
+        - action
+
+      properties:
+        action:
+          $ref: "#/components/schemas/GameAction"
+
+    GameActionResponse:
+      type: object
+      required:
+        - action
+        - gameStatus
+        - message
+
+      properties:
+        action:
+          $ref: "#/components/schemas/GameAction"
+
+        gameStatus:
+          $ref: "#/components/schemas/GameStatus"
+
+        message:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Invalid request
+
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized:
+      description: Authentication required
+
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden:
+      description: Forbidden
+
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound:
+      description: Resource not found
+
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Conflict:
+      description: Conflict
+
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
