@@ -1,0 +1,33 @@
+name: Deploy Redocly OpenAPI Docs
+
+on:
+  push:
+    branches:
+      - feat/api-docs
+  workflow_dispatch: # Allows you to manually trigger the deployment from the Actions tab
+
+permissions:
+  contents: write # Grants permission to push the built HTML to the gh-pages branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build API Documentation with Redocly
+        run: |
+          # Replace 'openapi.yaml' with the actual path to your root spec file if it differs
+          npx @redocly/cli@latest build-docs docs/api-contract.yaml -o dist/index.html
+
+      - name: Deploy to GitHub Pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
