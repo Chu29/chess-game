@@ -13,22 +13,22 @@ This document defines the real-time communication contract between the React Nat
 
 The WebSocket layer is responsible for:
 
-* Player authentication
-* Matchmaking notifications
-* Real-time multiplayer gameplay
-* Game synchronization
-* Draw offers
-* Resignations
-* Player disconnections and reconnections
-* Optional asynchronous AI move notifications
+- Player authentication
+- Matchmaking notifications
+- Real-time multiplayer gameplay
+- Game synchronization
+- Draw offers
+- Resignations
+- Player disconnections and reconnections
+- Optional asynchronous AI move notifications
 
 The REST API remains responsible for:
 
-* Authentication
-* Matchmaking queue management
-* AI game creation
-* AI coaching features
-* Game history retrieval
+- Authentication
+- Matchmaking queue management
+- AI game creation
+- AI coaching features
+- Game history retrieval
 
 ---
 
@@ -44,9 +44,9 @@ The REST API remains responsible for:
 
 ```typescript
 @WebSocketGateway({
-  namespace: '/game',
+  namespace: "/game",
   cors: {
-    origin: '*',
+    origin: "*",
   },
 })
 export class GameGateway {}
@@ -93,13 +93,13 @@ React Native App
 
 # Design Principles
 
-* The server is the authoritative source of game state.
-* Clients must never update the board permanently without server confirmation.
-* Every move is validated on the server.
-* Business logic must not reside inside the gateway.
-* Gateways should delegate to application services/use cases.
-* Each chess game corresponds to a Socket.IO room.
-* Reconnection must always result in state synchronization.
+- The server is the authoritative source of game state.
+- Clients must never update the board permanently without server confirmation.
+- Every move is validated on the server.
+- Business logic must not reside inside the gateway.
+- Gateways should delegate to application services/use cases.
+- Each chess game corresponds to a Socket.IO room.
+- Reconnection must always result in state synchronization.
 
 ---
 
@@ -221,9 +221,7 @@ client.join(`game:${gameId}`);
 ## Broadcasting to a Room
 
 ```typescript
-this.server
-  .to(`game:${gameId}`)
-  .emit('moveMade', payload);
+this.server.to(`game:${gameId}`).emit("moveMade", payload);
 ```
 
 ---
@@ -333,13 +331,13 @@ makeMove
 
 The server validates:
 
-* Player turn
-* Legal move
-* Check
-* Checkmate
-* Stalemate
-* Draw conditions
-* Game status
+- Player turn
+- Legal move
+- Check
+- Checkmate
+- Stalemate
+- Draw conditions
+- Game status
 
 ---
 
@@ -397,13 +395,9 @@ NestJS Socket.IO supports acknowledgements.
 ## Client
 
 ```typescript
-socket.emit(
-  'makeMove',
-  payload,
-  (response) => {
-    console.log(response);
-  }
-);
+socket.emit("makeMove", payload, (response) => {
+  console.log(response);
+});
 ```
 
 ## Success Response

@@ -4,9 +4,12 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "npm run lint --workspace=api && npm run lint --workspace=mobile",
-    "format": "npm run format --workspace=api && npm run format --workspace=mobile",
+    "lint": "turbo run lint",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
     "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
     "prepare": "husky"
   },
   "devDependencies": {
