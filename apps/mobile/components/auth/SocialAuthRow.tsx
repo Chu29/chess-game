@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { colors } from '../../constants/theme';
+import React from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { colors } from "../../constants/theme";
 
 export default function SocialAuthRow() {
   return (
@@ -28,8 +28,8 @@ export default function SocialAuthRow() {
 
 const styles = StyleSheet.create({
   dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 18,
   },
   dividerLine: { flex: 1, height: 1, backgroundColor: colors.cardBorder },
@@ -39,17 +39,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     letterSpacing: 0.5,
   },
-  row: { flexDirection: 'row', gap: 10 },
+  row: { flexDirection: "row", gap: 10 },
   socialButton: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.cardBorder,
     borderRadius: 12,
     paddingVertical: 12,
   },
-  socialLabel: { color: colors.white, fontSize: 13, fontWeight: '600', marginLeft: 6 },
+  socialLabel: {
+    color: colors.white,
+    fontSize: 13,
+    fontWeight: "600",
+    marginLeft: 6,
+  },
 });

@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
-import { colors } from '../../constants/theme';
-import AuthInput from '../../components/auth/AuthInput';
-import AuthButton from '../../components/auth/AuthButton';
-import SocialAuthRow from '../../components/auth/SocialAuthRow';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import { useRouter } from "expo-router";
+import { colors } from "../../constants/theme";
+import AuthInput from "../../components/auth/AuthInput";
+import AuthButton from "../../components/auth/AuthButton";
+import SocialAuthRow from "../../components/auth/SocialAuthRow";
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -57,7 +57,7 @@ export default function RegisterScreen() {
 
       <View style={styles.footerRow}>
         <Text style={styles.footerText}>Already have an account? </Text>
-        <Pressable onPress={() => router.push('/(auth)/login')}>
+        <Pressable onPress={() => router.push("/(auth)/login")}>
           <Text style={styles.footerLink}>Login</Text>
         </Pressable>
       </View>
@@ -68,9 +68,19 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: 24, paddingTop: 60, paddingBottom: 40 },
-  title: { color: colors.white, fontSize: 24, fontWeight: '700', marginBottom: 6 },
-  subtitle: { color: colors.textSecondary, fontSize: 13, marginBottom: 28, lineHeight: 18 },
-  footerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
+  title: {
+    color: colors.white,
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 6,
+  },
+  subtitle: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginBottom: 28,
+    lineHeight: 18,
+  },
+  footerRow: { flexDirection: "row", justifyContent: "center", marginTop: 24 },
   footerText: { color: colors.textSecondary, fontSize: 13 },
-  footerLink: { color: colors.green, fontSize: 13, fontWeight: '700' },
+  footerLink: { color: colors.green, fontSize: 13, fontWeight: "700" },
 });
