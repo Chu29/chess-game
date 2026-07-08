@@ -7,7 +7,7 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsReady(true), 2800);
+    const timer = setTimeout(() => setIsReady(true), 4800);
     return () => clearTimeout(timer);
   }, []);
 

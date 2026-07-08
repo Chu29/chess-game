@@ -67,20 +67,21 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { padding: 24, paddingTop: 60, paddingBottom: 40 },
-  title: {
-    color: colors.white,
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 6,
+  content: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 40,
   },
-  subtitle: {
-    color: colors.textSecondary,
-    fontSize: 13,
-    marginBottom: 28,
-    lineHeight: 18,
-  },
-  footerRow: { flexDirection: "row", justifyContent: "center", marginTop: 24 },
+ title: {
+  color: colors.white,
+  fontSize: 30,
+  fontWeight: '700',
+  marginBottom: 8,
+  textAlign: 'center',
+},
+  subtitle: { color: colors.textSecondary, fontSize: 13, marginBottom: 28, lineHeight: 18 , textAlign: "center"},
+  footerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
   footerText: { color: colors.textSecondary, fontSize: 13 },
-  footerLink: { color: colors.green, fontSize: 13, fontWeight: "700" },
+  footerLink: { color: colors.green, fontSize: 13, fontWeight: '700' },
 });
