@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import React, { useState } from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const colors = {
-  barBackground: '#1C1B19',
-  activePill: '#8FC24A',
-  activeText: '#1C1B19',
-  inactiveIcon: '#C9CBC5',
-  inactiveText: '#9A9C96',
+  barBackground: "#1C1B19",
+  activePill: "#8FC24A",
+  activeText: "#1C1B19",
+  inactiveIcon: "#C9CBC5",
+  inactiveText: "#9A9C96",
 };
 
-type TabKey = 'lobby' | 'play' | 'learn' | 'profile';
+type TabKey = "lobby" | "play" | "learn" | "profile";
 
-const TABS: { key: TabKey; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { key: 'lobby', label: 'Lobby', icon: 'home' },
-  { key: 'play', label: 'Play', icon: 'game-controller-outline' },
-  { key: 'learn', label: 'Learn', icon: 'school-outline' },
-  { key: 'profile', label: 'Profile', icon: 'person-outline' },
+const TABS: {
+  key: TabKey;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}[] = [
+  { key: "lobby", label: "Lobby", icon: "home" },
+  { key: "play", label: "Play", icon: "game-controller-outline" },
+  { key: "learn", label: "Learn", icon: "school-outline" },
+  { key: "profile", label: "Profile", icon: "person-outline" },
 ];
 
 export default function RootLayout() {
-  const [activeTab, setActiveTab] = useState<TabKey>('lobby');
+  const [activeTab, setActiveTab] = useState<TabKey>("lobby");
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0B0F14' }}>
+    <View style={{ flex: 1, backgroundColor: "#0B0F14" }}>
       {/* Rest of your screen content would go here */}
       <View style={{ flex: 1 }} />
 
@@ -54,18 +58,18 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: colors.barBackground,
     borderRadius: 28,
     padding: 8,
     marginHorizontal: 16,
     marginBottom: 24,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   tab: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 10,
     paddingHorizontal: 8,
     borderRadius: 20,
@@ -75,13 +79,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.inactiveText,
     marginTop: 4,
   },
   activeLabel: {
     color: colors.activeText,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
-import { colors } from '../constants/theme';
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated, Easing } from "react-native";
+import { colors } from "../constants/theme";
 
 export default function SplashScreen() {
   const iconScale = useRef(new Animated.Value(0.7)).current;
@@ -44,7 +44,7 @@ export default function SplashScreen() {
           easing: Easing.inOut(Easing.sin),
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     Animated.loop(
@@ -61,7 +61,7 @@ export default function SplashScreen() {
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     Animated.sequence([
@@ -111,7 +111,7 @@ export default function SplashScreen() {
         duration: 1100,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
+      }),
     ).start();
   }, []);
 
@@ -129,7 +129,7 @@ export default function SplashScreen() {
   });
   const spin = spinnerRotate.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
+    outputRange: ["0deg", "360deg"],
   });
 
   return (
@@ -162,7 +162,7 @@ export default function SplashScreen() {
       </Animated.Text>
 
       <Animated.Text style={[styles.subtitle, { opacity: subtitleFade }]}>
-        Master the game of kings through{'\n'}modern strategic mastery.
+        Master the game of kings through{"\n"}modern strategic mastery.
       </Animated.Text>
 
       <View style={styles.bottomSection}>
@@ -192,38 +192,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 32,
   },
   iconWrapper: {
     width: 96,
     height: 96,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 28,
   },
   glow: {
-    position: 'absolute',
+    position: "absolute",
     width: 110,
     height: 110,
     borderRadius: 55,
-    backgroundColor: 'rgba(143, 194, 74, 0.35)',
+    backgroundColor: "rgba(143, 194, 74, 0.35)",
   },
   iconBox: {
     width: 84,
     height: 84,
     borderRadius: 22,
     backgroundColor: colors.greenDark,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconGlyph: {
     fontSize: 42,
     color: colors.green,
   },
   cornerDot: {
-    position: 'absolute',
+    position: "absolute",
     top: 6,
     right: 12,
     width: 8,
@@ -233,27 +233,27 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.white,
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 20,
   },
   bottomSection: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 70,
-    alignItems: 'center',
+    alignItems: "center",
   },
   spinnerTrack: {
     width: 44,
     height: 44,
     borderRadius: 22,
     borderWidth: 3,
-    borderColor: 'rgba(143, 194, 74, 0.15)',
+    borderColor: "rgba(143, 194, 74, 0.15)",
     marginBottom: 14,
   },
   spinnerArc: {
@@ -261,20 +261,20 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     borderWidth: 3,
-    borderColor: 'transparent',
+    borderColor: "transparent",
     borderTopColor: colors.green,
     borderRightColor: colors.green,
   },
   readyText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 1.5,
     color: colors.green,
     marginBottom: 16,
   },
   badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.cardBorder,
@@ -290,6 +290,6 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 12,
     color: colors.textSecondary,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });
