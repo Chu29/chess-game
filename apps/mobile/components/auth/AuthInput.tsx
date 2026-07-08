@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { colors } from '../../constants/theme';
+import React, { useState } from "react";
+import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { colors } from "../../constants/theme";
 
 type Props = {
   label: string;
@@ -10,7 +10,7 @@ type Props = {
   onChangeText: (text: string) => void;
   icon?: keyof typeof Ionicons.glyphMap;
   secureTextEntry?: boolean;
-  keyboardType?: 'default' | 'email-address';
+  keyboardType?: "default" | "email-address";
   rightLabel?: string;
   onRightLabelPress?: () => void;
 };
@@ -22,7 +22,7 @@ export default function AuthInput({
   onChangeText,
   icon,
   secureTextEntry,
-  keyboardType = 'default',
+  keyboardType = "default",
   rightLabel,
   onRightLabelPress,
 }: Props) {
@@ -41,7 +41,12 @@ export default function AuthInput({
 
       <View style={styles.inputRow}>
         {icon && (
-          <Ionicons name={icon} size={18} color={colors.textSecondary} style={styles.icon} />
+          <Ionicons
+            name={icon}
+            size={18}
+            color={colors.textSecondary}
+            style={styles.icon}
+          />
         )}
         <TextInput
           style={styles.input}
@@ -56,7 +61,7 @@ export default function AuthInput({
         {secureTextEntry && (
           <Pressable onPress={() => setIsSecure(!isSecure)}>
             <Ionicons
-              name={isSecure ? 'eye-off-outline' : 'eye-outline'}
+              name={isSecure ? "eye-off-outline" : "eye-outline"}
               size={18}
               color={colors.textSecondary}
             />
@@ -70,15 +75,15 @@ export default function AuthInput({
 const styles = StyleSheet.create({
   wrapper: { marginBottom: 16 },
   labelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 6,
   },
-  label: { color: colors.textSecondary, fontSize: 12, fontWeight: '600' },
-  rightLabel: { color: colors.green, fontSize: 12, fontWeight: '600' },
+  label: { color: colors.textSecondary, fontSize: 12, fontWeight: "600" },
+  rightLabel: { color: colors.green, fontSize: 12, fontWeight: "600" },
   inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.cardBorder,
