@@ -113,6 +113,7 @@ export default function SplashScreen() {
         useNativeDriver: true,
       }),
     ).start();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const glowOpacity = glowPulse.interpolate({
