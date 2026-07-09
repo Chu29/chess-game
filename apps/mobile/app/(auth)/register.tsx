@@ -51,7 +51,11 @@ export default function RegisterScreen() {
         secureTextEntry
       />
 
-      <AuthButton label="Register" icon="arrow-forward" onPress={() => {}} />
+      <AuthButton
+        label="Register"
+        icon="arrow-forward"
+        onPress={() => router.replace("/(tabs)")}
+      />
 
       <SocialAuthRow />
 
