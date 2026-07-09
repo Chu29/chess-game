@@ -2,6 +2,7 @@
   "name": "chess-game",
   "private": true,
   "scripts": {
+    "mobile": "npx expo start apps/mobile",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",

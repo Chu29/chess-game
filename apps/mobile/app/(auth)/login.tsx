@@ -43,7 +43,11 @@ export default function LoginScreen() {
         onRightLabelPress={() => {}}
       />
 
-      <AuthButton label="Login" icon="arrow-forward" onPress={() => {}} />
+      <AuthButton
+        label="Login"
+        icon="arrow-forward"
+        onPress={() => router.replace("/(tabs)")}
+      />
 
       <SocialAuthRow />
 
