@@ -17,7 +17,10 @@ export default function GameScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.replace("/(tabs)")} style={styles.headerIcon}>
+        <Pressable
+          onPress={() => router.replace("/(tabs)")}
+          style={styles.headerIcon}
+        >
           <Ionicons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
         <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
@@ -28,13 +31,16 @@ export default function GameScreen() {
 
       {/* Main Content Area */}
       <View style={styles.content}>
-        
         {/* Opponent Box */}
         <View style={styles.playerCard}>
           <View style={styles.playerInfoRow}>
             <View style={styles.avatarContainer}>
               <View style={styles.avatarPlaceholder}>
-                <Ionicons name="person" size={22} color={colors.textSecondary} />
+                <Ionicons
+                  name="person"
+                  size={22}
+                  color={colors.textSecondary}
+                />
               </View>
               <View style={styles.statusDot} />
             </View>
@@ -42,7 +48,12 @@ export default function GameScreen() {
               <Text style={styles.playerName}>Magnus_Bot</Text>
               <View style={styles.ratingRow}>
                 <Text style={styles.ratingText}>2840</Text>
-                <Ionicons name="people-outline" size={14} color={colors.textSecondary} style={{ marginLeft: 6 }} />
+                <Ionicons
+                  name="people-outline"
+                  size={14}
+                  color={colors.textSecondary}
+                  style={{ marginLeft: 6 }}
+                />
               </View>
             </View>
           </View>
@@ -72,12 +83,19 @@ export default function GameScreen() {
                 <View style={styles.ratingBadge}>
                   <Text style={styles.ratingBadgeText}>1200</Text>
                 </View>
-                <Ionicons name="people-outline" size={14} color={colors.textSecondary} style={{ marginLeft: 6 }} />
+                <Ionicons
+                  name="people-outline"
+                  size={14}
+                  color={colors.textSecondary}
+                  style={{ marginLeft: 6 }}
+                />
               </View>
             </View>
           </View>
           <View style={[styles.clockContainer, styles.playerClock]}>
-            <Text style={[styles.clockText, { color: colors.green }]}>00:00</Text>
+            <Text style={[styles.clockText, { color: colors.green }]}>
+              00:00
+            </Text>
           </View>
         </View>
 
@@ -89,7 +107,11 @@ export default function GameScreen() {
           </Pressable>
 
           <Pressable style={styles.actionBtn}>
-            <MaterialCommunityIcons name="handshake-outline" size={22} color={colors.white} />
+            <MaterialCommunityIcons
+              name="handshake-outline"
+              size={22}
+              color={colors.white}
+            />
             <Text style={styles.actionBtnText}>Draw</Text>
           </Pressable>
 

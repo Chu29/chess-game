@@ -8,10 +8,16 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Ionicons name="person" size={64} color={colors.green} style={styles.icon} />
+        <Ionicons
+          name="person"
+          size={64}
+          color={colors.green}
+          style={styles.icon}
+        />
         <Text style={styles.title}>Grandmaster Profile</Text>
         <Text style={styles.subtitle}>
-          Track your stats, game history, rating progress, and achievements here.
+          Track your stats, game history, rating progress, and achievements
+          here.
         </Text>
       </View>
     </SafeAreaView>

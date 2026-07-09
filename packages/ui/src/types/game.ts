@@ -1,9 +1,11 @@
-export type PlayerColor = 'WHITE' | 'BLACK';
-export type GameMode = 'PVP' | 'AI';
-export type GameStatus = 'WAITING' | 'ACTIVE' | 'FINISHED';
-export type GameResult = 'CHECKMATE' | 'STALEMATE' | 'DRAW' | 'RESIGNATION' | 'TIMEOUT';
-export type AIDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
-export type CoachClassification = 'BEST' | 'GOOD' | 'INACCURACY' | 'MISTAKE' | 'BLUNDER';
+export type PlayerColor = "WHITE" | "BLACK";
+export type GameMode = "PVP" | "AI";
+export type GameStatus = "WAITING" | "ACTIVE" | "FINISHED";
+export type GameResult =
+  "CHECKMATE" | "STALEMATE" | "DRAW" | "RESIGNATION" | "TIMEOUT";
+export type AIDifficulty = "EASY" | "MEDIUM" | "HARD";
+export type CoachClassification =
+  "BEST" | "GOOD" | "INACCURACY" | "MISTAKE" | "BLUNDER";
 
 export interface User {
   id: string;
@@ -55,7 +57,7 @@ export interface Move {
 
 export interface GameActionRequest {
   gameId: string;
-  action: 'RESIGN' | 'OFFER_DRAW' | 'ACCEPT_DRAW' | 'DECLINE_DRAW';
+  action: "RESIGN" | "OFFER_DRAW" | "ACCEPT_DRAW" | "DECLINE_DRAW";
 }
 
 export interface HintResponse {

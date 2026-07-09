@@ -31,7 +31,9 @@ export default function ChessBoard({
   const cols = [0, 1, 2, 3, 4, 5, 6, 7];
 
   return (
-    <View style={[styles.boardContainer, { width: boardSize, height: boardSize }]}>
+    <View
+      style={[styles.boardContainer, { width: boardSize, height: boardSize }]}
+    >
       {rows.map((row) => (
         <View key={`row-${row}`} style={styles.row}>
           {cols.map((col) => {
@@ -49,7 +51,9 @@ export default function ChessBoard({
             const fileLabel = String.fromCharCode(97 + col); // 'a' through 'h'
 
             // Color palette (Warm Chessboard.js Style: light #f0d9b5, dark #b58863)
-            const squareStyle = isLightSquare ? styles.lightSquare : styles.darkSquare;
+            const squareStyle = isLightSquare
+              ? styles.lightSquare
+              : styles.darkSquare;
             const labelColor = isLightSquare ? "#b58863" : "#f0d9b5";
 
             return (
@@ -83,7 +87,12 @@ export default function ChessBoard({
                     adjustsFontSizeToFit
                     style={[
                       styles.pieceTextBackground,
-                      { color: piece.color === "w" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.18)" },
+                      {
+                        color:
+                          piece.color === "w"
+                            ? "rgba(255,255,255,0.45)"
+                            : "rgba(0,0,0,0.18)",
+                      },
                     ]}
                   >
                     {getPieceName(piece.type)}
@@ -161,7 +170,9 @@ function getPieceName(type: string): string {
   }
 }
 
-function getPieceIcon(type: string): keyof typeof MaterialCommunityIcons.glyphMap {
+function getPieceIcon(
+  type: string,
+): keyof typeof MaterialCommunityIcons.glyphMap {
   switch (type) {
     case "k":
       return "chess-king";
