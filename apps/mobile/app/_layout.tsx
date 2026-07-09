@@ -1,31 +1,25 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/use-color-scheme";
-
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
+import React, { useEffect, useState } from "react";
+import { Stack, useRouter } from "expo-router";
+import SplashScreen from "../components/SplashScreen";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
 
-  return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+  useEffect(() => {
+    const timer = setTimeout(() => setIsReady(true), 4800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      router.replace("/login");
+    }
+  }, [isReady]);
+
+  if (!isReady) {
+    return <SplashScreen />;
+  }
+
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
