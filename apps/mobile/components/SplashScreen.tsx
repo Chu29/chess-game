@@ -167,7 +167,7 @@ export default function SplashScreen() {
       </Animated.Text>
 
       <View style={styles.bottomSection}>
-        <View style={styles.spinnerTrack}>
+        <View>
           <Animated.View
             style={[styles.spinnerArc, { transform: [{ rotate: spin }] }]}
           />
@@ -247,14 +247,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 70,
     alignItems: "center",
-  },
-  spinnerTrack: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 3,
-    borderColor: "rgba(143, 194, 74, 0.15)",
-    marginBottom: 14,
   },
   spinnerArc: {
     width: 44,
