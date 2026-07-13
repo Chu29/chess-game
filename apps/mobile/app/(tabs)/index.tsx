@@ -1,18 +1,14 @@
-import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Image,
-  Pressable,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Ionicons,
   FontAwesome6,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+
+import MatchmakingScreen from "../../components/Matchmaking";
+import { useRouter } from "expo-router";
 
 const colors = {
   background: "#121210",
@@ -23,7 +19,6 @@ const colors = {
   textPrimary: "#FFFFFF",
   textSecondary: "#8A8A85",
 };
-
 interface GameHistory {
   id: string;
   opponent: string;
@@ -61,6 +56,14 @@ const RECENT_GAMES: GameHistory[] = [
 ];
 
 export default function LobbyScreen() {
+  const router = useRouter(); 
+  const [isSearching, setIsSearching] = useState(false);
+
+  
+  if (isSearching) {
+    return <MatchmakingScreen onCancel={() => setIsSearching(false)} />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -104,7 +107,10 @@ export default function LobbyScreen() {
 
         <Text style={styles.sectionTitle}>Quick Start</Text>
 
-        <Pressable style={styles.mainPlayButton}>
+        <Pressable
+          style={styles.mainPlayButton}
+          onPress={() => setIsSearching(true)}
+        >
           <View style={styles.playButtonTextContainer}>
             <Ionicons
               name="flash"
@@ -138,6 +144,7 @@ export default function LobbyScreen() {
           </Pressable>
 
           <Pressable
+            onPress={() => router.push("/(tabs)/learn")}
             style={[
               styles.actionCard,
               { borderColor: "#7A5B2B", borderWidth: 1, marginLeft: 8 },
@@ -193,72 +200,26 @@ export default function LobbyScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 16,
-  },
+  container: { flex: 1, backgroundColor: colors.background },
+  scrollContent: { paddingHorizontal: 20, paddingBottom: 40 },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
     paddingVertical: 12,
+    position: "sticky",
+    top: 0,
+    zIndex: 15,
+    backgroundColor: colors.background
   },
-  headerSpacer: {
-    width: 26,
-  },
-  headerIcon: {
-    padding: 4,
-  },
+  headerSpacer: { width: 26 },
+  headerIcon: { padding: 4 },
   headerTitle: {
     fontSize: 19,
     fontWeight: "800",
     color: colors.green,
     letterSpacing: 0.5,
   },
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: colors.surfaceLight,
-  },
-  profileText: {
-    marginLeft: 12,
-  },
-  userName: {
-    color: colors.textPrimary,
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  userElo: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    marginTop: 2,
-  },
-  iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.surface,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   statsCardFull: {
     backgroundColor: colors.surface,
     borderRadius: 24,
@@ -281,11 +242,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 1,
   },
-  statsValueLarge: {
-    fontSize: 32,
-    fontWeight: "800",
-    marginTop: 4,
-  },
+  statsValueLarge: { fontSize: 32, fontWeight: "800", marginTop: 4 },
   rowGrid: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -303,7 +260,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginTop: 4,
   },
-
   sectionTitle: {
     color: colors.textPrimary,
     fontSize: 18,
@@ -320,14 +276,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
   },
-  playButtonTextContainer: {
-    zIndex: 2,
-  },
-  playButtonTitle: {
-    color: colors.greenDark,
-    fontSize: 26,
-    fontWeight: "800",
-  },
+  playButtonTextContainer: { zIndex: 2 },
+  playButtonTitle: { color: colors.greenDark, fontSize: 26, fontWeight: "800" },
   playButtonSubtitle: {
     color: colors.greenDark,
     fontSize: 13,
@@ -335,12 +285,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     opacity: 0.8,
   },
-  bgWatermark: {
-    position: "absolute",
-    right: -10,
-    bottom: -10,
-    opacity: 0.15,
-  },
+  bgWatermark: { position: "absolute", right: -10, bottom: -10, opacity: 0.15 },
   actionCard: {
     flex: 1,
     backgroundColor: colors.surface,
@@ -360,22 +305,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
-
   sectionHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 8,
   },
-  viewAllLink: {
-    color: colors.green,
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  gameHistoryList: {
-    marginTop: 12,
-  },
+  gameHistoryList: { marginTop: 12 },
   gameRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -385,10 +321,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 12,
   },
-  gameRowLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  gameRowLeft: { flexDirection: "row", alignItems: "center" },
   chessPiecePlaceholder: {
     width: 44,
     height: 44,
@@ -397,34 +330,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  gameInfoText: {
-    marginLeft: 12,
-  },
-  opponentName: {
-    color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  gameDetails: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    marginTop: 2,
-  },
-  gameRowRight: {
-    alignItems: "flex-end",
-  },
-  outcomeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  outcomeText: {
-    fontSize: 11,
-    fontWeight: "800",
-  },
-  eloChangeText: {
-    color: colors.textSecondary,
-    fontSize: 11,
-    marginTop: 4,
-  },
+  gameInfoText: { marginLeft: 12 },
+  opponentName: { color: colors.textPrimary, fontSize: 15, fontWeight: "600" },
+  gameDetails: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
+  gameRowRight: { alignItems: "flex-end" },
+  outcomeBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
+  outcomeText: { fontSize: 11, fontWeight: "800" },
+  eloChangeText: { color: colors.textSecondary, fontSize: 11, marginTop: 4 },
 });
