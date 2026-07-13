@@ -5,9 +5,12 @@ import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { Pressable, Text } from "react-native";
 
 export default function HomeScreen() {
+  const router = useRouter(); // ← moved inside the component
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -19,9 +22,25 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Hello World</ThemedText>
         <HelloWave />
       </ThemedView>
+      <Pressable
+        onPress={() => router.push("/academy")}
+        style={{
+          backgroundColor: "#B7FF3C",
+          paddingVertical: 12,
+          paddingHorizontal: 20,
+          borderRadius: 12,
+          alignSelf: "flex-start",
+          marginBottom: 12,
+        }}
+      >
+        <Text style={{ color: "#0F0F0F", fontWeight: "700" }}>
+          Chess Academy
+        </Text>
+      </Pressable>
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
