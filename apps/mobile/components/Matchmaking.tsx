@@ -84,7 +84,7 @@ export default function MatchmakingScreen({
       -1,
       false,
     );
-  }, [anchorScale, orbitRotation1, orbitRotation2, pulse1, pulse2]); 
+  }, [anchorScale, orbitRotation1, orbitRotation2, pulse1, pulse2]);
 
   const animatedRing1Style = useAnimatedStyle(() => ({
     transform: [{ scale: 0.6 + pulse1.value * 1.6 }],
@@ -219,7 +219,6 @@ export default function MatchmakingScreen({
               <Text style={{ color: colors.textOnSurface, fontWeight: "700" }}>
                 Grandmaster Tip:{" "}
               </Text>
-              
               Controlling the center in the opening gives your pieces more
               mobility and limits your opponent&apos;s options.
             </Text>
@@ -251,7 +250,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    zIndex: 10
+    zIndex: 10,
   },
   topBarLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
   circularIconButton: {

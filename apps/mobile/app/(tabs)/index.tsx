@@ -56,10 +56,9 @@ const RECENT_GAMES: GameHistory[] = [
 ];
 
 export default function LobbyScreen() {
-  const router = useRouter(); 
+  const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
 
-  
   if (isSearching) {
     return <MatchmakingScreen onCancel={() => setIsSearching(false)} />;
   }
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     zIndex: 15,
-    backgroundColor: colors.background
+    backgroundColor: colors.background,
   },
   headerSpacer: { width: 26 },
   headerIcon: { padding: 4 },
