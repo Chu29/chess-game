@@ -56,7 +56,7 @@ const RECENT_GAMES: GameHistory[] = [
 ];
 
 export default function LobbyScreen() {
-  const router = useRouter(); 
+  const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
 
   if (isSearching) {
@@ -68,7 +68,7 @@ export default function LobbyScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        stickyHeaderIndices={[0]} 
+        stickyHeaderIndices={[0]}
       >
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
@@ -207,10 +207,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 12,
-    position: "relative", 
+    position: "relative",
     top: 0,
     zIndex: 15,
-    backgroundColor: colors.background
+    backgroundColor: colors.background,
   },
   headerSpacer: { width: 26 },
   headerIcon: { padding: 4 },
