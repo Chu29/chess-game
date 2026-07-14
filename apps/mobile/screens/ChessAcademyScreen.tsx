@@ -20,10 +20,6 @@ export function ChessAcademyScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.headerBlock}>
-          <Text style={styles.headerTitle}>Chess Academy</Text>
-        </View>
-
         <AcademySection
           title="Learn the Pieces"
           subtitle="Master how each piece moves and thinks"
