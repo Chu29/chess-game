@@ -1,6 +1,6 @@
-export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+export type Difficulty = "beginner" | "intermediate" | "advanced";
 
-export type PieceId = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
+export type PieceId = "king" | "queen" | "rook" | "bishop" | "knight" | "pawn";
 
 export interface BoardSquare {
   file: number; // 0-7 (a-h)
@@ -52,7 +52,7 @@ export interface ChessRule {
   examples: MovementExample[];
 }
 
-export type ChallengeState = 'locked' | 'unlocked' | 'completed';
+export type ChallengeState = "locked" | "unlocked" | "completed";
 
 export interface PracticeChallenge {
   id: string;
