@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////
+
+enum GameMode {
+  PVP
+  AI
+}
+
+enum GameStatus {
+  WAITING
+  ACTIVE
+  FINISHED
+}
+
+enum GameResult {
+  CHECKMATE
+  STALEMATE
+  DRAW
+  RESIGNATION
+  TIMEOUT
+}
+
+enum PlayerColor {
+  WHITE
+  BLACK
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum AnalysisType {
+  HINT
+  EVALUATION
+  EXPLANATION
+  ANALYSIS
+}
+
+//////////////////////////////////////////////////
+// MODELS
+//////////////////////////////////////////////////
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique @db.VarChar(30)
+  email        String   @unique
+  passwordHash String
+  rating       Int      @default(1200)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  gamesAsWhite  Game[]         @relation("WhitePlayer")
+  gamesAsBlack  Game[]         @relation("BlackPlayer")
+  gamesWon      Game[]         @relation("Winner")
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Game {
+  id     String     @id @default(cuid())
+  mode   GameMode
+  status GameStatus @default(WAITING)
+
+  // Player slots are nullable: in AI games one color has no user.
+  whitePlayerId String?
+  whitePlayer   User?   @relation("WhitePlayer", fields: [whitePlayerId], references: [id])
+  blackPlayerId String?
+  blackPlayer   User?   @relation("BlackPlayer", fields: [blackPlayerId], references: [id])
+
+  // AI games only
+  difficulty Difficulty?
+
+  // PVP matchmaking time control, e.g. "10+0"
+  timeControl String?
+
+  currentTurn   PlayerColor  @default(WHITE)
+  fen           String       @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  drawOfferedBy PlayerColor?
+
+  winnerId String?
+  winner   User?       @relation("Winner", fields: [winnerId], references: [id])
+  result   GameResult?
+
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  moves    Move[]
+  analyses AiAnalysis[]
+
+  @@index([whitePlayerId, status])
+  @@index([blackPlayerId, status])
+  @@map("games")
+}
+
+model Move {
+  id     String @id @default(cuid())
+  gameId String
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  moveNumber   Int
+  color        PlayerColor
+  from         String      @db.VarChar(2)
+  to           String      @db.VarChar(2)
+  promotion    String?     @db.VarChar(1)
+  san          String
+  fenAfterMove String
+  playedAt     DateTime    @default(now())
+
+  @@unique([gameId, moveNumber, color])
+  @@index([gameId])
+  @@map("moves")
+}
+
+model AiAnalysis {
+  id     String @id @default(cuid())
+  gameId String
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  type AnalysisType
+
+  // Position the analysis was requested for
+  fen String
+
+  // Request context, e.g. the candidate move for an EVALUATION: {"from": "e2", "to": "e4"}
+  request Json?
+
+  // Response payload matching the contract shape for the given type
+  // (HintResponse | EvaluationResponse | ExplanationResponse | GameAnalysisResponse)
+  response Json
+
+  createdAt DateTime @default(now())
+
+  @@index([gameId, type])
+  @@map("ai_analyses")
+}
