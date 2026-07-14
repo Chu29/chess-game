@@ -20,7 +20,10 @@ export function ChessAcademyScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <AcademySection title="Learn the Pieces">
+        <AcademySection
+          title="Learn the Pieces"
+          subtitle="Master how each piece moves and thinks"
+        >
           <View style={styles.grid}>
             {pieces.map((piece, i) => (
               <PieceCard
