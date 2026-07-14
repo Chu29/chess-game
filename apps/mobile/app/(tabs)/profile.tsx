@@ -15,9 +15,27 @@ const mockProfile = {
 };
 
 const mockRecentMatches = [
-  { id: "1", opponent: "Magnus_2O", meta: "Oct 12 · Blitz", result: "WIN" as const, eloChange: "+12" },
-  { id: "2", opponent: "ChessMaster99", meta: "Oct 11 · Rapid", result: "LOSS" as const, eloChange: "-8" },
-  { id: "3", opponent: "DeepThinking", meta: "Oct 10 · Rapid", result: "DRAW" as const, eloChange: "0" },
+  {
+    id: "1",
+    opponent: "Magnus_2O",
+    meta: "Oct 12 · Blitz",
+    result: "WIN" as const,
+    eloChange: "+12",
+  },
+  {
+    id: "2",
+    opponent: "ChessMaster99",
+    meta: "Oct 11 · Rapid",
+    result: "LOSS" as const,
+    eloChange: "-8",
+  },
+  {
+    id: "3",
+    opponent: "DeepThinking",
+    meta: "Oct 10 · Rapid",
+    result: "DRAW" as const,
+    eloChange: "0",
+  },
 ];
 
 function resultColor(result: "WIN" | "LOSS" | "DRAW") {
@@ -43,17 +61,23 @@ export default function ProfileScreen() {
         {/* Total games */}
         <View style={styles.totalCard}>
           <Text style={styles.totalLabel}>TOTAL GAMES</Text>
-          <Text style={styles.totalValue}>{mockProfile.totalGames.toLocaleString()}</Text>
+          <Text style={styles.totalValue}>
+            {mockProfile.totalGames.toLocaleString()}
+          </Text>
         </View>
 
         {/* Stat grid */}
         <View style={styles.statGrid}>
           <View style={styles.statCard}>
-            <Text style={[styles.statValue, { color: colors.win }]}>{mockProfile.wins}</Text>
+            <Text style={[styles.statValue, { color: colors.win }]}>
+              {mockProfile.wins}
+            </Text>
             <Text style={styles.statLabel}>WINS</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={[styles.statValue, { color: colors.loss }]}>{mockProfile.losses}</Text>
+            <Text style={[styles.statValue, { color: colors.loss }]}>
+              {mockProfile.losses}
+            </Text>
             <Text style={styles.statLabel}>LOSSES</Text>
           </View>
           <View style={styles.statCard}>
@@ -61,7 +85,9 @@ export default function ProfileScreen() {
             <Text style={styles.statLabel}>DRAWS</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={[styles.statValue, { color: colors.green }]}>{mockProfile.winRate}%</Text>
+            <Text style={[styles.statValue, { color: colors.green }]}>
+              {mockProfile.winRate}%
+            </Text>
             <Text style={styles.statLabel}>WIN RATE</Text>
           </View>
         </View>
@@ -88,7 +114,12 @@ export default function ProfileScreen() {
               <Text style={styles.matchMeta}>{match.meta}</Text>
             </View>
             <View style={{ alignItems: "flex-end" }}>
-              <Text style={[styles.matchResult, { color: resultColor(match.result) }]}>
+              <Text
+                style={[
+                  styles.matchResult,
+                  { color: resultColor(match.result) },
+                ]}
+              >
                 {match.result}
               </Text>
               <Text style={styles.matchElo}>{match.eloChange} ELO</Text>
@@ -99,18 +130,36 @@ export default function ProfileScreen() {
         {/* Settings row */}
         <View style={{ marginTop: 24 }}>
           <View style={styles.settingsRow}>
-            <Ionicons name="create-outline" size={18} color={colors.textSecondary} />
+            <Ionicons
+              name="create-outline"
+              size={18}
+              color={colors.textSecondary}
+            />
             <Text style={styles.settingsText}>Edit Profile</Text>
-            <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={colors.textSecondary}
+            />
           </View>
           <View style={styles.settingsRow}>
-            <Ionicons name="color-palette-outline" size={18} color={colors.textSecondary} />
+            <Ionicons
+              name="color-palette-outline"
+              size={18}
+              color={colors.textSecondary}
+            />
             <Text style={styles.settingsText}>Theme</Text>
-            <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={colors.textSecondary}
+            />
           </View>
           <View style={[styles.settingsRow, { borderBottomWidth: 0 }]}>
             <Ionicons name="log-out-outline" size={18} color={colors.loss} />
-            <Text style={[styles.settingsText, { color: colors.loss }]}>Logout</Text>
+            <Text style={[styles.settingsText, { color: colors.loss }]}>
+              Logout
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -144,7 +193,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     gap: 5,
   },
-  ratingPillText: { color: colors.textSecondary, fontSize: 12, fontWeight: "600" },
+  ratingPillText: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: "600",
+  },
   totalCard: {
     width: "100%",
     backgroundColor: colors.card,
@@ -155,7 +208,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
-  totalLabel: { color: colors.textSecondary, fontSize: 11, letterSpacing: 1, marginBottom: 4 },
+  totalLabel: {
+    color: colors.textSecondary,
+    fontSize: 11,
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
   totalValue: { color: colors.white, fontSize: 26, fontWeight: "700" },
   statGrid: {
     flexDirection: "row",
@@ -175,7 +233,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statValue: { color: colors.white, fontSize: 20, fontWeight: "700" },
-  statLabel: { color: colors.textSecondary, fontSize: 10, letterSpacing: 1, marginTop: 4 },
+  statLabel: {
+    color: colors.textSecondary,
+    fontSize: 10,
+    letterSpacing: 1,
+    marginTop: 4,
+  },
   sectionHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -183,7 +246,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
   },
-  sectionTitle: { color: colors.textSecondary, fontSize: 13, fontWeight: "600" },
+  sectionTitle: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    fontWeight: "600",
+  },
   sectionMeta: { color: colors.textSecondary, fontSize: 11 },
   viewAll: { color: colors.green, fontSize: 12, fontWeight: "600" },
   chartPlaceholder: {
