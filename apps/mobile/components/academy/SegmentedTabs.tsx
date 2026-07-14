@@ -1,0 +1,107 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  LayoutChangeEvent,
+  StyleSheet,
+} from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { colors } from "../../constants/colors";
+
+interface Props {
+  tabs: string[];
+  activeIndex: number;
+  onChange: (index: number) => void;
+}
+
+export function SegmentedTabs({ tabs, activeIndex, onChange }: Props) {
+  const [segmentWidth, setSegmentWidth] = useState(0);
+  const translateX = useSharedValue(0);
+
+  const onLayout = (e: LayoutChangeEvent) => {
+    const width = e.nativeEvent.layout.width / tabs.length;
+    setSegmentWidth(width);
+    translateX.value = width * activeIndex;
+  };
+
+  const handlePress = (index: number) => {
+    onChange(index);
+    translateX.value = withSpring(segmentWidth * index, {
+      damping: 18,
+      stiffness: 180,
+    });
+  };
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+    width: segmentWidth,
+  }));
+
+  return (
+    <View onLayout={onLayout} style={styles.container}>
+      {segmentWidth > 0 && (
+        <Animated.View style={[styles.indicator, indicatorStyle]} />
+      )}
+      {tabs.map((tab, index) => (
+        <Pressable
+          key={tab}
+          onPress={() => handlePress(index)}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: activeIndex === index }}
+          style={styles.tab}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              {
+                color:
+                  activeIndex === index
+                    ? colors.background
+                    : colors.textSecondary,
+              },
+            ]}
+          >
+            {tab}
+          </Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    borderRadius: 999,
+    padding: 4,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    position: "relative",
+    overflow: "hidden",
+  },
+  indicator: {
+    position: "absolute",
+    top: 4,
+    bottom: 4,
+    left: 4,
+    borderRadius: 999,
+    backgroundColor: colors.accent,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 36,
+  },
+  tabText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+});
