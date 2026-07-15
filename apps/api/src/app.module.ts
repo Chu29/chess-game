@@ -7,7 +7,12 @@ import { PrismaModule } from './prisma/prisma.module';
 import { GameModule } from './modules/game/game.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, GameModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    AuthModule,
+    GameModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
