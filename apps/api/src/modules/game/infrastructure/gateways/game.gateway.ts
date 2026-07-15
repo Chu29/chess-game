@@ -1,11 +1,11 @@
-import { 
-  WebSocketGateway, 
-  SubscribeMessage, 
-  MessageBody, 
-  ConnectedSocket, 
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
   WebSocketServer,
   OnGatewayConnection,
-  OnGatewayDisconnect
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -26,7 +26,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private matchmakingQueue: MatchmakingPlayer[] = [];
 
   // Tracks active in-memory board states temporarily while your team builds the database schema
-  private activeGames = new Map<string, { fen: string; white: string; black: string; turn: 'w' | 'b' }>();
+  private activeGames = new Map<
+    string,
+    { fen: string; white: string; black: string; turn: 'w' | 'b' }
+  >();
 
   handleConnection(client: Socket) {
     console.log(`🔌 Client connected to game gateway: ${client.id}`);
@@ -35,7 +38,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
     console.log(`🔌 Client disconnected: ${client.id}`);
     this.matchmakingQueue = this.matchmakingQueue.filter(
-      (player) => player.socketId !== client.id
+      (player) => player.socketId !== client.id,
     );
   }
 
@@ -46,10 +49,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('findMatch')
   handleFindMatch(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { userId: string }
+    @MessageBody() payload: { userId: string },
   ) {
     const isAlreadyQueued = this.matchmakingQueue.some(
-      (p) => p.userId === payload.userId
+      (p) => p.userId === payload.userId,
     );
 
     if (isAlreadyQueued) {
@@ -61,8 +64,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       socketId: client.id,
       userId: payload.userId,
     });
-    
-    console.log(`👤 Player ${payload.userId} joined queue. Size: ${this.matchmakingQueue.length}`);
+
+    console.log(
+      `👤 Player ${payload.userId} joined queue. Size: ${this.matchmakingQueue.length}`,
+    );
     client.emit('queueStatus', { status: 'waiting', message: 'Searching...' });
 
     this.tryToMatchPlayers();
@@ -107,7 +112,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('joinRoom')
   handleJoinRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { gameId: string }
+    @MessageBody() payload: { gameId: string },
   ) {
     const roomName = `room_${payload.gameId}`;
     client.join(roomName);
@@ -118,7 +123,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('makeMove')
   handleMakeMove(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { gameId: string; playerId: string; from: string; to: string; nextFen: string }
+    @MessageBody()
+    payload: {
+      gameId: string;
+      playerId: string;
+      from: string;
+      to: string;
+      nextFen: string;
+    },
   ) {
     const roomName = `room_${payload.gameId}`;
     const game = this.activeGames.get(payload.gameId);
@@ -131,7 +143,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Basic turn security checking:
     const expectedPlayer = game.turn === 'w' ? game.white : game.black;
     if (payload.playerId !== expectedPlayer) {
-      client.emit('moveRejected', { message: "Not your turn!" });
+      client.emit('moveRejected', { message: 'Not your turn!' });
       return;
     }
 
