@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import SplashScreen from "../components/SplashScreen";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
-export default function RootLayout() {
-  const [isReady, setIsReady] = useState(false);
+const MIN_SPLASH_MS = 2000;
+
+function RootNavigator() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const [splashDone, setSplashDone] = useState(false);
+  const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsReady(true), 4800);
+    const timer = setTimeout(() => setSplashDone(true), MIN_SPLASH_MS);
     return () => clearTimeout(timer);
   }, []);
 
+  const isReady = splashDone && !isLoading;
+
   useEffect(() => {
-    if (isReady) {
+    if (!isReady) return;
+
+    const inAuthGroup = segments[0] === "(auth)";
+    if (!isAuthenticated && !inAuthGroup) {
       router.replace("/login");
+    } else if (isAuthenticated && inAuthGroup) {
+      router.replace("/(tabs)");
     }
-  }, [isReady]);
+  }, [isReady, isAuthenticated, segments, router]);
 
   if (!isReady) {
     return <SplashScreen />;
   }
 
   return <Stack screenOptions={{ headerShown: false }} />;
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootNavigator />
+    </AuthProvider>
+  );
 }

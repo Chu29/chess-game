@@ -1,16 +1,54 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { colors } from "../../constants/theme";
 import AuthInput from "../../components/auth/AuthInput";
 import AuthButton from "../../components/auth/AuthButton";
 import SocialAuthRow from "../../components/auth/SocialAuthRow";
+import { useAuth } from "../../context/AuthContext";
+import { ApiError } from "../../lib/api";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleLogin = async () => {
+    if (isSubmitting) return;
+    setError(null);
+
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await login(email.trim(), password);
+      // Root layout redirects to /(tabs) once authenticated.
+    } catch (err) {
+      if (err instanceof ApiError && err.statusCode === 401) {
+        setError("Invalid email or password.");
+      } else if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("Unable to reach the server. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -43,11 +81,13 @@ export default function LoginScreen() {
         onRightLabelPress={() => {}}
       />
 
-      <AuthButton
-        label="Login"
-        icon="arrow-forward"
-        onPress={() => router.replace("/(tabs)")}
-      />
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
+      {isSubmitting ? (
+        <ActivityIndicator color={colors.green} style={styles.loader} />
+      ) : (
+        <AuthButton label="Login" icon="arrow-forward" onPress={handleLogin} />
+      )}
 
       <SocialAuthRow />
 
@@ -96,4 +136,11 @@ const styles = StyleSheet.create({
   footerRow: { flexDirection: "row", justifyContent: "center", marginTop: 24 },
   footerText: { color: colors.textSecondary, fontSize: 13 },
   footerLink: { color: colors.green, fontSize: 13, fontWeight: "700" },
+  errorText: {
+    color: colors.loss,
+    fontSize: 13,
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  loader: { paddingVertical: 14 },
 });

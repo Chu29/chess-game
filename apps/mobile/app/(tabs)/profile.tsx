@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { colors } from "../../constants/theme";
+import { useAuth } from "../../context/AuthContext";
 
 const mockProfile = {
   name: "Grandmaster-K",
@@ -45,6 +46,8 @@ function resultColor(result: "WIN" | "LOSS" | "DRAW") {
 }
 
 export default function ProfileScreen() {
+  const { user, logout } = useAuth();
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -52,10 +55,12 @@ export default function ProfileScreen() {
         <View style={styles.avatarCircle}>
           <Ionicons name="person" size={40} color={colors.green} />
         </View>
-        <Text style={styles.name}>{mockProfile.name}</Text>
+        <Text style={styles.name}>{user?.username ?? mockProfile.name}</Text>
         <View style={styles.ratingPill}>
           <Ionicons name="trophy" size={13} color={colors.green} />
-          <Text style={styles.ratingPillText}>{mockProfile.rating} ELO</Text>
+          <Text style={styles.ratingPillText}>
+            {user?.rating ?? mockProfile.rating} ELO
+          </Text>
         </View>
 
         {/* Total games */}
@@ -155,12 +160,15 @@ export default function ProfileScreen() {
               color={colors.textSecondary}
             />
           </View>
-          <View style={[styles.settingsRow, { borderBottomWidth: 0 }]}>
+          <Pressable
+            style={[styles.settingsRow, { borderBottomWidth: 0 }]}
+            onPress={() => void logout()}
+          >
             <Ionicons name="log-out-outline" size={18} color={colors.loss} />
             <Text style={[styles.settingsText, { color: colors.loss }]}>
               Logout
             </Text>
-          </View>
+          </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>
