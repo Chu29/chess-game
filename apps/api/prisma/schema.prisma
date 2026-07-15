@@ -52,34 +52,21 @@ enum AnalysisType {
 //////////////////////////////////////////////////
 
 model User {
-  id           String   @id @default(cuid())
-  username     String   @unique @db.VarChar(30)
-  email        String   @unique
-  passwordHash String
-  rating       Int      @default(1200)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         String   @id @default(cuid())
+  keycloakId String   @unique
+  username   String   @unique @db.VarChar(30)
+  email      String   @unique
+  rating     Int      @default(1200)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  gamesAsWhite  Game[]         @relation("WhitePlayer")
-  gamesAsBlack  Game[]         @relation("BlackPlayer")
-  gamesWon      Game[]         @relation("Winner")
-  refreshTokens RefreshToken[]
+  gamesAsWhite Game[] @relation("WhitePlayer")
+  gamesAsBlack Game[] @relation("BlackPlayer")
+  gamesWon     Game[] @relation("Winner")
 
   @@map("users")
 }
 
-model RefreshToken {
-  id        String    @id @default(cuid())
-  tokenHash String    @unique
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
-  revokedAt DateTime?
-  createdAt DateTime  @default(now())
-
-  @@index([userId])
-  @@map("refresh_tokens")
-}
 
 model Game {
   id     String     @id @default(cuid())
