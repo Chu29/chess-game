@@ -7,8 +7,9 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-import MatchmakingScreen from "../../components/Matchmaking";
+import MatchmakingScreen from "../play/matchmaking";
 import { useRouter } from "expo-router";
+
 
 const colors = {
   background: "#121210",
@@ -60,7 +61,8 @@ export default function LobbyScreen() {
   const [isSearching, setIsSearching] = useState(false);
 
   if (isSearching) {
-    return <MatchmakingScreen onCancel={() => setIsSearching(false)} />;
+     return <MatchmakingScreen/>;
+    
   }
 
   return (
