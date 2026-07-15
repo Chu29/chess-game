@@ -1,6 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { decodeJwt } from 'jose';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -89,6 +88,7 @@ export class AuthService {
    * token claims if it doesn't exist (e.g. user created directly in Keycloak).
    */
   private async findOrProvisionUser(accessToken: string): Promise<User> {
+    const { decodeJwt } = await import('jose');
     const payload = decodeJwt(accessToken) as KeycloakJwtPayload;
 
     const existing = await this.prisma.user.findUnique({

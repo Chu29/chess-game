@@ -7,13 +7,13 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { IS_PUBLIC_KEY } from './public.decorator';
 import { AuthenticatedUser, KeycloakJwtPayload } from './types/keycloak.types';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  private readonly jwks: ReturnType<typeof createRemoteJWKSet>;
+  private readonly jwksUri: URL;
+  private jwks: unknown;
   private readonly issuer: string;
 
   constructor(
@@ -23,8 +23,8 @@ export class JwtAuthGuard implements CanActivate {
     const keycloakUrl = config.getOrThrow<string>('KEYCLOAK_URL');
     const realm = config.getOrThrow<string>('KEYCLOAK_REALM');
     this.issuer = config.getOrThrow<string>('KEYCLOAK_ISSUER');
-    this.jwks = createRemoteJWKSet(
-      new URL(`${keycloakUrl}/realms/${realm}/protocol/openid-connect/certs`),
+    this.jwksUri = new URL(
+      `${keycloakUrl}/realms/${realm}/protocol/openid-connect/certs`,
     );
   }
 
@@ -46,9 +46,17 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const { payload } = await jwtVerify(token, this.jwks, {
-        issuer: this.issuer,
-      });
+      const jose = await import('jose');
+      if (!this.jwks) {
+        this.jwks = jose.createRemoteJWKSet(this.jwksUri);
+      }
+      const { payload } = await jose.jwtVerify(
+        token,
+        this.jwks as Parameters<typeof jose.jwtVerify>[1],
+        {
+          issuer: this.issuer,
+        },
+      );
       const claims = payload as KeycloakJwtPayload;
       request.user = {
         keycloakId: claims.sub,
