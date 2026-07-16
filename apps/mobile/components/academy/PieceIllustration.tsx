@@ -28,7 +28,7 @@ export function PieceIllustration({
   useEffect(() => {
     scale.value = withDelay(
       delay,
-      withSpring(1, { damping: 12, stiffness: 120 })
+      withSpring(1, { damping: 12, stiffness: 120 }),
     );
     opacity.value = withDelay(delay, withSpring(1));
   }, [delay, scale, opacity]);

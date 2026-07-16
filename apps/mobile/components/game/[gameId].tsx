@@ -38,12 +38,7 @@ export default function GameScreen() {
       .getById(params.gameId)
       .then(setGame)
       .finally(() => setLoading(false));
-  }, [
-    params.gameId,
-    params.fen,
-    params.whitePlayerId,
-    params.blackPlayerId,
-  ]);
+  }, [params.gameId, params.fen, params.whitePlayerId, params.blackPlayerId]);
 
   if (loading) {
     return (
