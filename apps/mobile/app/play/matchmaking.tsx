@@ -77,9 +77,5 @@ export default function MatchmakingRoute() {
     }
   };
 
-  return (
-    <MatchmakingScreen
-      onCancel={handleCancel}
-    />
-  );
+  return <MatchmakingScreen onCancel={handleCancel} />;
 }

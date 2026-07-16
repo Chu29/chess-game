@@ -7,7 +7,6 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-
 import { useRouter } from "expo-router";
 
 const colors = {
@@ -56,7 +55,7 @@ const RECENT_GAMES: GameHistory[] = [
 ];
 
 export default function LobbyScreen() {
-  const router = useRouter();  
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -101,9 +100,7 @@ export default function LobbyScreen() {
 
         <Text style={styles.sectionTitle}>Quick Start</Text>
 
-        <Pressable
-          style={styles.mainPlayButton}
-        >
+        <Pressable style={styles.mainPlayButton}>
           <View style={styles.playButtonTextContainer}>
             <Ionicons
               name="flash"
