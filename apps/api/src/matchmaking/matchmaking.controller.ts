@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { MatchmakingService } from './matchmaking.services';
 import { JoinQueueDto } from './dto/join-queue.dto';
 import { CurrentUser } from '../auth/current-user.decorator';

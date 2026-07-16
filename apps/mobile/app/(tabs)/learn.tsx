@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -14,7 +13,7 @@ import { colors } from "../../constants/theme";
 import { ChessAcademyScreen } from "@/screens/ChessAcademyScreen";
 
 export default function LearnScreen() {
-  const router = useRouter();
+  // const router = useRouter();
 
   // const handlePiecePress = (piece: string) => {
   //   router.push({

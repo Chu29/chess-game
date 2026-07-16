@@ -38,7 +38,12 @@ export default function GameScreen() {
       .getById(params.gameId)
       .then(setGame)
       .finally(() => setLoading(false));
-  }, [params.gameId]);
+  }, [
+    params.gameId,
+    params.fen,
+    params.whitePlayerId,
+    params.blackPlayerId,
+  ]);
 
   if (loading) {
     return (
@@ -59,17 +64,23 @@ export default function GameScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Game #{game.id.slice(0, 8)}</Text>
+
       <ChessBoard fen={game.fen} />
+
       <Text style={styles.note}>
         Live move syncing (Socket.IO) isn&apos;t wired yet — this shows the
-        starting position from the match. That's separate, later work.
+        starting position from the match. That&apos;s separate, later work.
       </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background, padding: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: 16,
+  },
   center: {
     flex: 1,
     backgroundColor: colors.background,
@@ -82,7 +93,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
   },
-  errorText: { color: colors.textSecondary, fontSize: 15 },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: 15,
+  },
   note: {
     color: colors.textSecondary,
     fontSize: 12,
