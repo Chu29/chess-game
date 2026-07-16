@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { GameModule } from './modules/game/game.module';
+import { MatchmakingModule } from './matchmaking/matchmaking.modules';
+import { GamesModule } from './games/games.module'; // ADD
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { GameModule } from './modules/game/game.module';
     PrismaModule,
     AuthModule,
     GameModule,
+    MatchmakingModule,
+    GamesModule, // ADD
   ],
   controllers: [AppController],
   providers: [AppService],

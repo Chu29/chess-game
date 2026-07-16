@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
 //////////////////////////////////////////////////
 // ENUMS
 //////////////////////////////////////////////////
@@ -60,9 +59,10 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  gamesAsWhite Game[] @relation("WhitePlayer")
-  gamesAsBlack Game[] @relation("BlackPlayer")
-  gamesWon     Game[] @relation("Winner")
+  gamesAsWhite     Game[]            @relation("WhitePlayer")
+  gamesAsBlack     Game[]            @relation("BlackPlayer")
+  gamesWon         Game[]            @relation("Winner")
+  matchmakingEntry MatchmakingQueue?
 
   @@map("users")
 }
@@ -144,4 +144,15 @@ model AiAnalysis {
 
   @@index([gameId, type])
   @@map("ai_analyses")
+}
+
+model MatchmakingQueue {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ratingAtQueue Int
+  timeControl   String?
+  joinedAt      DateTime @default(now())
+
+  @@map("matchmaking_queue")
 }

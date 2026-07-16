@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
@@ -14,21 +7,21 @@ import { colors } from "../../constants/theme";
 import { ChessAcademyScreen } from "@/screens/ChessAcademyScreen";
 
 export default function LearnScreen() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const handlePiecePress = (piece: string) => {
-    router.push({
-      pathname: "/learn/[piece]",
-      params: { piece: piece.toLowerCase() },
-    });
-  };
+  // const handlePiecePress = (piece: string) => {
+  //   router.push({
+  //     pathname: "/learn/[piece]",
+  //     params: { piece: piece.toLowerCase() },
+  //   });
+  // };
 
-  const handleQuizPress = () => {
-    Alert.alert(
-      "Quick Quiz",
-      "Start a 5-question quiz to test your chess piece mastery!",
-    );
-  };
+  // const handleQuizPress = () => {
+  //   Alert.alert(
+  //     "Quick Quiz",
+  //     "Start a 5-question quiz to test your chess piece mastery!",
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
