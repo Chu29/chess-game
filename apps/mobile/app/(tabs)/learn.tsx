@@ -16,19 +16,19 @@ import { ChessAcademyScreen } from "@/screens/ChessAcademyScreen";
 export default function LearnScreen() {
   const router = useRouter();
 
-  const handlePiecePress = (piece: string) => {
-    router.push({
-      pathname: "/learn/[piece]",
-      params: { piece: piece.toLowerCase() },
-    });
-  };
+  // const handlePiecePress = (piece: string) => {
+  //   router.push({
+  //     pathname: "/learn/[piece]",
+  //     params: { piece: piece.toLowerCase() },
+  //   });
+  // };
 
-  const handleQuizPress = () => {
-    Alert.alert(
-      "Quick Quiz",
-      "Start a 5-question quiz to test your chess piece mastery!",
-    );
-  };
+  // const handleQuizPress = () => {
+  //   Alert.alert(
+  //     "Quick Quiz",
+  //     "Start a 5-question quiz to test your chess piece mastery!",
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,17 +1,68 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { colors } from "../../constants/theme";
 import AuthInput from "../../components/auth/AuthInput";
 import AuthButton from "../../components/auth/AuthButton";
 import SocialAuthRow from "../../components/auth/SocialAuthRow";
+import { useAuth } from "../../context/AuthContext";
+import { ApiError } from "../../lib/api";
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const { register } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleRegister = async () => {
+    if (isSubmitting) return;
+    setError(null);
+
+    const username = displayName.trim();
+    if (username.length < 3 || username.length > 30) {
+      setError("Display name must be between 3 and 30 characters.");
+      return;
+    }
+    if (!email.trim()) {
+      setError("Please enter your email address.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await register(username, email.trim(), password);
+      // Root layout redirects to /(tabs) once authenticated.
+    } catch (err) {
+      if (err instanceof ApiError && err.statusCode === 409) {
+        setError("That username or email is already taken.");
+      } else if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("Unable to reach the server. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -51,11 +102,17 @@ export default function RegisterScreen() {
         secureTextEntry
       />
 
-      <AuthButton
-        label="Register"
-        icon="arrow-forward"
-        onPress={() => router.replace("/(tabs)")}
-      />
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
+      {isSubmitting ? (
+        <ActivityIndicator color={colors.green} style={styles.loader} />
+      ) : (
+        <AuthButton
+          label="Register"
+          icon="arrow-forward"
+          onPress={handleRegister}
+        />
+      )}
 
       <SocialAuthRow />
 
@@ -94,4 +151,11 @@ const styles = StyleSheet.create({
   footerRow: { flexDirection: "row", justifyContent: "center", marginTop: 24 },
   footerText: { color: colors.textSecondary, fontSize: 13 },
   footerLink: { color: colors.green, fontSize: 13, fontWeight: "700" },
+  errorText: {
+    color: colors.loss,
+    fontSize: 13,
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  loader: { paddingVertical: 14 },
 });

@@ -12,7 +12,17 @@ const RATING_RANGE = 200;
 export class MatchmakingService {
   constructor(private prisma: PrismaService) {}
 
-  async join(userId: string, timeControl?: string) {
+  private async resolveUserId(keycloakId: string): Promise<string> {
+    const user = await this.prisma.user.findUnique({ where: { keycloakId } });
+    if (!user) {
+      throw new NotFoundException('User not found — call GET /auth/me first');
+    }
+    return user.id;
+  }
+
+  async join(keycloakId: string, timeControl?: string) {
+    const userId = await this.resolveUserId(keycloakId);
+
     const existing = await this.prisma.matchmakingQueue.findUnique({
       where: { userId },
     });
@@ -65,7 +75,9 @@ export class MatchmakingService {
     return { status: 'waiting' as const, queueEntry };
   }
 
-  async leave(userId: string) {
+  async leave(keycloakId: string) {
+    const userId = await this.resolveUserId(keycloakId);
+
     const existing = await this.prisma.matchmakingQueue.findUnique({
       where: { userId },
     });
@@ -76,7 +88,9 @@ export class MatchmakingService {
     return { status: 'left' as const };
   }
 
-  async status(userId: string) {
+  async status(keycloakId: string) {
+    const userId = await this.resolveUserId(keycloakId);
+
     const queueEntry = await this.prisma.matchmakingQueue.findUnique({
       where: { userId },
     });
@@ -97,5 +111,14 @@ export class MatchmakingService {
     }
 
     return { status: 'idle' as const };
+  }
+
+  // Used by the game screen to fetch full game state by id
+  async getGameById(gameId: string) {
+    const game = await this.prisma.game.findUnique({ where: { id: gameId } });
+    if (!game) {
+      throw new NotFoundException('Game not found');
+    }
+    return game;
   }
 }

@@ -7,6 +7,16 @@ import { AppModule } from './../src/app.module';
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
 
+  beforeAll(() => {
+    process.env.KEYCLOAK_URL ??= 'http://localhost:8080';
+    process.env.KEYCLOAK_REALM ??= 'chess';
+    process.env.KEYCLOAK_ISSUER ??= 'http://localhost:8080/realms/chess';
+    process.env.KEYCLOAK_API_CLIENT_ID ??= 'chess-api';
+    process.env.KEYCLOAK_API_CLIENT_SECRET ??= 'chess-api-secret';
+    process.env.KEYCLOAK_ADMIN_CLIENT_ID ??= 'chess-admin';
+    process.env.KEYCLOAK_ADMIN_CLIENT_SECRET ??= 'chess-admin-secret';
+  });
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -24,6 +34,8 @@ describe('AppController (e2e)', () => {
   });
 
   afterEach(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 });

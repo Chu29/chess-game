@@ -10,7 +10,6 @@ import {
 import MatchmakingScreen from "../play/matchmaking";
 import { useRouter } from "expo-router";
 
-
 const colors = {
   background: "#121210",
   surface: "#1E1E1C",
@@ -59,12 +58,10 @@ const RECENT_GAMES: GameHistory[] = [
 export default function LobbyScreen() {
   const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
-
+  // ...
   if (isSearching) {
-     return <MatchmakingScreen/>;
-    
+    return <MatchmakingScreen />;
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -120,10 +117,16 @@ export default function LobbyScreen() {
               color={colors.greenDark}
               style={{ marginBottom: 12 }}
             />
-            <Text style={styles.playButtonTitle}>Play Online</Text>
-            <Text style={styles.playButtonSubtitle}>
-              Find a match in seconds
-            </Text>
+
+            <Pressable
+              style={styles.mainPlayButton}
+              onPress={() => router.push("/play/matchmaking")}
+            >
+              <Text style={styles.playButtonTitle}>Play Online</Text>
+              <Text style={styles.playButtonSubtitle}>
+                Find a match in seconds
+              </Text>
+            </Pressable>
           </View>
           <FontAwesome6
             name="earth-americas"

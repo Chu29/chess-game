@@ -1,31 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
-import Matchmaking from '../../components/Matchmaking';
-import { matchmakingApi } from '../../services/api-client';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import MatchmakingScreen from "../../components/Matchmaking";
+import { matchmakingApi } from "../../lib/matchmakingApi";
 
-export default function MatchmakingScreen() {
+export default function MatchmakingRoute() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
     let pollInterval: ReturnType<typeof setInterval>;
 
+    const goToGame = (game: {
+      id: string;
+      fen: string;
+      whitePlayerId: string | null;
+      blackPlayerId: string | null;
+    }) => {
+      router.replace({
+        pathname: "/game/[gameId]",
+        params: {
+          gameId: game.id,
+          fen: game.fen,
+          whitePlayerId: game.whitePlayerId ?? "",
+          blackPlayerId: game.blackPlayerId ?? "",
+        },
+      });
+    };
+
     const startMatchmaking = async () => {
       try {
         const result = await matchmakingApi.join();
 
-        if (result.status === 'matched') {
-        //   router.replace(`./game/${result.game.id}`);
-        router.push("")
+        if (result.status === "matched") {
+          goToGame(result.game);
           return;
         }
 
         pollInterval = setInterval(async () => {
           const statusResult = await matchmakingApi.status();
-          if (statusResult.status === 'matched' && isMounted) {
+          if (statusResult.status === "matched" && isMounted) {
             clearInterval(pollInterval);
-            router.replace(`./game/${statusResult.game.id}`);
+            goToGame(statusResult.game);
           }
         }, 2000);
       } catch (err: any) {
@@ -45,11 +61,11 @@ export default function MatchmakingScreen() {
     try {
       await matchmakingApi.leave();
     } catch {
-      // already left or never joined — safe to ignore
+      // already left or never joined
     } finally {
       router.back();
     }
   };
 
-  return <Matchmaking onCancel={handleCancel} />;
+  return <MatchmakingScreen onCancel={handleCancel} />;
 }

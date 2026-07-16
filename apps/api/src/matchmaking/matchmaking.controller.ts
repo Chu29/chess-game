@@ -1,25 +1,26 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { MatchmakingService } from './matchmaking.services';
 import { JoinQueueDto } from './dto/join-queue.dto';
-import { JwtAuthGuard, CurrentUser } from './dev-auth.stub'; // swap once teammate's auth lands
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/types/keycloak.types';
 
-@UseGuards(JwtAuthGuard)
+// No @UseGuards() needed — JwtAuthGuard is applied globally.
 @Controller('matchmaking')
 export class MatchmakingController {
   constructor(private matchmakingService: MatchmakingService) {}
 
   @Post('join')
-  join(@CurrentUser() user: any, @Body() dto: JoinQueueDto) {
-    return this.matchmakingService.join(user.id, dto.timeControl);
+  join(@CurrentUser() user: AuthenticatedUser, @Body() dto: JoinQueueDto) {
+    return this.matchmakingService.join(user.keycloakId, dto.timeControl);
   }
 
   @Delete('leave')
-  leave(@CurrentUser() user: any) {
-    return this.matchmakingService.leave(user.id);
+  leave(@CurrentUser() user: AuthenticatedUser) {
+    return this.matchmakingService.leave(user.keycloakId);
   }
 
   @Get('status')
-  status(@CurrentUser() user: any) {
-    return this.matchmakingService.status(user.id);
+  status(@CurrentUser() user: AuthenticatedUser) {
+    return this.matchmakingService.status(user.keycloakId);
   }
 }
