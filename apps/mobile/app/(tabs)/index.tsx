@@ -73,9 +73,6 @@ export default function LobbyScreen() {
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
           <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
-          <Pressable style={styles.headerIcon}>
-            <Ionicons name="settings" size={22} color={colors.green} />
-          </Pressable>
         </View>
 
         <View style={styles.statsCardFull}>
@@ -203,9 +200,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { paddingHorizontal: 20, paddingBottom: 40 },
   header: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingVertical: 12,
     position: "relative",
     top: 0,

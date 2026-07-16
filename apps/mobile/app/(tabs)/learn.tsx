@@ -36,9 +36,6 @@ export default function LearnScreen() {
       <View style={styles.header}>
         <View style={styles.headerSpacer} />
         <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
-        <Pressable style={styles.headerIcon}>
-          <Ionicons name="settings" size={22} color={colors.green} />
-        </Pressable>
       </View>
 
       <ScrollView
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
