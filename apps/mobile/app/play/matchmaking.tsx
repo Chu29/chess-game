@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import MatchmakingScreen from "../../components/Matchmaking";
 import { matchmakingApi } from "../../lib/matchmakingApi";
@@ -6,6 +6,7 @@ import { matchmakingApi } from "../../lib/matchmakingApi";
 export default function MatchmakingRoute() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     let isMounted = true;
     let pollInterval: ReturnType<typeof setInterval>;
@@ -37,22 +38,48 @@ export default function MatchmakingRoute() {
         }
 
         pollInterval = setInterval(async () => {
-          const statusResult = await matchmakingApi.status();
-          if (statusResult.status === "matched" && isMounted) {
-            clearInterval(pollInterval);
-            goToGame(statusResult.game);
+          try {
+            const statusResult = await matchmakingApi.status();
+
+            if (statusResult.status === "matched" && isMounted) {
+              clearInterval(pollInterval);
+              goToGame(statusResult.game);
+            }
+          } catch (err) {
+            console.error(err);
           }
         }, 2000);
       } catch (err: any) {
-        if (isMounted) setError(err.message);
+        if (isMounted) {
+          setError(err?.message ?? "Failed to start matchmaking.");
+        }
       }
     };
 
-    startMatchmaking();
+    void startMatchmaking();
 
     return () => {
       isMounted = false;
-      if (pollInterval) clearInterval(pollInterval);
+
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
     };
   }, [router]);
+
+  const handleCancel = async () => {
+    try {
+      await matchmakingApi.leave();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      router.back();
+    }
+  };
+
+  return (
+    <MatchmakingScreen
+      onCancel={handleCancel}
+    />
+  );
 }

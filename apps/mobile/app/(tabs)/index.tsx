@@ -7,7 +7,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-import MatchmakingScreen from "../play/matchmaking";
+
 import { useRouter } from "expo-router";
 
 const colors = {
@@ -56,12 +56,7 @@ const RECENT_GAMES: GameHistory[] = [
 ];
 
 export default function LobbyScreen() {
-  const router = useRouter();
-  const [isSearching, setIsSearching] = useState(false);
-  // ...
-  if (isSearching) {
-    return <MatchmakingScreen />;
-  }
+  const router = useRouter();  
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -108,7 +103,6 @@ export default function LobbyScreen() {
 
         <Pressable
           style={styles.mainPlayButton}
-          onPress={() => setIsSearching(true)}
         >
           <View style={styles.playButtonTextContainer}>
             <Ionicons
