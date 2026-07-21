@@ -127,13 +127,6 @@ export default function MatchmakingScreen({
             </Pressable>
             <Text style={styles.topBarTitle}>Chuvinjab Chess</Text>
           </View>
-          <Pressable style={styles.circularIconButton}>
-            <Ionicons
-              name="settings-outline"
-              size={22}
-              color={colors.primary}
-            />
-          </Pressable>
         </View>
 
         <View style={styles.centerCanvas}>
@@ -252,7 +245,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     zIndex: 10,
   },
-  topBarLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
+  topBarLeft: { flexDirection: "row", alignItems: "center", gap: 80 },
   circularIconButton: {
     width: 40,
     height: 40,
