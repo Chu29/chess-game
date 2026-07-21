@@ -250,7 +250,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     const clientMockB = { id: 'socket-b', emit: jest.fn() };
 
     // 1. White offers a draw
-    await gateway.handleGameAction(clientMockW as Socket, {
+    await gateway.handleGameAction(clientMockW as unknown as Socket, {
       gameId,
       playerId: 'user-w',
       action: 'drawOffer',
@@ -261,7 +261,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     });
 
     // 2. Black declines the draw
-    await gateway.handleGameAction(clientMockB as Socket, {
+    await gateway.handleGameAction(clientMockB as unknown as Socket, {
       gameId,
       playerId: 'user-b',
       action: 'declineDraw',
@@ -272,7 +272,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     });
 
     // 3. Black offers a draw
-    await gateway.handleGameAction(clientMockB as Socket, {
+    await gateway.handleGameAction(clientMockB as unknown as Socket, {
       gameId,
       playerId: 'user-b',
       action: 'drawOffer',
@@ -283,7 +283,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     });
 
     // 4. White accepts the draw
-    await gateway.handleGameAction(clientMockW as Socket, {
+    await gateway.handleGameAction(clientMockW as unknown as Socket, {
       gameId,
       playerId: 'user-w',
       action: 'acceptDraw',
@@ -309,14 +309,14 @@ describe('GameGateway Gameplay & Move Validation', () => {
     const clientMockB = { id: 'socket-b', emit: jest.fn() };
 
     // White offers draw
-    await gateway.handleGameAction(clientMockW as Socket, {
+    await gateway.handleGameAction(clientMockW as unknown as Socket, {
       gameId,
       playerId: 'user-w',
       action: 'drawOffer',
     });
 
     // Black offers draw (which acts as accept because White already offered)
-    await gateway.handleGameAction(clientMockB as Socket, {
+    await gateway.handleGameAction(clientMockB as unknown as Socket, {
       gameId,
       playerId: 'user-b',
       action: 'drawOffer',
