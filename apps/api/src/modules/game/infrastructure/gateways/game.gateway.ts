@@ -68,7 +68,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(
       `👤 Player ${payload.userId} joined queue. Size: ${this.matchmakingQueue.length}`,
     );
-    client.emit('queueStatus', { status: 'waiting', message: 'Searching...' });
+
+    client.emit('queueStatus', {
+      status: 'waiting',
+      message: 'Searching...',
+    });
 
     this.tryToMatchPlayers();
   }
@@ -79,9 +83,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const player2 = this.matchmakingQueue.shift()!;
       const mockGameId = `game_${Date.now()}`;
 
-      // Store basic initial game state in memory
       this.activeGames.set(mockGameId, {
-        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', // starting chess FEN
+        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         white: player1.userId,
         black: player2.userId,
         turn: 'w',
@@ -89,14 +92,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       console.log(`⚔️ Match found: ${player1.userId} vs ${player2.userId}`);
 
-      // Tell player 1 to join room and play White
       this.server.to(player1.socketId).emit('matchFound', {
         gameId: mockGameId,
         color: 'w',
         opponentId: player2.userId,
       });
 
-      // Tell player 2 to join room and play Black
       this.server.to(player2.socketId).emit('matchFound', {
         gameId: mockGameId,
         color: 'b',
@@ -110,14 +111,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // ==========================================
 
   @SubscribeMessage('joinRoom')
-  handleJoinRoom(
+  async handleJoinRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: { gameId: string },
   ) {
     const roomName = `room_${payload.gameId}`;
-    client.join(roomName);
+
+    await client.join(roomName);
+
     console.log(`🚪 Client ${client.id} joined room: ${roomName}`);
-    return { status: 'joined' };
+
+    return {
+      status: 'joined',
+    };
   }
 
   @SubscribeMessage('makeMove')
@@ -140,22 +146,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    // Basic turn security checking:
     const expectedPlayer = game.turn === 'w' ? game.white : game.black;
+
     if (payload.playerId !== expectedPlayer) {
       client.emit('moveRejected', { message: 'Not your turn!' });
       return;
     }
 
-    // Update in-memory state
     game.fen = payload.nextFen;
     game.turn = game.turn === 'w' ? 'b' : 'w';
+
     this.activeGames.set(payload.gameId, game);
 
-    // Broadcast update to players inside this specific match room
     this.server.to(roomName).emit('moveMade', {
       fen: game.fen,
-      lastMove: { from: payload.from, to: payload.to },
+      lastMove: {
+        from: payload.from,
+        to: payload.to,
+      },
       nextTurn: game.turn,
     });
   }

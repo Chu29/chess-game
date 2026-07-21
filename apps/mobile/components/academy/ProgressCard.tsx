@@ -16,8 +16,7 @@ export function ProgressCard({ progress }: Props) {
 
   useEffect(() => {
     width.value = withTiming(progress, { duration: 600 });
-  }, [progress]);
-
+  }, [progress, width]);
   const animatedStyle = useAnimatedStyle(() => ({
     width: `${width.value}%`,
   }));

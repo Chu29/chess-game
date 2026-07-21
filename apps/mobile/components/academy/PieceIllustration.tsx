@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -31,7 +31,7 @@ export function PieceIllustration({
       withSpring(1, { damping: 12, stiffness: 120 }),
     );
     opacity.value = withDelay(delay, withSpring(1));
-  }, [delay]);
+  }, [delay, scale, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
