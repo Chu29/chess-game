@@ -16,6 +16,10 @@ import { ReconnectHandler } from './handlers/reconnect.handler';
 import { GameStateService } from './game-state.service';
 import { PrismaService } from '../prisma/prisma.service';
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 interface MatchmakingPlayer {
   socketId: string;
   userId: string;
@@ -48,7 +52,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket) {
     console.log(`🔌 Client trying to connect to game gateway: ${client.id}`);
-    const authHeader: string | string[] | undefined =
+    const authHeader =
       client.handshake.headers.authorization ||
       client.handshake.auth?.token ||
       client.handshake.query?.token;

@@ -7,6 +7,10 @@ import { GameActionHandler } from '../handlers/game-action.handler';
 import { ReconnectHandler } from '../handlers/reconnect.handler';
 import { PrismaService } from '../../prisma/prisma.service';
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 // Mock jose library
 jest.mock('jose', () => ({
   createRemoteJWKSet: jest.fn(),

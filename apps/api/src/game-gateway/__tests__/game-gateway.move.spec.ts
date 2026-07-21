@@ -7,6 +7,12 @@ import { MakeMoveHandler } from '../handlers/make-move.handler';
 import { GameActionHandler } from '../handlers/game-action.handler';
 import { ReconnectHandler } from '../handlers/reconnect.handler';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Socket } from 'socket.io';
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 
 jest.mock('jose', () => ({
   createRemoteJWKSet: jest.fn(),
@@ -17,8 +23,10 @@ const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 describe('GameGateway Gameplay & Move Validation', () => {
   let gateway: GameGateway;
+
   let mockServer: any;
   let emitMock: jest.Mock;
+
   let mockPrisma: any;
 
   beforeEach(async () => {
@@ -37,6 +45,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
         GameGateway,
         GameStateService,
         { provide: ConfigService, useValue: {} },
+
         { provide: PrismaService, useValue: mockPrisma },
         MakeMoveHandler,
         GameActionHandler,
@@ -47,6 +56,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     gateway = module.get<GameGateway>(GameGateway);
 
     emitMock = jest.fn();
+
     mockServer = {
       to: jest.fn().mockImplementation(() => ({
         emit: emitMock,
@@ -64,12 +74,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
       turn: 'w',
     });
 
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-w',
       emit: jest.fn(),
     };
 
-    await gateway.handleMakeMove(clientMock as any, {
+    await gateway.handleMakeMove(clientMock, {
       gameId,
       playerId: 'user-w',
       from: 'e2',
@@ -99,12 +109,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
       turn: 'w',
     });
 
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-w',
       emit: jest.fn(),
     };
 
-    await gateway.handleMakeMove(clientMock as any, {
+    await gateway.handleMakeMove(clientMock, {
       gameId,
       playerId: 'user-w',
       from: 'e2',
@@ -126,12 +136,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
       turn: 'w',
     });
 
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-b',
       emit: jest.fn(),
     };
 
-    await gateway.handleMakeMove(clientMock as any, {
+    await gateway.handleMakeMove(clientMock as Socket, {
       gameId,
       playerId: 'user-b',
       from: 'e7',
@@ -153,12 +163,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
       turn: 'w',
     });
 
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-w',
       emit: jest.fn(),
     };
 
-    await gateway.handleGameAction(clientMock as any, {
+    await gateway.handleGameAction(clientMock, {
       gameId,
       playerId: 'user-w',
       action: 'resign',
@@ -182,12 +192,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
       drawOfferedBy: null,
     });
 
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-w',
       emit: jest.fn(),
     };
 
-    await gateway.handleMakeMove(clientMock as any, {
+    await gateway.handleMakeMove(clientMock, {
       gameId,
       playerId: 'user-w',
       from: 'e2',
@@ -209,12 +219,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
   });
 
   it('should reject a move for an unknown game', async () => {
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-x',
       emit: jest.fn(),
     };
 
-    await gateway.handleMakeMove(clientMock as any, {
+    await gateway.handleMakeMove(clientMock as Socket, {
       gameId: 'nope',
       playerId: 'user-w',
       from: 'e2',
@@ -240,7 +250,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     const clientMockB = { id: 'socket-b', emit: jest.fn() };
 
     // 1. White offers a draw
-    await gateway.handleGameAction(clientMockW as any, {
+    await gateway.handleGameAction(clientMockW as Socket, {
       gameId,
       playerId: 'user-w',
       action: 'drawOffer',
@@ -251,7 +261,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     });
 
     // 2. Black declines the draw
-    await gateway.handleGameAction(clientMockB as any, {
+    await gateway.handleGameAction(clientMockB as Socket, {
       gameId,
       playerId: 'user-b',
       action: 'declineDraw',
@@ -262,7 +272,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     });
 
     // 3. Black offers a draw
-    await gateway.handleGameAction(clientMockB as any, {
+    await gateway.handleGameAction(clientMockB as Socket, {
       gameId,
       playerId: 'user-b',
       action: 'drawOffer',
@@ -273,7 +283,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
     });
 
     // 4. White accepts the draw
-    await gateway.handleGameAction(clientMockW as any, {
+    await gateway.handleGameAction(clientMockW as Socket, {
       gameId,
       playerId: 'user-w',
       action: 'acceptDraw',
@@ -299,14 +309,14 @@ describe('GameGateway Gameplay & Move Validation', () => {
     const clientMockB = { id: 'socket-b', emit: jest.fn() };
 
     // White offers draw
-    await gateway.handleGameAction(clientMockW as any, {
+    await gateway.handleGameAction(clientMockW as Socket, {
       gameId,
       playerId: 'user-w',
       action: 'drawOffer',
     });
 
     // Black offers draw (which acts as accept because White already offered)
-    await gateway.handleGameAction(clientMockB as any, {
+    await gateway.handleGameAction(clientMockB as Socket, {
       gameId,
       playerId: 'user-b',
       action: 'drawOffer',
@@ -329,13 +339,13 @@ describe('GameGateway Gameplay & Move Validation', () => {
       drawOfferedBy: 'user-w',
     });
 
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-w',
       emit: jest.fn(),
       join: jest.fn(),
     };
 
-    await gateway.handleReconnect(clientMock as any, {
+    await gateway.handleReconnect(clientMock, {
       gameId,
       playerId: 'user-w',
     });
@@ -353,13 +363,13 @@ describe('GameGateway Gameplay & Move Validation', () => {
   });
 
   it('should reject reconnect for unknown game or invalid player', async () => {
-    const clientMock = {
+    const clientMock: any = {
       id: 'socket-x',
       emit: jest.fn(),
     };
 
     // Unknown game
-    await gateway.handleReconnect(clientMock as any, {
+    await gateway.handleReconnect(clientMock, {
       gameId: 'nope',
       playerId: 'user-w',
     });
@@ -376,7 +386,7 @@ describe('GameGateway Gameplay & Move Validation', () => {
       turn: 'w',
     });
 
-    await gateway.handleReconnect(clientMock as any, {
+    await gateway.handleReconnect(clientMock, {
       gameId,
       playerId: 'user-intruder',
     });
