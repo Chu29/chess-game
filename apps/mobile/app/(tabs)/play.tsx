@@ -6,12 +6,51 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { colors } from "../../constants/theme";
 import ChessBoard from "../../components/game/ChessBoard";
+import { Chess } from "chess.js";
 
 export default function GameScreen() {
   const router = useRouter();
 
-  // FEN representing starting board state
-  const fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  const [fen, setFen] = React.useState(
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  );
+  const [lastMove, setLastMove] = React.useState<{
+    from: string;
+    to: string;
+  } | null>(null);
+
+  const handleMove = (from: string, to: string) => {
+    try {
+      const chess = new Chess(fen);
+      const move = chess.move({ from, to, promotion: "q" });
+      if (move) {
+        const nextFen = chess.fen();
+        setFen(nextFen);
+        setLastMove({ from, to });
+
+        // Simulate a response from Magnus_Bot
+        if (!chess.isGameOver()) {
+          setTimeout(() => {
+            const botChess = new Chess(nextFen);
+            const possibleMoves = botChess.moves({ verbose: true });
+            if (possibleMoves.length > 0) {
+              const randomMove =
+                possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+              botChess.move({
+                from: randomMove.from,
+                to: randomMove.to,
+                promotion: "q",
+              });
+              setFen(botChess.fen());
+              setLastMove({ from: randomMove.from, to: randomMove.to });
+            }
+          }, 800);
+        }
+      }
+    } catch (e) {
+      console.log("Move failed:", e);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,7 +103,12 @@ export default function GameScreen() {
 
         {/* Chessboard wrapper */}
         <View style={styles.boardWrapper}>
-          <ChessBoard fen={fen} playerColor="WHITE" />
+          <ChessBoard
+            fen={fen}
+            playerColor="WHITE"
+            lastMove={lastMove}
+            onMove={handleMove}
+          />
         </View>
 
         {/* Player Box */}
