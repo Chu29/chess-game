@@ -5,8 +5,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Pressable,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ChessBoard from "../../components/game/ChessBoard";
@@ -15,7 +15,14 @@ import { useAuth } from "../../context/AuthContext";
 import { colors } from "../../constants/theme";
 
 export default function GameScreen() {
-  const params = useLocalSearchParams<{ gameId: string }>();
+  const params = useLocalSearchParams<{
+    gameId: string;
+    fen?: string;
+    whitePlayerId?: string;
+    blackPlayerId?: string;
+    whiteUsername?: string;
+    blackUsername?: string;
+  }>();
   const router = useRouter();
   const { user } = useAuth();
 
@@ -29,7 +36,23 @@ export default function GameScreen() {
     acceptDraw,
     resign,
     clearError,
-  } = useGameSocket(params.gameId);
+  } = useGameSocket(params.gameId, {
+    fen: params.fen,
+    whitePlayerId: params.whitePlayerId,
+    blackPlayerId: params.blackPlayerId,
+    whiteUsername: params.whiteUsername,
+    blackUsername: params.blackUsername,
+  });
+
+  // Debug: log initial params
+  console.log("Game params:", {
+    gameId: params.gameId,
+    whiteUsername: params.whiteUsername,
+    blackUsername: params.blackUsername,
+  });
+
+  // Debug: log game state when it changes
+  console.log("Current game state:", gameState);
 
   if (!gameState) {
     return (
@@ -49,6 +72,9 @@ export default function GameScreen() {
   const opponentId = isWhite
     ? gameState.blackPlayerId
     : gameState.whitePlayerId;
+  const opponentUsername = isWhite
+    ? gameState.blackUsername || "Unknown"
+    : gameState.whiteUsername || "Unknown";
   const opponentColor = isWhite ? "BLACK" : "WHITE";
 
   return (
@@ -63,10 +89,11 @@ export default function GameScreen() {
           />
         </Pressable>
         <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle}>Live Match</Text>
+          <Text style={styles.headerTitle}>
+            {gameState.whiteUsername} vs {gameState.blackUsername}
+          </Text>
           <Text style={styles.gameIdText}>
-            ID: {gameState.whitePlayerId.slice(0, 4)} vs{" "}
-            {gameState.blackPlayerId.slice(0, 4)}
+            Game ID: {params.gameId.slice(0, 8)}
           </Text>
         </View>
         <View style={styles.connectionBadge}>
@@ -116,7 +143,7 @@ export default function GameScreen() {
               }
             />
             <View style={styles.playerNameContainer}>
-              <Text style={styles.playerName}>{user?.username}</Text>
+              <Text style={styles.playerName}>{opponentUsername}</Text>
               <Text style={styles.playerMeta}>
                 ID: {opponentId.slice(0, 8)}
               </Text>
@@ -258,7 +285,7 @@ export default function GameScreen() {
         ) : (
           <Pressable
             onPress={() => router.replace("/(tabs)")}
-            style={[styles.actionBtn, styles.primaryBtn]}
+            style={styles.lobbyBtn}
           >
             <Text style={styles.actionBtnText}>Back to Lobby</Text>
           </Pressable>
@@ -480,6 +507,13 @@ const styles = StyleSheet.create({
   primaryBtn: {
     backgroundColor: colors.green,
     flex: 1,
+  },
+  lobbyBtn: {
+    backgroundColor: colors.green,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    borderRadius: 8,
   },
   disabledBtn: {
     opacity: 0.5,

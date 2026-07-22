@@ -8,6 +8,8 @@ export interface GameState {
   fen: string;
   whitePlayerId: string;
   blackPlayerId: string;
+  whiteUsername: string;
+  blackUsername: string;
   currentTurn: "WHITE" | "BLACK";
   playerColor: "WHITE" | "BLACK" | null;
   lastMove: { from: string; to: string } | null;
@@ -17,12 +19,38 @@ export interface GameState {
   drawOfferedBy: string | null;
 }
 
-export function useGameSocket(gameId: string) {
+export function useGameSocket(
+  gameId: string,
+  initialState?: {
+    fen?: string;
+    whitePlayerId?: string;
+    blackPlayerId?: string;
+    whiteUsername?: string;
+    blackUsername?: string;
+  },
+) {
   const { user } = useAuth();
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [gameState, setGameState] = useState<GameState | null>(null);
+  const [gameState, setGameState] = useState<GameState | null>(
+    initialState
+      ? {
+          fen: initialState.fen || "",
+          whitePlayerId: initialState.whitePlayerId || "",
+          blackPlayerId: initialState.blackPlayerId || "",
+          whiteUsername: initialState.whiteUsername || "Unknown",
+          blackUsername: initialState.blackUsername || "Unknown",
+          currentTurn: "WHITE",
+          playerColor: null,
+          lastMove: null,
+          winnerId: null,
+          gameStatus: "ACTIVE",
+          endReason: null,
+          drawOfferedBy: null,
+        }
+      : null,
+  );
 
   // Setup the socket connection and register events
   useEffect(() => {
@@ -73,15 +101,21 @@ export function useGameSocket(gameId: string) {
             fen: string;
             white: string;
             black: string;
+            whiteUsername?: string;
+            blackUsername?: string;
             turn: "w" | "b";
             color: "w" | "b";
             drawOfferedBy: string | null;
           }) => {
             if (!isMounted) return;
-            setGameState({
+            setGameState((prev) => ({
               fen: data.fen,
               whitePlayerId: data.white,
               blackPlayerId: data.black,
+              whiteUsername:
+                data.whiteUsername || prev?.whiteUsername || "Unknown",
+              blackUsername:
+                data.blackUsername || prev?.blackUsername || "Unknown",
               currentTurn: data.turn === "w" ? "WHITE" : "BLACK",
               playerColor: data.color === "w" ? "WHITE" : "BLACK",
               lastMove: null,
@@ -89,7 +123,7 @@ export function useGameSocket(gameId: string) {
               gameStatus: "ACTIVE",
               endReason: null,
               drawOfferedBy: data.drawOfferedBy,
-            });
+            }));
           },
         );
 
@@ -198,6 +232,7 @@ export function useGameSocket(gameId: string) {
       socketRef.current.emit("makeMove", {
         gameId,
         playerId: user.id,
+        playerName: user.username,
         from,
         to,
         promotion,
@@ -212,6 +247,7 @@ export function useGameSocket(gameId: string) {
     socketRef.current.emit("gameAction", {
       gameId,
       playerId: user.id,
+      playerName: user.username,
       action: "drawOffer",
     });
   }, [gameId, isConnected, user]);
@@ -222,6 +258,7 @@ export function useGameSocket(gameId: string) {
     socketRef.current.emit("gameAction", {
       gameId,
       playerId: user.id,
+      playerName: user.username,
       action: "declineDraw",
     });
   }, [gameId, isConnected, user]);
@@ -232,6 +269,7 @@ export function useGameSocket(gameId: string) {
     socketRef.current.emit("gameAction", {
       gameId,
       playerId: user.id,
+      playerName: user.username,
       action: "acceptDraw",
     });
   }, [gameId, isConnected, user]);
@@ -242,6 +280,7 @@ export function useGameSocket(gameId: string) {
     socketRef.current.emit("gameAction", {
       gameId,
       playerId: user.id,
+      playerName: user.username,
       action: "resign",
     });
   }, [gameId, isConnected, user]);

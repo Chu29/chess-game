@@ -16,6 +16,8 @@ export default function MatchmakingRoute() {
       fen: string;
       whitePlayerId: string | null;
       blackPlayerId: string | null;
+      whiteUsername?: string;
+      blackUsername?: string;
     }) => {
       router.replace({
         pathname: "/game/[gameId]" as any,
@@ -24,6 +26,8 @@ export default function MatchmakingRoute() {
           fen: game.fen,
           whitePlayerId: game.whitePlayerId ?? "",
           blackPlayerId: game.blackPlayerId ?? "",
+          whiteUsername: game.whiteUsername ?? "Unknown",
+          blackUsername: game.blackUsername ?? "Unknown",
         },
       });
     };

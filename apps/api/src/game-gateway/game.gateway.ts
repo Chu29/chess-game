@@ -23,6 +23,7 @@ import { PrismaService } from '../prisma/prisma.service';
 interface MatchmakingPlayer {
   socketId: string;
   userId: string;
+  username: string;
 }
 
 @WebSocketGateway({
@@ -147,6 +148,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.matchmakingQueue.push({
       socketId: client.id,
       userId: payload.userId,
+      username: client.data?.user?.username || '',
     });
 
     console.log(
@@ -168,6 +170,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', // starting chess FEN
         white: player1.userId,
         black: player2.userId,
+        whiteUsername: player1.username,
+        blackUsername: player2.username,
         turn: 'w',
         drawOfferedBy: null,
       });
@@ -179,6 +183,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         gameId: mockGameId,
         color: 'w',
         opponentId: player2.userId,
+        opponentUsername: player2.username,
+        playerName: player1.username,
       });
 
       // Tell player 2 to join room and play Black
@@ -186,6 +192,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         gameId: mockGameId,
         color: 'b',
         opponentId: player1.userId,
+        opponentUsername: player1.username,
+        playerName: player2.username,
       });
     }
   }
@@ -417,9 +425,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.emit('gameStateUpdated', {
       gameId: payload.gameId,
+      userName: client.data?.user?.username || '',
       fen: result.fen,
       white: result.white,
       black: result.black,
+      whiteUsername: result.whiteUsername,
+      blackUsername: result.blackUsername,
       turn: result.turn,
       color: result.color,
       drawOfferedBy: result.drawOfferedBy,

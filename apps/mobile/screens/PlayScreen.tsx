@@ -26,7 +26,7 @@ export function PlayScreen() {
           description="Practice anytime against a computer opponent. No waiting, no pressure."
           ctaLabel="Start Game"
           accent
-          onPress={() => router.push("/game")}
+          onPress={() => router.push("/play/ai")}
         />
 
         <OptionCard
@@ -34,7 +34,7 @@ export function PlayScreen() {
           title="Play Online"
           description="Get matched with another player in real time and test your rating."
           ctaLabel="Find Match"
-          onPress={() => router.push("/matchmaking")}
+          onPress={() => router.push("/play/matchmaking")}
         />
       </View>
     </SafeAreaView>
