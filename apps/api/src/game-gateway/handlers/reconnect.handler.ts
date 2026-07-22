@@ -20,6 +20,8 @@ export class ReconnectHandler {
       fen: game.fen,
       white: game.white,
       black: game.black,
+      whiteUsername: game.whiteUsername,
+      blackUsername: game.blackUsername,
       turn: game.turn,
       color: playerColor,
       drawOfferedBy: game.drawOfferedBy || null,

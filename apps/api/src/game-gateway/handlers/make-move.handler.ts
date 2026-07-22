@@ -5,6 +5,8 @@ export interface ActiveGame {
   fen: string;
   white: string;
   black: string;
+  whiteUsername: string;
+  blackUsername: string;
   turn: 'w' | 'b';
   drawOfferedBy?: string | null;
 }

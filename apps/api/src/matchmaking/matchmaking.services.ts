@@ -56,12 +56,33 @@ export class MatchmakingService {
             timeControl: timeControl ?? null,
             currentTurn: PlayerColor.WHITE,
           },
+          include: {
+            whitePlayer: { select: { username: true } },
+            blackPlayer: { select: { username: true } },
+          },
         });
         await tx.matchmakingQueue.delete({ where: { id: opponent.id } });
         return created;
       });
 
-      return { status: 'matched' as const, game };
+      console.log('Game created with players:', {
+        whitePlayer: game.whitePlayer,
+        blackPlayer: game.blackPlayer,
+      });
+
+      // Flatten the game object to include usernames at the top level
+      const flattenedGame = {
+        ...game,
+        whiteUsername: game.whitePlayer?.username || 'Unknown',
+        blackUsername: game.blackPlayer?.username || 'Unknown',
+      };
+
+      console.log('Flattened game:', {
+        whiteUsername: flattenedGame.whiteUsername,
+        blackUsername: flattenedGame.blackUsername,
+      });
+
+      return { status: 'matched' as const, game: flattenedGame };
     }
 
     const queueEntry = await this.prisma.matchmakingQueue.create({
@@ -104,10 +125,20 @@ export class MatchmakingService {
         OR: [{ whitePlayerId: userId }, { blackPlayerId: userId }],
       },
       orderBy: { startedAt: 'desc' },
+      include: {
+        whitePlayer: { select: { username: true } },
+        blackPlayer: { select: { username: true } },
+      },
     });
 
     if (activeGame) {
-      return { status: 'matched' as const, game: activeGame };
+      // Flatten the game object to include usernames at the top level
+      const flattenedGame = {
+        ...activeGame,
+        whiteUsername: activeGame.whitePlayer?.username || 'Unknown',
+        blackUsername: activeGame.blackPlayer?.username || 'Unknown',
+      };
+      return { status: 'matched' as const, game: flattenedGame };
     }
 
     return { status: 'idle' as const };
@@ -115,10 +146,20 @@ export class MatchmakingService {
 
   // Used by the game screen to fetch full game state by id
   async getGameById(gameId: string) {
-    const game = await this.prisma.game.findUnique({ where: { id: gameId } });
+    const game = await this.prisma.game.findUnique({
+      where: { id: gameId },
+      include: {
+        whitePlayer: { select: { username: true } },
+        blackPlayer: { select: { username: true } },
+      },
+    });
     if (!game) {
       throw new NotFoundException('Game not found');
     }
-    return game;
+    return {
+      ...game,
+      whiteUsername: game.whitePlayer?.username || 'Unknown',
+      blackUsername: game.blackPlayer?.username || 'Unknown',
+    };
   }
 }

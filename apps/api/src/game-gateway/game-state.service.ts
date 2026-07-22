@@ -52,10 +52,16 @@ export class GameStateService {
       blackPlayerId: string | null;
       status: GameStatus;
       drawOfferedBy: PlayerColor | null;
+      whitePlayer?: { username: string } | null;
+      blackPlayer?: { username: string } | null;
     } | null;
     try {
       row = await this.prisma.game.findUnique({
         where: { id: gameId },
+        include: {
+          whitePlayer: { select: { username: true } },
+          blackPlayer: { select: { username: true } },
+        },
       });
     } catch (err) {
       this.logger.error(`Failed to load game ${gameId}`, err as Error);
@@ -67,6 +73,8 @@ export class GameStateService {
       fen: row.fen,
       white: row.whitePlayerId ?? '',
       black: row.blackPlayerId ?? '',
+      whiteUsername: row.whitePlayer?.username ?? 'Unknown',
+      blackUsername: row.blackPlayer?.username ?? 'Unknown',
       turn: row.fen.split(' ')[1] === 'b' ? 'b' : 'w',
       drawOfferedBy:
         row.drawOfferedBy === PlayerColor.WHITE

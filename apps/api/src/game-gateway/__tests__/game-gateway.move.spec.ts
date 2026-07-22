@@ -71,6 +71,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
     });
 
@@ -106,6 +108,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
     });
 
@@ -133,6 +137,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
     });
 
@@ -160,6 +166,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
     });
 
@@ -190,6 +198,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       whitePlayerId: 'user-w',
       blackPlayerId: 'user-b',
       drawOfferedBy: null,
+      whitePlayer: { username: 'white-user' },
+      blackPlayer: { username: 'black-user' },
     });
 
     const clientMock: any = {
@@ -206,6 +216,10 @@ describe('GameGateway Gameplay & Move Validation', () => {
 
     expect(mockPrisma.game.findUnique).toHaveBeenCalledWith({
       where: { id: gameId },
+      include: {
+        whitePlayer: { select: { username: true } },
+        blackPlayer: { select: { username: true } },
+      },
     });
     expect(emitMock).toHaveBeenCalledWith(
       'moveMade',
@@ -242,6 +256,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
       drawOfferedBy: null,
     });
@@ -301,6 +317,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
       drawOfferedBy: null,
     });
@@ -335,6 +353,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'user-w-username',
+      blackUsername: 'user-b-username',
       turn: 'w',
       drawOfferedBy: 'user-w',
     });
@@ -353,9 +373,12 @@ describe('GameGateway Gameplay & Move Validation', () => {
     expect(clientMock.join).toHaveBeenCalledWith('room_test-game-reconnect');
     expect(clientMock.emit).toHaveBeenCalledWith('gameStateUpdated', {
       gameId,
+      userName: '',
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'user-w-username',
+      blackUsername: 'user-b-username',
       turn: 'w',
       color: 'w',
       drawOfferedBy: 'user-w',
@@ -383,6 +406,8 @@ describe('GameGateway Gameplay & Move Validation', () => {
       fen: START_FEN,
       white: 'user-w',
       black: 'user-b',
+      whiteUsername: 'white-user',
+      blackUsername: 'black-user',
       turn: 'w',
     });
 
