@@ -5,7 +5,7 @@ import { matchmakingApi } from "../../lib/matchmakingApi";
 
 export default function MatchmakingRoute() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -18,7 +18,7 @@ export default function MatchmakingRoute() {
       blackPlayerId: string | null;
     }) => {
       router.replace({
-        pathname: "/game/[gameId]",
+        pathname: "/game/[gameId]" as any,
         params: {
           gameId: game.id,
           fen: game.fen,
