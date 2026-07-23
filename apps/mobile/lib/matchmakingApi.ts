@@ -6,6 +6,8 @@ export type Game = {
   status: "WAITING" | "ACTIVE" | "FINISHED";
   whitePlayerId: string | null;
   blackPlayerId: string | null;
+  whiteUsername?: string;
+  blackUsername?: string;
   currentTurn: "WHITE" | "BLACK";
   fen: string;
 };

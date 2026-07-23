@@ -66,9 +66,6 @@ export default function LobbyScreen() {
         <View style={styles.header}>
           <View style={styles.headerSpacer} />
           <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
-          <Pressable style={styles.headerIcon}>
-            <Ionicons name="settings" size={22} color={colors.green} />
-          </Pressable>
         </View>
 
         <View style={styles.statsCardFull}>
@@ -129,6 +126,7 @@ export default function LobbyScreen() {
 
         <View style={styles.rowGrid}>
           <Pressable
+            onPress={() => router.push("/play/ai")}
             style={[
               styles.actionCard,
               { borderColor: "#1A4F80", borderWidth: 1, marginRight: 8 },
@@ -199,9 +197,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { paddingHorizontal: 20, paddingBottom: 40 },
   header: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingVertical: 12,
     position: "relative",
     top: 0,
