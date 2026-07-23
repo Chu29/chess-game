@@ -1,7 +1,7 @@
 export type MockOpponentProfile = {
   username: string;
   rating: number;
-  icon: string; 
+  icon: string;
 };
 
 export const MOCK_OPPONENT_PROFILES: MockOpponentProfile[] = [

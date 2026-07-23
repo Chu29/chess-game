@@ -47,7 +47,7 @@ export default function MatchmakingScreen({
   const orbitRotation = useSharedValue(0);
 
   const [onlineCount, setOnlineCount] = useState(
-    Math.floor(3200 + Math.random() * 2000)
+    Math.floor(3200 + Math.random() * 2000),
   );
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function MatchmakingScreen({
     pulse1.value = withRepeat(
       withTiming(1, { duration: 3000, easing: Easing.linear }),
       -1,
-      false
+      false,
     );
 
     pulse2.value = withSequence(
@@ -90,23 +90,23 @@ export default function MatchmakingScreen({
       withRepeat(
         withTiming(1, { duration: 3000, easing: Easing.linear }),
         -1,
-        false
-      )
+        false,
+      ),
     );
 
     anchorScale.value = withRepeat(
       withSequence(
         withTiming(1.05, { duration: 1000, easing: Easing.ease }),
-        withTiming(0.95, { duration: 1000, easing: Easing.ease })
+        withTiming(0.95, { duration: 1000, easing: Easing.ease }),
       ),
       -1,
-      true
+      true,
     );
 
     orbitRotation.value = withRepeat(
       withTiming(360, { duration: 4000, easing: Easing.linear }),
       -1,
-      false
+      false,
     );
   }, [anchorScale, orbitRotation, pulse1, pulse2]);
 
