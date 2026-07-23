@@ -6,23 +6,23 @@ export type MockOpponentProfile = {
 
 export const MOCK_OPPONENT_PROFILES: MockOpponentProfile[] = [
   {
-    username: "Magnus_2024",
+    username: "Andress_67",
     rating: 1340,
     avatarUrl: "https://api.dicebear.com/9.x/adventurer/png?seed=Magnus2024",
   },
   {
-    username: "QueenGambit_9",
+    username: "chu_172",
     rating: 1275,
     avatarUrl: "https://api.dicebear.com/9.x/adventurer/png?seed=QueenGambit9",
   },
   {
-    username: "RookieRookMaster",
+    username: "Jaff_RookMaster",
     rating: 1198,
     avatarUrl:
       "https://api.dicebear.com/9.x/adventurer/png?seed=RookieRookMaster",
   },
   {
-    username: "SicilianDefense",
+    username: "Salah_V_Defense",
     rating: 1412,
     avatarUrl:
       "https://api.dicebear.com/9.x/adventurer/png?seed=SicilianDefense",
