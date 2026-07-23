@@ -47,14 +47,14 @@ export default function MatchmakingScreen({
   const orbitRotation = useSharedValue(0);
 
   const [onlineCount, setOnlineCount] = useState(
-    Math.floor(3200 + Math.random() * 2000),
+    Math.floor(100 + Math.random() * 100),
   );
 
   useEffect(() => {
     const jitterInterval = setInterval(() => {
       setOnlineCount((prev) => {
         const drift = Math.floor(Math.random() * 40) - 20; // ±20 wiggle
-        return Math.max(3000, prev + drift);
+        return Math.max(100, prev + drift);
       });
     }, 2500);
     return () => clearInterval(jitterInterval);
@@ -384,7 +384,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceContainerLow,
     padding: 16,
     borderRadius: 16,
-    borderLeftWidth: 4,
     width: "100%",
     maxWidth: 360,
     alignItems: "flex-start",
@@ -414,8 +413,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    borderBottomWidth: 3,
-    borderBottomColor: "rgba(0,0,0,0.3)",
   },
   tactileCancelButtonPressed: {
     transform: [{ translateY: 2 }],
