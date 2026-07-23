@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Dimensions,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Animated, {
@@ -38,7 +45,7 @@ export default function MatchmakingScreen({
   ratingRange,
   timeControlLabel = "Blitz • 3 | 2",
 }: MatchmakingScreenProps) {
-  const [seconds, setSeconds] = useState(12);
+  const [seconds, setSeconds] = useState(0);
   const [scanIndex, setScanIndex] = useState(0);
 
   const pulse1 = useSharedValue(0);
@@ -53,7 +60,7 @@ export default function MatchmakingScreen({
   useEffect(() => {
     const jitterInterval = setInterval(() => {
       setOnlineCount((prev) => {
-        const drift = Math.floor(Math.random() * 40) - 20; // ±20 wiggle
+        const drift = Math.floor(Math.random() * 40) - 20;
         return Math.max(100, prev + drift);
       });
     }, 2500);
@@ -157,23 +164,16 @@ export default function MatchmakingScreen({
             <Animated.View style={[styles.radarRing, animatedRing2Style]} />
 
             <Animated.View style={[styles.centralAnchor, animatedAnchorStyle]}>
-              <MaterialCommunityIcons
-                name="chess-king"
-                size={54}
-                color={colors.primary}
+              <Image
+                source={{ uri: scanningProfile.avatarUrl }}
+                style={styles.orbitAvatarImage}
               />
             </Animated.View>
 
             <Animated.View
               style={[StyleSheet.absoluteFill, animatedOrbitStyle]}
             >
-              <View style={styles.orbitAvatar}>
-                <MaterialCommunityIcons
-                  name={scanningProfile.icon as any}
-                  size={15}
-                  color={colors.primary}
-                />
-              </View>
+              <View style={styles.orbitAvatar}></View>
             </Animated.View>
           </View>
         </View>
@@ -182,16 +182,14 @@ export default function MatchmakingScreen({
           <Text style={styles.statusHeading}>Finding your opponent...</Text>
 
           <View style={styles.scanCard}>
-            <MaterialCommunityIcons
-              name={scanningProfile.icon as any}
-              size={16}
-              color={colors.primary}
+            <Image
+              source={{ uri: scanningProfile.avatarUrl }}
+              style={styles.scanAvatarImage}
             />
             <Text style={styles.scanName}>{scanningProfile.username}</Text>
             <Text style={styles.scanDot}>·</Text>
             <Text style={styles.scanRating}>{scanningProfile.rating}</Text>
           </View>
-
           <View style={styles.badgeRow}>
             <View style={styles.metaBadge}>
               <Text style={styles.metaBadgeText}>{timeControlLabel}</Text>
@@ -311,11 +309,16 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: colors.surface,
-    borderWidth: 1.5,
-    borderColor: colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
+  },
+  orbitAvatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: "50%",
+  },
+  scanAvatarImage: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   statusBlock: { paddingHorizontal: 24, alignItems: "center" },
   statusHeading: {
