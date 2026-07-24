@@ -126,7 +126,7 @@ export default function LobbyScreen() {
 
         <View style={styles.rowGrid}>
           <Pressable
-            onPress={() => router.push("/play/ai")}
+            onPress={() => router.push("/play/ai-setup")}
             style={[
               styles.actionCard,
               { borderColor: "#1A4F80", borderWidth: 1, marginRight: 8 },
