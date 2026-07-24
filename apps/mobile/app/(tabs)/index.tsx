@@ -125,8 +125,11 @@ export default function LobbyScreen() {
 
         <View style={styles.rowGrid}>
           <Pressable
-            onPress={() => router.push("/play/ai")}
-            style={[styles.actionCard, { borderColor: "#1A4F80", borderWidth: 1, marginRight: 8 }]}
+            onPress={() => router.push("/play/ai-setup")}
+            style={[
+              styles.actionCard,
+              { borderColor: "#1A4F80", borderWidth: 1, marginRight: 8 },
+            ]}
           >
             <MaterialCommunityIcons name="robot" size={24} color="#5B9BD5" />
             <Text style={styles.actionCardTitle}>Versus AI</Text>
