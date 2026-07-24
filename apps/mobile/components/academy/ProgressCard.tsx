@@ -5,29 +5,40 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   progress: number; // 0-100
 }
 
 export function ProgressCard({ progress }: Props) {
+  const { colors } = useTheme();
   const width = useSharedValue(0);
 
   useEffect(() => {
     width.value = withTiming(progress, { duration: 600 });
   }, [progress, width]);
+
   const animatedStyle = useAnimatedStyle(() => ({
     width: `${width.value}%`,
   }));
 
   return (
     <View
-      style={styles.track}
+      style={[
+        styles.track,
+        { backgroundColor: colors.cardBorder },
+      ]}
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: 100, now: progress }}
     >
-      <Animated.View style={[styles.fill, animatedStyle]} />
+      <Animated.View
+        style={[
+          styles.fill,
+          animatedStyle,
+          { backgroundColor: colors.green },
+        ]}
+      />
     </View>
   );
 }
@@ -38,11 +49,9 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 999,
     overflow: "hidden",
-    backgroundColor: colors.border,
   },
   fill: {
     height: "100%",
-    backgroundColor: colors.accent,
     borderRadius: 999,
   },
 });

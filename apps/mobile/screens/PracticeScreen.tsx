@@ -8,13 +8,14 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { colors } from "../constants/colors";
+import { useTheme } from "../context/ThemeContext";
 import { practiceChallenges } from "../data/practiceChallenges";
 import { ChallengeCard } from "../components/academy";
 import { PracticeChallenge } from "../types/academy";
 
 export function PracticeScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
 
   const handlePress = (challenge: PracticeChallenge) => {
     // Placeholder — wire up to the actual practice/puzzle engine later.
@@ -22,7 +23,7 @@ export function PracticeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <View style={styles.backRow}>
         <Pressable
           onPress={() => router.back()}
@@ -31,7 +32,7 @@ export function PracticeScreen() {
           hitSlop={12}
           style={styles.backButton}
         >
-          <Text style={styles.backIcon}>‹</Text>
+          <Text style={[styles.backIcon, { color: colors.textPrimary }]}>‹</Text>
         </Pressable>
       </View>
 
@@ -39,8 +40,10 @@ export function PracticeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <Text style={styles.title}>Practice Challenges</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          Practice Challenges
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
           Sharpen your skills with hands-on puzzles.
         </Text>
 
@@ -58,7 +61,7 @@ export function PracticeScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
+  safe: { flex: 1 },
   backRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -66,13 +69,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   backButton: { minWidth: 44, minHeight: 44, justifyContent: "center" },
-  backIcon: { color: colors.textPrimary, fontSize: 22 },
+  backIcon: { fontSize: 22 },
   scrollContent: { paddingHorizontal: 16, paddingBottom: 48 },
   title: {
-    color: colors.textPrimary,
     fontSize: 30,
     fontWeight: "800",
     marginBottom: 4,
   },
-  subtitle: { fontSize: 14, marginBottom: 24, color: colors.textSecondary },
+  subtitle: { fontSize: 14, marginBottom: 24 },
 });

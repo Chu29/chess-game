@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   title: string;
@@ -9,16 +9,30 @@ interface Props {
 }
 
 export function TipCard({ title, items, icon = "💡" }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.card}>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.cardBorder,
+        },
+      ]}
+    >
       <View style={styles.header}>
         <Text style={styles.icon}>{icon}</Text>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          {title}
+        </Text>
       </View>
       {items.map((item, i) => (
         <View key={i} style={styles.itemRow}>
-          <View style={styles.dot} />
-          <Text style={styles.itemText}>{item}</Text>
+          <View style={[styles.dot, { backgroundColor: colors.green }]} />
+          <Text style={[styles.itemText, { color: colors.textSecondary }]}>
+            {item}
+          </Text>
         </View>
       ))}
     </View>
@@ -30,9 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
   },
   header: {
     flexDirection: "row",
@@ -44,7 +56,6 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   title: {
-    color: colors.textPrimary,
     fontWeight: "700",
     fontSize: 13,
   },
@@ -60,11 +71,9 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginTop: 6,
     marginRight: 8,
-    backgroundColor: colors.accent,
   },
   itemText: {
     flex: 1,
     fontSize: 12,
-    color: colors.textSecondary,
   },
 });

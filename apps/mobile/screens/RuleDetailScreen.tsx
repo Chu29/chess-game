@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { colors } from "../constants/colors";
+import { useTheme } from "../context/ThemeContext";
 import { getRuleById } from "../data/rules";
 import {
   DifficultyBadge,
@@ -20,18 +20,21 @@ import {
 export function RuleDetailScreen() {
   const { ruleId } = useLocalSearchParams<{ ruleId: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
   const rule = getRuleById(ruleId);
 
   if (!rule) {
     return (
-      <SafeAreaView style={[styles.safe, styles.center]}>
+      <SafeAreaView
+        style={[styles.safe, styles.center, { backgroundColor: colors.background }]}
+      >
         <Text style={{ color: colors.textSecondary }}>Rule not found.</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <View style={styles.backRow}>
         <Pressable
           onPress={() => router.back()}
@@ -40,7 +43,7 @@ export function RuleDetailScreen() {
           hitSlop={12}
           style={styles.backButton}
         >
-          <Text style={styles.backIcon}>‹</Text>
+          <Text style={[styles.backIcon, { color: colors.textPrimary }]}>‹</Text>
         </Pressable>
       </View>
 
@@ -49,17 +52,27 @@ export function RuleDetailScreen() {
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.hero}>
-          <View style={styles.iconCircle}>
+          <View
+            style={[
+              styles.iconCircle,
+              { backgroundColor: colors.green + "1A" }, // 10% green accent tint
+            ]}
+          >
             <Text style={styles.icon}>{rule.icon}</Text>
           </View>
-          <Text style={styles.title}>{rule.title}</Text>
+          <Text style={[styles.title, { color: colors.textPrimary }]}>
+            {rule.title}
+          </Text>
           <View style={styles.badgeRow}>
             <DifficultyBadge difficulty={rule.difficulty} />
           </View>
         </View>
 
         {rule.content.map((paragraph, i) => (
-          <Text key={i} style={styles.paragraph}>
+          <Text
+            key={i}
+            style={[styles.paragraph, { color: colors.textSecondary }]}
+          >
             {paragraph}
           </Text>
         ))}
@@ -82,7 +95,7 @@ export function RuleDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
+  safe: { flex: 1 },
   center: { alignItems: "center", justifyContent: "center" },
   backRow: {
     flexDirection: "row",
@@ -91,7 +104,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   backButton: { minWidth: 44, minHeight: 44, justifyContent: "center" },
-  backIcon: { color: colors.textPrimary, fontSize: 22 },
+  backIcon: { fontSize: 22 },
   scrollContent: { paddingHorizontal: 16, paddingBottom: 48 },
   hero: { alignItems: "center", marginBottom: 20 },
   iconCircle: {
@@ -101,16 +114,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-    backgroundColor: colors.accentMuted,
   },
   icon: { fontSize: 36 },
-  title: { color: colors.textPrimary, fontSize: 24, fontWeight: "800" },
+  title: { fontSize: 24, fontWeight: "800" },
   badgeRow: { marginTop: 12 },
   paragraph: {
     fontSize: 14,
     lineHeight: 21,
     marginBottom: 12,
-    color: colors.textSecondary,
   },
   tipsWrap: { marginTop: 8 },
 });
