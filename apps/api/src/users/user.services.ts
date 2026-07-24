@@ -76,7 +76,8 @@ export class UsersService {
       return {
         id: game.id,
         opponent:
-          opponent?.username ?? (game.mode === 'AI' ? 'Chess Engine' : 'Unknown'),
+          opponent?.username ??
+          (game.mode === 'AI' ? 'Chess Engine' : 'Unknown'),
         mode: game.mode,
         result: outcome,
         endedAt: game.endedAt,
@@ -86,7 +87,9 @@ export class UsersService {
 
   async getRanking(keycloakId: string) {
     const userId = await this.resolveUserId(keycloakId);
-    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
 
     const higherRatedCount = await this.prisma.user.count({
       where: { rating: { gt: user.rating } },
