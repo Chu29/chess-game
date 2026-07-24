@@ -1,6 +1,8 @@
+// components/academy/AcademySection.tsx
+
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   title: string;
@@ -10,12 +12,20 @@ interface Props {
 }
 
 export function AcademySection({ title, subtitle, onSeeAll, children }: Props) {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.section}>
       <View style={styles.header}>
         <View style={styles.titleWrap}>
-          <Text style={styles.title}>{title}</Text>
-          {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+          <Text style={[styles.title, { color: colors.textPrimary }]}>
+            {title}
+          </Text>
+          {subtitle && (
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+              {subtitle}
+            </Text>
+          )}
         </View>
         {onSeeAll && (
           <Pressable
@@ -25,7 +35,9 @@ export function AcademySection({ title, subtitle, onSeeAll, children }: Props) {
             hitSlop={8}
             style={styles.seeAll}
           >
-            <Text style={styles.seeAllText}>See all</Text>
+            <Text style={[styles.seeAllText, { color: colors.green }]}>
+              See all
+            </Text>
           </Pressable>
         )}
       </View>
@@ -50,12 +62,10 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   title: {
-    color: colors.textPrimary,
     fontSize: 20,
     fontWeight: "700",
   },
   subtitle: {
-    color: colors.textSecondary,
     fontSize: 12,
     marginTop: 2,
   },
@@ -66,7 +76,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   seeAllText: {
-    color: colors.accent,
     fontSize: 12,
     fontWeight: "600",
   },

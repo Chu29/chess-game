@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Stack, useRouter, useSegments } from "expo-router";
 import SplashScreen from "../components/SplashScreen";
 import { AuthProvider, useAuth } from "../context/AuthContext";
+import { ThemeProvider } from "../context/ThemeContext"
 
 const MIN_SPLASH_MS = 2000;
 
@@ -33,7 +34,7 @@ function RootNavigator() {
     return <SplashScreen />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <ThemeProvider><Stack screenOptions={{ headerShown: false }} /></ThemeProvider>;
 }
 
 export default function RootLayout() {
