@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -6,25 +6,16 @@ import {
   FontAwesome6,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-
 import { useRouter } from "expo-router";
+import { useTheme } from "../../context/ThemeContext";
 
-const colors = {
-  background: "#121210",
-  surface: "#1E1E1C",
-  surfaceLight: "#2A2A28",
-  green: "#7BC657",
-  greenDark: "#24381D",
-  textPrimary: "#FFFFFF",
-  textSecondary: "#8A8A85",
-};
 interface GameHistory {
   id: string;
   opponent: string;
   details: string;
   outcome: "WIN" | "LOSS" | "DRAW";
   eloChange: string;
-  outcomeColor: string;
+  getOutcomeColor: (colors: any) => string;
 }
 
 const RECENT_GAMES: GameHistory[] = [
@@ -34,7 +25,7 @@ const RECENT_GAMES: GameHistory[] = [
     details: "2h ago • Blitz",
     outcome: "WIN",
     eloChange: "+12 ELO",
-    outcomeColor: colors.green,
+    getOutcomeColor: (colors) => colors.green,
   },
   {
     id: "2",
@@ -42,7 +33,7 @@ const RECENT_GAMES: GameHistory[] = [
     details: "Yesterday • Rapid",
     outcome: "LOSS",
     eloChange: "-8 ELO",
-    outcomeColor: "#D9534F",
+    getOutcomeColor: () => "#D9534F",
   },
   {
     id: "3",
@@ -50,76 +41,104 @@ const RECENT_GAMES: GameHistory[] = [
     details: "3 days ago • AI",
     outcome: "DRAW",
     eloChange: "0 ELO",
-    outcomeColor: colors.textSecondary,
+    getOutcomeColor: (colors) => colors.textSecondary,
   },
 ];
 
 export default function LobbyScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
         stickyHeaderIndices={[0]}
       >
-        <View style={styles.header}>
+        <View style={[styles.header, { backgroundColor: colors.background }]}>
           <View style={styles.headerSpacer} />
-          <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
+          <Text style={[styles.headerTitle, { color: colors.green }]}>
+            Chuvinjab Chess
+          </Text>
         </View>
 
-        <View style={styles.statsCardFull}>
+        <View style={[styles.statsCardFull, { backgroundColor: colors.card }]}>
           <View>
-            <Text style={styles.statsLabel}>CURRENT RANKING</Text>
+            <Text style={[styles.statsLabel, { color: colors.textSecondary }]}>
+              CURRENT RANKING
+            </Text>
             <Text style={[styles.statsValueLarge, { color: colors.green }]}>
               #1,204
             </Text>
           </View>
           <View
-            style={[styles.inlineIconCircle, { backgroundColor: "#252B22" }]}
+            style={[
+              styles.inlineIconCircle,
+              { backgroundColor: colors.cardBorder },
+            ]}
           >
             <Ionicons name="bar-chart" size={22} color={colors.green} />
           </View>
         </View>
 
         <View style={styles.rowGrid}>
-          <View style={[styles.statsCardHalf, { marginRight: 8 }]}>
-            <Text style={styles.statsLabel}>WIN RATE</Text>
+          <View
+            style={[
+              styles.statsCardHalf,
+              { backgroundColor: colors.card, marginRight: 8 },
+            ]}
+          >
+            <Text style={[styles.statsLabel, { color: colors.textSecondary }]}>
+              WIN RATE
+            </Text>
             <Text style={[styles.statsValueMedium, { color: colors.green }]}>
               64% ↗
             </Text>
           </View>
-          <View style={[styles.statsCardHalf, { marginLeft: 8 }]}>
-            <Text style={styles.statsLabel}>GAMES</Text>
-            <Text style={styles.statsValueMedium}>342</Text>
+          <View
+            style={[
+              styles.statsCardHalf,
+              { backgroundColor: colors.card, marginLeft: 8 },
+            ]}
+          >
+            <Text style={[styles.statsLabel, { color: colors.textSecondary }]}>
+              GAMES
+            </Text>
+            <Text
+              style={[styles.statsValueMedium, { color: colors.textPrimary }]}
+            >
+              342
+            </Text>
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Quick Start</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+          Quick Start
+        </Text>
 
-        <Pressable style={styles.mainPlayButton}>
+        <Pressable
+          style={[styles.mainPlayButton, { backgroundColor: colors.green }]}
+          onPress={() => router.push("/play/matchmaking")}
+        >
           <View style={styles.playButtonTextContainer}>
             <Ionicons
               name="flash"
               size={28}
-              color={colors.greenDark}
+              color="#1B3310"
               style={{ marginBottom: 12 }}
             />
-
-            <Pressable
-              style={styles.mainPlayButton}
-              onPress={() => router.push("/play/matchmaking")}
-            >
-              <Text style={styles.playButtonTitle}>Play Online</Text>
-              <Text style={styles.playButtonSubtitle}>
-                Find a match in seconds
-              </Text>
-            </Pressable>
+            <Text style={styles.playButtonTitle}>Play Online</Text>
+            <Text style={styles.playButtonSubtitle}>
+              Find a match in seconds
+            </Text>
           </View>
           <FontAwesome6
             name="earth-americas"
             size={120}
-            color="rgba(0,0,0,0.04)"
+            color="rgba(0,0,0,0.06)"
             style={styles.bgWatermark}
           />
         </Pressable>
@@ -129,64 +148,128 @@ export default function LobbyScreen() {
             onPress={() => router.push("/play/ai")}
             style={[
               styles.actionCard,
-              { borderColor: "#1A4F80", borderWidth: 1, marginRight: 8 },
+              {
+                backgroundColor: colors.card,
+                borderColor: "#1A4F80",
+                borderWidth: 1,
+                marginRight: 8,
+              },
             ]}
           >
             <MaterialCommunityIcons name="robot" size={24} color="#5B9BD5" />
-            <Text style={styles.actionCardTitle}>Versus AI</Text>
-            <Text style={styles.actionCardSubtitle}>Practice skills</Text>
+            <Text
+              style={[styles.actionCardTitle, { color: colors.textPrimary }]}
+            >
+              Versus AI
+            </Text>
+            <Text
+              style={[
+                styles.actionCardSubtitle,
+                { color: colors.textSecondary },
+              ]}
+            >
+              Practice skills
+            </Text>
           </Pressable>
 
           <Pressable
             onPress={() => router.push("/(tabs)/learn")}
             style={[
               styles.actionCard,
-              { borderColor: "#7A5B2B", borderWidth: 1, marginLeft: 8 },
+              {
+                backgroundColor: colors.card,
+                borderColor: "#7A5B2B",
+                borderWidth: 1,
+                marginLeft: 8,
+              },
             ]}
           >
             <FontAwesome6 name="graduation-cap" size={22} color="#DDAA55" />
-            <Text style={styles.actionCardTitle}>Learn</Text>
-            <Text style={styles.actionCardSubtitle}>Daily puzzles</Text>
+            <Text
+              style={[styles.actionCardTitle, { color: colors.textPrimary }]}
+            >
+              Learn
+            </Text>
+            <Text
+              style={[
+                styles.actionCardSubtitle,
+                { color: colors.textSecondary },
+              ]}
+            >
+              Daily puzzles
+            </Text>
           </Pressable>
         </View>
 
         <View style={styles.sectionHeaderRow}>
-          <Text style={styles.sectionTitle}>Recent Games</Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Recent Games
+          </Text>
         </View>
 
         <View style={styles.gameHistoryList}>
-          {RECENT_GAMES.map((game) => (
-            <View key={game.id} style={styles.gameRow}>
-              <View style={styles.gameRowLeft}>
-                <View style={styles.chessPiecePlaceholder}>
-                  <FontAwesome6
-                    name="chess-knight"
-                    size={18}
-                    color={colors.textSecondary}
-                  />
-                </View>
-                <View style={styles.gameInfoText}>
-                  <Text style={styles.opponentName}>{game.opponent}</Text>
-                  <Text style={styles.gameDetails}>{game.details}</Text>
-                </View>
-              </View>
-              <View style={styles.gameRowRight}>
-                <View
-                  style={[
-                    styles.outcomeBadge,
-                    { backgroundColor: `${game.outcomeColor}20` },
-                  ]}
-                >
-                  <Text
-                    style={[styles.outcomeText, { color: game.outcomeColor }]}
+          {RECENT_GAMES.map((game) => {
+            const outcomeColor = game.getOutcomeColor(colors);
+            return (
+              <View
+                key={game.id}
+                style={[styles.gameRow, { backgroundColor: colors.card }]}
+              >
+                <View style={styles.gameRowLeft}>
+                  <View
+                    style={[
+                      styles.chessPiecePlaceholder,
+                      { backgroundColor: colors.cardBorder },
+                    ]}
                   >
-                    {game.outcome}
+                    <FontAwesome6
+                      name="chess-knight"
+                      size={18}
+                      color={colors.textSecondary}
+                    />
+                  </View>
+                  <View style={styles.gameInfoText}>
+                    <Text
+                      style={[
+                        styles.opponentName,
+                        { color: colors.textPrimary },
+                      ]}
+                    >
+                      {game.opponent}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.gameDetails,
+                        { color: colors.textSecondary },
+                      ]}
+                    >
+                      {game.details}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.gameRowRight}>
+                  <View
+                    style={[
+                      styles.outcomeBadge,
+                      { backgroundColor: `${outcomeColor}20` },
+                    ]}
+                  >
+                    <Text style={[styles.outcomeText, { color: outcomeColor }]}>
+                      {game.outcome}
+                    </Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.eloChangeText,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
+                    {game.eloChange}
                   </Text>
                 </View>
-                <Text style={styles.eloChangeText}>{game.eloChange}</Text>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -194,7 +277,7 @@ export default function LobbyScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1 },
   scrollContent: { paddingHorizontal: 20, paddingBottom: 40 },
   header: {
     alignItems: "center",
@@ -202,18 +285,14 @@ const styles = StyleSheet.create({
     position: "relative",
     top: 0,
     zIndex: 15,
-    backgroundColor: colors.background,
   },
   headerSpacer: { width: 26 },
-  headerIcon: { padding: 4 },
   headerTitle: {
     fontSize: 19,
     fontWeight: "800",
-    color: colors.green,
     letterSpacing: 0.5,
   },
   statsCardFull: {
-    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 20,
     flexDirection: "row",
@@ -229,7 +308,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   statsLabel: {
-    color: colors.textSecondary,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1,
@@ -242,24 +320,20 @@ const styles = StyleSheet.create({
   },
   statsCardHalf: {
     flex: 1,
-    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 20,
   },
   statsValueMedium: {
-    color: colors.textPrimary,
     fontSize: 28,
     fontWeight: "700",
     marginTop: 4,
   },
   sectionTitle: {
-    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 16,
   },
   mainPlayButton: {
-    backgroundColor: colors.green,
     borderRadius: 28,
     padding: 24,
     height: 160,
@@ -269,31 +343,28 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   playButtonTextContainer: { zIndex: 2 },
-  playButtonTitle: { color: colors.greenDark, fontSize: 26, fontWeight: "800" },
+  playButtonTitle: { color: "#1B3310", fontSize: 26, fontWeight: "800" },
   playButtonSubtitle: {
-    color: colors.greenDark,
+    color: "#1B3310",
     fontSize: 13,
     fontWeight: "500",
     marginTop: 2,
     opacity: 0.8,
   },
-  bgWatermark: { position: "absolute", right: -10, bottom: -10, opacity: 0.15 },
+  bgWatermark: { position: "absolute", right: -10, bottom: -10 },
   actionCard: {
     flex: 1,
-    backgroundColor: colors.surface,
     borderRadius: 24,
     padding: 20,
     height: 140,
     justifyContent: "flex-end",
   },
   actionCardTitle: {
-    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: "700",
     marginTop: 14,
   },
   actionCardSubtitle: {
-    color: colors.textSecondary,
     fontSize: 12,
     marginTop: 2,
   },
@@ -308,7 +379,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: colors.surface,
     padding: 14,
     borderRadius: 20,
     marginBottom: 12,
@@ -318,15 +388,14 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: colors.surfaceLight,
     alignItems: "center",
     justifyContent: "center",
   },
   gameInfoText: { marginLeft: 12 },
-  opponentName: { color: colors.textPrimary, fontSize: 15, fontWeight: "600" },
-  gameDetails: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
+  opponentName: { fontSize: 15, fontWeight: "600" },
+  gameDetails: { fontSize: 12, marginTop: 2 },
   gameRowRight: { alignItems: "flex-end" },
   outcomeBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
   outcomeText: { fontSize: 11, fontWeight: "800" },
-  eloChangeText: { color: colors.textSecondary, fontSize: 11, marginTop: 4 },
+  eloChangeText: { fontSize: 11, marginTop: 4 },
 });
