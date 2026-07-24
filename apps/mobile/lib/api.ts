@@ -146,3 +146,96 @@ export const authApi = {
     await clearTokens();
   },
 };
+
+export type AIDifficulty = "EASY" | "MEDIUM" | "HARD";
+export type PlayerColor = "WHITE" | "BLACK";
+
+export interface CreateAIGameRequest {
+  difficulty: AIDifficulty;
+  playerColor: PlayerColor;
+}
+
+export interface MoveRequest {
+  from: string;
+  to: string;
+  promotion?: string;
+}
+
+export interface GameActionRequest {
+  action: "RESIGN" | "OFFER_DRAW" | "ACCEPT_DRAW" | "DECLINE_DRAW";
+}
+
+export interface Game {
+  id: string;
+  mode: "PVP" | "AI";
+  status: "WAITING" | "ACTIVE" | "FINISHED";
+  whitePlayer: User;
+  blackPlayer: User;
+  currentTurn: PlayerColor;
+  fen: string;
+  initialAiMove?: { from: string; to: string };
+  winner: string | null;
+  result: string | null;
+  startedAt: string;
+  endedAt: string | null;
+}
+
+export interface MoveResponse {
+  id: string;
+  playerMove?: {
+    from: string;
+    to: string;
+    san: string;
+  };
+  aiMove?: {
+    from: string;
+    to: string;
+    san: string;
+  };
+  fen: string;
+  currentTurn: PlayerColor;
+  check: boolean;
+  gameOver: boolean;
+  result?: string;
+  winner?: PlayerColor;
+}
+
+export interface GameState {
+  gameId: string;
+  fen: string;
+  currentTurn: PlayerColor;
+  status: "WAITING" | "ACTIVE" | "FINISHED";
+  lastMove: string | null;
+  check: boolean;
+  result: string | null;
+}
+
+export const gamesApi = {
+  createAIGame(request: CreateAIGameRequest) {
+    return apiFetch<Game>("/games/ai", {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+  },
+
+  makeMove(gameId: string, request: MoveRequest) {
+    return apiFetch<MoveResponse>(`/games/${gameId}/moves`, {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+  },
+
+  getGameState(gameId: string) {
+    return apiFetch<GameState>(`/games/${gameId}/state`);
+  },
+
+  performGameAction(gameId: string, request: GameActionRequest) {
+    return apiFetch<{ action: string; gameStatus: string; message: string }>(
+      `/games/${gameId}/actions`,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+      },
+    );
+  },
+};
