@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import MatchmakingScreen from "../../components/Matchmaking";
 import { matchmakingApi } from "../../lib/matchmakingApi";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
-export default function MatchmakingRoute() {
+export default function Matchmaking() {
   const router = useRouter();
+  const { user } = useAuth();
   const [, setError] = useState<string | null>(null);
+
+  const RATING_RANGE = 200;
+  const ratingRange = user
+    ? { min: user.rating - RATING_RANGE, max: user.rating + RATING_RANGE }
+    : undefined;
 
   useEffect(() => {
     let isMounted = true;
@@ -81,5 +88,7 @@ export default function MatchmakingRoute() {
     }
   };
 
-  return <MatchmakingScreen onCancel={handleCancel} />;
+  return (
+    <MatchmakingScreen onCancel={handleCancel} ratingRange={ratingRange} />
+  );
 }

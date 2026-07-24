@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Dimensions,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,6 +17,7 @@ import Animated, {
   withSequence,
   Easing,
 } from "react-native-reanimated";
+import { MOCK_OPPONENT_PROFILES } from "../data/mockOpponents";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -28,24 +36,53 @@ const colors = {
 
 interface MatchmakingScreenProps {
   onCancel: () => void;
+  ratingRange?: { min: number; max: number };
+  timeControlLabel?: string;
 }
 
 export default function MatchmakingScreen({
   onCancel,
+  ratingRange,
+  timeControlLabel = "Blitz • 3 | 2",
 }: MatchmakingScreenProps) {
-  const [seconds, setSeconds] = useState(12);
+  const [seconds, setSeconds] = useState(0);
+  const [scanIndex, setScanIndex] = useState(0);
 
   const pulse1 = useSharedValue(0);
   const pulse2 = useSharedValue(0);
   const anchorScale = useSharedValue(1);
-  const orbitRotation1 = useSharedValue(0);
-  const orbitRotation2 = useSharedValue(360);
+  const orbitRotation = useSharedValue(0);
+
+  const [onlineCount, setOnlineCount] = useState(
+    Math.floor(100 + Math.random() * 100),
+  );
+
+  useEffect(() => {
+    const jitterInterval = setInterval(() => {
+      setOnlineCount((prev) => {
+        const drift = Math.floor(Math.random() * 40) - 20;
+        return Math.max(100, prev + drift);
+      });
+    }, 2500);
+    return () => clearInterval(jitterInterval);
+  }, []);
+
+  const formatOnlineCount = (count: number) => {
+    return count >= 1000 ? `${(count / 1000).toFixed(1)}k` : `${count}`;
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
       setSeconds((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const scanInterval = setInterval(() => {
+      setScanIndex((prev) => (prev + 1) % MOCK_OPPONENT_PROFILES.length);
+    }, 1000);
+    return () => clearInterval(scanInterval);
   }, []);
 
   useEffect(() => {
@@ -73,18 +110,12 @@ export default function MatchmakingScreen({
       true,
     );
 
-    orbitRotation1.value = withRepeat(
-      withTiming(360, { duration: 8000, easing: Easing.linear }),
+    orbitRotation.value = withRepeat(
+      withTiming(360, { duration: 4000, easing: Easing.linear }),
       -1,
       false,
     );
-
-    orbitRotation2.value = withRepeat(
-      withTiming(0, { duration: 12000, easing: Easing.linear }),
-      -1,
-      false,
-    );
-  }, [anchorScale, orbitRotation1, orbitRotation2, pulse1, pulse2]);
+  }, [anchorScale, orbitRotation, pulse1, pulse2]);
 
   const animatedRing1Style = useAnimatedStyle(() => ({
     transform: [{ scale: 0.6 + pulse1.value * 1.6 }],
@@ -103,12 +134,8 @@ export default function MatchmakingScreen({
     transform: [{ scale: anchorScale.value }],
   }));
 
-  const animatedOrbit1Style = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${orbitRotation1.value}deg` }],
-  }));
-
-  const animatedOrbit2Style = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${orbitRotation2.value}deg` }],
+  const animatedOrbitStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${orbitRotation.value}deg` }],
   }));
 
   const formatTime = (totalSeconds: number) => {
@@ -116,6 +143,8 @@ export default function MatchmakingScreen({
     const secs = totalSeconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  const scanningProfile = MOCK_OPPONENT_PROFILES[scanIndex];
 
   return (
     <View style={styles.masterWrapper}>
@@ -135,39 +164,16 @@ export default function MatchmakingScreen({
             <Animated.View style={[styles.radarRing, animatedRing2Style]} />
 
             <Animated.View style={[styles.centralAnchor, animatedAnchorStyle]}>
-              <MaterialCommunityIcons
-                name="chess-king"
-                size={54}
-                color={colors.primary}
+              <Image
+                source={{ uri: scanningProfile.avatarUrl }}
+                style={styles.orbitAvatarImage}
               />
             </Animated.View>
 
             <Animated.View
-              style={[StyleSheet.absoluteFill, animatedOrbit1Style]}
+              style={[StyleSheet.absoluteFill, animatedOrbitStyle]}
             >
-              <View
-                style={[
-                  styles.orbitDot,
-                  { top: 30, left: 30, backgroundColor: colors.primary },
-                ]}
-              />
-            </Animated.View>
-
-            <Animated.View
-              style={[StyleSheet.absoluteFill, animatedOrbit2Style]}
-            >
-              <View
-                style={[
-                  styles.orbitDot,
-                  {
-                    bottom: 40,
-                    right: 40,
-                    backgroundColor: colors.secondary,
-                    width: 8,
-                    height: 8,
-                  },
-                ]}
-              />
+              <View style={styles.orbitAvatar}></View>
             </Animated.View>
           </View>
         </View>
@@ -175,12 +181,25 @@ export default function MatchmakingScreen({
         <View style={styles.statusBlock}>
           <Text style={styles.statusHeading}>Finding your opponent...</Text>
 
+          <View style={styles.scanCard}>
+            <Image
+              source={{ uri: scanningProfile.avatarUrl }}
+              style={styles.scanAvatarImage}
+            />
+            <Text style={styles.scanName}>{scanningProfile.username}</Text>
+            <Text style={styles.scanDot}>·</Text>
+            <Text style={styles.scanRating}>{scanningProfile.rating}</Text>
+          </View>
           <View style={styles.badgeRow}>
             <View style={styles.metaBadge}>
-              <Text style={styles.metaBadgeText}>Blitz • 3 | 2</Text>
+              <Text style={styles.metaBadgeText}>{timeControlLabel}</Text>
             </View>
             <View style={styles.metaBadge}>
-              <Text style={styles.metaBadgeText}>1200 - 1400 ELO</Text>
+              <Text style={styles.metaBadgeText}>
+                {ratingRange
+                  ? `${ratingRange.min} - ${ratingRange.max} ELO`
+                  : "Matching by rating…"}
+              </Text>
             </View>
           </View>
 
@@ -196,7 +215,7 @@ export default function MatchmakingScreen({
               <Text
                 style={[styles.glassCardValue, { color: colors.secondary }]}
               >
-                4.2k
+                {formatOnlineCount(onlineCount)}
               </Text>
             </View>
           </View>
@@ -282,12 +301,24 @@ const styles = StyleSheet.create({
     elevation: 8,
     boxShadow: "0px 10px 12px rgba(0,0,0,0.3)",
   },
-  orbitDot: {
+  orbitAvatar: {
     position: "absolute",
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    boxShadow: "0px 0px 2px rgba(0,0,0,0.5)",
+    top: -4,
+    left: "50%",
+    marginLeft: -15,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+  },
+  orbitAvatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: "50%",
+  },
+  scanAvatarImage: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   statusBlock: { paddingHorizontal: 24, alignItems: "center" },
   statusHeading: {
@@ -297,6 +328,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 12,
   },
+  scanCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: "rgba(159, 214, 104, 0.3)",
+    borderRadius: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    marginBottom: 14,
+  },
+  scanName: { color: colors.textOnSurface, fontSize: 14, fontWeight: "600" },
+  scanDot: { color: "#5F5E5A", fontSize: 13 },
+  scanRating: { color: colors.primary, fontSize: 14, fontWeight: "600" },
   badgeRow: { flexDirection: "row", gap: 8, marginBottom: 24 },
   metaBadge: {
     backgroundColor: colors.surface,
@@ -341,8 +387,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceContainerLow,
     padding: 16,
     borderRadius: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: "rgba(159, 214, 104, 0.5)",
     width: "100%",
     maxWidth: 360,
     alignItems: "flex-start",
@@ -372,8 +416,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    borderBottomWidth: 3,
-    borderBottomColor: "rgba(0,0,0,0.3)",
   },
   tactileCancelButtonPressed: {
     transform: [{ translateY: 2 }],
