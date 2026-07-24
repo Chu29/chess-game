@@ -5,46 +5,78 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ChessBoard from "./game/ChessBoard";
-import { colors } from "../constants/theme";
+import { useTheme } from "../context/ThemeContext";
 
 export default function GameScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
 
   // FEN representing starting board state
   const fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       {/* Header */}
       <View style={styles.header}>
         <Pressable
           onPress={() => router.replace("/(tabs)")}
           style={styles.headerIcon}
         >
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </Pressable>
-        <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
+        <Text style={[styles.headerTitle, { color: colors.green }]}>
+          Chuvinjab Chess
+        </Text>
       </View>
 
       {/* Main Content Area */}
       <View style={styles.content}>
         {/* Opponent Box */}
-        <View style={styles.playerCard}>
+        <View
+          style={[
+            styles.playerCard,
+            {
+              backgroundColor: colors.card,
+              borderColor: colors.cardBorder,
+            },
+          ]}
+        >
           <View style={styles.playerInfoRow}>
             <View style={styles.avatarContainer}>
-              <View style={styles.avatarPlaceholder}>
+              <View
+                style={[
+                  styles.avatarPlaceholder,
+                  { backgroundColor: colors.cardBorder },
+                ]}
+              >
                 <Ionicons
                   name="person"
                   size={22}
                   color={colors.textSecondary}
                 />
               </View>
-              <View style={styles.statusDot} />
+              <View
+                style={[
+                  styles.statusDot,
+                  {
+                    backgroundColor: colors.green,
+                    borderColor: colors.card,
+                  },
+                ]}
+              />
             </View>
             <View style={styles.nameColumn}>
-              <Text style={styles.playerName}>Magnus_Bot</Text>
+              <Text style={[styles.playerName, { color: colors.textPrimary }]}>
+                Magnus_Bot
+              </Text>
               <View style={styles.ratingRow}>
-                <Text style={styles.ratingText}>2840</Text>
+                <Text
+                  style={[styles.ratingText, { color: colors.textSecondary }]}
+                >
+                  2840
+                </Text>
                 <Ionicons
                   name="people-outline"
                   size={14}
@@ -54,8 +86,15 @@ export default function GameScreen() {
               </View>
             </View>
           </View>
-          <View style={styles.clockContainer}>
-            <Text style={styles.clockText}>08:42</Text>
+          <View
+            style={[
+              styles.clockContainer,
+              { backgroundColor: colors.cardBorder },
+            ]}
+          >
+            <Text style={[styles.clockText, { color: colors.textPrimary }]}>
+              08:42
+            </Text>
           </View>
         </View>
 
@@ -65,20 +104,57 @@ export default function GameScreen() {
         </View>
 
         {/* Player Box */}
-        <View style={styles.playerCard}>
+        <View
+          style={[
+            styles.playerCard,
+            {
+              backgroundColor: colors.card,
+              borderColor: colors.cardBorder,
+            },
+          ]}
+        >
           <View style={styles.playerInfoRow}>
             <View style={styles.avatarContainer}>
-              <View style={styles.avatarPlaceholder}>
+              <View
+                style={[
+                  styles.avatarPlaceholder,
+                  { backgroundColor: colors.cardBorder },
+                ]}
+              >
                 <Ionicons name="person" size={22} color={colors.green} />
               </View>
-              <View style={styles.statusDot} />
+              <View
+                style={[
+                  styles.statusDot,
+                  {
+                    backgroundColor: colors.green,
+                    borderColor: colors.card,
+                  },
+                ]}
+              />
             </View>
             <View style={styles.nameColumn}>
-              <Text style={styles.playerName}>You</Text>
-              <Text style={styles.playerSubtitle}>(GM_Chuvinjab)</Text>
+              <Text style={[styles.playerName, { color: colors.textPrimary }]}>
+                You
+              </Text>
+              <Text
+                style={[
+                  styles.playerSubtitle,
+                  { color: colors.textSecondary },
+                ]}
+              >
+                (GM_Chuvinjab)
+              </Text>
               <View style={styles.badgeRow}>
-                <View style={styles.ratingBadge}>
-                  <Text style={styles.ratingBadgeText}>1200</Text>
+                <View
+                  style={[
+                    styles.ratingBadge,
+                    { backgroundColor: colors.green + "1A" },
+                  ]}
+                >
+                  <Text style={[styles.ratingBadgeText, { color: colors.green }]}>
+                    1200
+                  </Text>
                 </View>
                 <Ionicons
                   name="people-outline"
@@ -89,7 +165,16 @@ export default function GameScreen() {
               </View>
             </View>
           </View>
-          <View style={[styles.clockContainer, styles.playerClock]}>
+          <View
+            style={[
+              styles.clockContainer,
+              styles.playerClock,
+              {
+                backgroundColor: colors.cardBorder,
+                borderColor: colors.green + "40",
+              },
+            ]}
+          >
             <Text style={[styles.clockText, { color: colors.green }]}>
               00:00
             </Text>
@@ -98,28 +183,76 @@ export default function GameScreen() {
 
         {/* Bottom Actions Row */}
         <View style={styles.actionsRow}>
-          <Pressable style={styles.actionBtn}>
-            <Ionicons name="swap-vertical" size={20} color={colors.white} />
-            <Text style={styles.actionBtnText}>Flip</Text>
+          <Pressable
+            style={[
+              styles.actionBtn,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.cardBorder,
+              },
+            ]}
+          >
+            <Ionicons name="swap-vertical" size={20} color={colors.textPrimary} />
+            <Text
+              style={[styles.actionBtnText, { color: colors.textPrimary }]}
+            >
+              Flip
+            </Text>
           </Pressable>
 
-          <Pressable style={styles.actionBtn}>
+          <Pressable
+            style={[
+              styles.actionBtn,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.cardBorder,
+              },
+            ]}
+          >
             <MaterialCommunityIcons
               name="handshake-outline"
               size={22}
-              color={colors.white}
+              color={colors.textPrimary}
             />
-            <Text style={styles.actionBtnText}>Draw</Text>
+            <Text
+              style={[styles.actionBtnText, { color: colors.textPrimary }]}
+            >
+              Draw
+            </Text>
           </Pressable>
 
-          <Pressable style={styles.actionBtn}>
-            <Ionicons name="settings-outline" size={20} color={colors.white} />
-            <Text style={styles.actionBtnText}>Menu</Text>
+          <Pressable
+            style={[
+              styles.actionBtn,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.cardBorder,
+              },
+            ]}
+          >
+            <Ionicons
+              name="settings-outline"
+              size={20}
+              color={colors.textPrimary}
+            />
+            <Text
+              style={[styles.actionBtnText, { color: colors.textPrimary }]}
+            >
+              Menu
+            </Text>
           </Pressable>
 
-          <Pressable style={[styles.actionBtn, styles.resignBtn]}>
-            <Ionicons name="flag" size={18} color={colors.white} />
-            <Text style={styles.actionBtnText}>Resign</Text>
+          <Pressable
+            style={[
+              styles.actionBtn,
+              styles.resignBtn,
+              { backgroundColor: colors.loss },
+            ]}
+          >
+            <Ionicons name="flag" size={18} color="#FFFFFF" />
+            <Text style={[styles.actionBtnText, { color: "#FFFFFF" }]}>
+              Resign
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -130,12 +263,10 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "space-between",
     gap: 100,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -146,7 +277,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 19,
     fontWeight: "800",
-    color: colors.green,
     letterSpacing: 0.5,
   },
   content: {
@@ -159,11 +289,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 12,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
   },
   playerInfoRow: {
     flexDirection: "row",
@@ -178,7 +306,6 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 8,
-    backgroundColor: colors.cardBorder,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -189,9 +316,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: colors.green,
     borderWidth: 1.5,
-    borderColor: colors.card,
   },
   nameColumn: {
     justifyContent: "center",
@@ -199,11 +324,9 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 15,
     fontWeight: "700",
-    color: colors.white,
   },
   playerSubtitle: {
     fontSize: 12,
-    color: colors.textSecondary,
     marginTop: 1,
   },
   ratingRow: {
@@ -213,7 +336,6 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 12,
-    color: colors.textSecondary,
     fontWeight: "600",
   },
   badgeRow: {
@@ -222,18 +344,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   ratingBadge: {
-    backgroundColor: colors.greenDark,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
   },
   ratingBadgeText: {
-    color: colors.green,
     fontSize: 11,
     fontWeight: "700",
   },
   clockContainer: {
-    backgroundColor: "#202521",
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
@@ -242,13 +361,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   playerClock: {
-    borderColor: "rgba(143, 194, 74, 0.2)",
     borderWidth: 1,
   },
   clockText: {
     fontSize: 17,
     fontWeight: "700",
-    color: colors.white,
     fontFamily: "monospace",
   },
   boardWrapper: {
@@ -262,21 +379,17 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
-    backgroundColor: colors.card,
     borderRadius: 12,
     paddingVertical: 12,
     marginHorizontal: 4,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: colors.cardBorder,
   },
   resignBtn: {
-    backgroundColor: colors.loss,
     borderColor: "transparent",
   },
   actionBtnText: {
-    color: colors.white,
     fontSize: 12,
     fontWeight: "600",
     marginTop: 4,
