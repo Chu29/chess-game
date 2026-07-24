@@ -133,7 +133,10 @@ export default function ProfileScreen() {
             </View>
             <View style={{ alignItems: "flex-end" }}>
               <Text
-                style={[styles.matchResult, { color: resultColor(game.result) }]}
+                style={[
+                  styles.matchResult,
+                  { color: resultColor(game.result) },
+                ]}
               >
                 {game.result}
               </Text>
@@ -145,21 +148,39 @@ export default function ProfileScreen() {
         {/* Settings row */}
         <View style={{ marginTop: 24 }}>
           <View style={styles.settingsRow}>
-            <Ionicons name="create-outline" size={18} color={colors.textSecondary} />
+            <Ionicons
+              name="create-outline"
+              size={18}
+              color={colors.textSecondary}
+            />
             <Text style={styles.settingsText}>Edit Profile</Text>
-            <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={colors.textSecondary}
+            />
           </View>
           <View style={styles.settingsRow}>
-            <Ionicons name="color-palette-outline" size={18} color={colors.textSecondary} />
+            <Ionicons
+              name="color-palette-outline"
+              size={18}
+              color={colors.textSecondary}
+            />
             <Text style={styles.settingsText}>Theme</Text>
-            <Ionicons name="chevron-forward" size={16} color={colors.textSecondary} />
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={colors.textSecondary}
+            />
           </View>
           <Pressable
             style={[styles.settingsRow, { borderBottomWidth: 0 }]}
             onPress={() => void logout()}
           >
             <Ionicons name="log-out-outline" size={18} color={colors.loss} />
-            <Text style={[styles.settingsText, { color: colors.loss }]}>Logout</Text>
+            <Text style={[styles.settingsText, { color: colors.loss }]}>
+              Logout
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -193,7 +214,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     gap: 5,
   },
-  ratingPillText: { color: colors.textSecondary, fontSize: 12, fontWeight: "600" },
+  ratingPillText: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: "600",
+  },
   totalCard: {
     width: "100%",
     backgroundColor: colors.card,
@@ -204,7 +229,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
-  totalLabel: { color: colors.textSecondary, fontSize: 11, letterSpacing: 1, marginBottom: 4 },
+  totalLabel: {
+    color: colors.textSecondary,
+    fontSize: 11,
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
   totalValue: { color: colors.white, fontSize: 26, fontWeight: "700" },
   statGrid: {
     flexDirection: "row",
@@ -224,7 +254,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statValue: { color: colors.white, fontSize: 20, fontWeight: "700" },
-  statLabel: { color: colors.textSecondary, fontSize: 10, letterSpacing: 1, marginTop: 4 },
+  statLabel: {
+    color: colors.textSecondary,
+    fontSize: 10,
+    letterSpacing: 1,
+    marginTop: 4,
+  },
   sectionHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -232,7 +267,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
   },
-  sectionTitle: { color: colors.textSecondary, fontSize: 13, fontWeight: "600" },
+  sectionTitle: {
+    color: colors.textSecondary,
+    fontSize: 13,
+    fontWeight: "600",
+  },
   sectionMeta: { color: colors.textSecondary, fontSize: 11 },
   viewAll: { color: colors.green, fontSize: 12, fontWeight: "600" },
   chartPlaceholder: {

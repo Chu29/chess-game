@@ -42,6 +42,8 @@ export const usersApi = {
   },
   getLeaderboard(limit?: number) {
     const query = limit ? `?limit=${limit}` : "";
-    return apiFetch<LeaderboardEntry[]>(`/users/leaderboard${query}`, { method: "GET" });
+    return apiFetch<LeaderboardEntry[]>(`/users/leaderboard${query}`, {
+      method: "GET",
+    });
   },
 };
