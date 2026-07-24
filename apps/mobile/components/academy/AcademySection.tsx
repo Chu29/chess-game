@@ -1,33 +1,25 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { colors } from "../../constants/colors";
+import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   title: string;
-  subtitle?: string;
-  onSeeAll?: () => void;
+  subtitle: string;
   children: React.ReactNode;
 }
 
-export function AcademySection({ title, subtitle, onSeeAll, children }: Props) {
+export function AcademySection({ title, subtitle, children }: Props) {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.section}>
       <View style={styles.header}>
-        <View style={styles.titleWrap}>
-          <Text style={styles.title}>{title}</Text>
-          {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-        </View>
-        {onSeeAll && (
-          <Pressable
-            onPress={onSeeAll}
-            accessibilityRole="button"
-            accessibilityLabel={`See all ${title}`}
-            hitSlop={8}
-            style={styles.seeAll}
-          >
-            <Text style={styles.seeAllText}>See all</Text>
-          </Pressable>
-        )}
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          {title}
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          {subtitle}
+        </Text>
       </View>
       {children}
     </View>
@@ -35,39 +27,8 @@ export function AcademySection({ title, subtitle, onSeeAll, children }: Props) {
 }
 
 const styles = StyleSheet.create({
-  section: {
-    marginBottom: 24,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  titleWrap: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  title: {
-    color: colors.textPrimary,
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  subtitle: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    marginTop: 2,
-  },
-  seeAll: {
-    minHeight: 44,
-    minWidth: 44,
-    alignItems: "flex-end",
-    justifyContent: "center",
-  },
-  seeAllText: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: "600",
-  },
+  section: { marginBottom: 24 },
+  header: { paddingHorizontal: 16, marginBottom: 12 },
+  title: { fontSize: 18, fontWeight: "700" },
+  subtitle: { fontSize: 13, marginTop: 2 },
 });
