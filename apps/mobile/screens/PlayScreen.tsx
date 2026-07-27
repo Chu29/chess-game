@@ -33,7 +33,7 @@ export function PlayScreen() {
           description="Practice anytime against a computer opponent. No waiting, no pressure."
           ctaLabel="Start Game"
           accent
-          onPress={() => router.push("/play/ai")}
+          onPress={() => router.push("/play/ai-setup")}
         />
 
         <OptionCard

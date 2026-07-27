@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   orbitAvatarImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 60,
+    borderRadius: 15,
   },
   scanAvatarImage: {
     width: 20,
