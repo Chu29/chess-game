@@ -26,7 +26,11 @@ export function RuleDetailScreen() {
   if (!rule) {
     return (
       <SafeAreaView
-        style={[styles.safe, styles.center, { backgroundColor: colors.background }]}
+        style={[
+          styles.safe,
+          styles.center,
+          { backgroundColor: colors.background },
+        ]}
       >
         <Text style={{ color: colors.textSecondary }}>Rule not found.</Text>
       </SafeAreaView>
@@ -43,7 +47,9 @@ export function RuleDetailScreen() {
           hitSlop={12}
           style={styles.backButton}
         >
-          <Text style={[styles.backIcon, { color: colors.textPrimary }]}>‹</Text>
+          <Text style={[styles.backIcon, { color: colors.textPrimary }]}>
+            ‹
+          </Text>
         </Pressable>
       </View>
 

@@ -38,7 +38,7 @@ export default function GameScreen() {
   const [gameResult, setGameResult] = useState<string | null>(null);
   const [winner, setWinner] = useState<PlayerColor | null>(null);
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
-    null
+    null,
   );
 
   const difficulty = (params.difficulty as AIDifficulty) || "MEDIUM";
@@ -83,7 +83,7 @@ export default function GameScreen() {
       setGame((prev) =>
         prev
           ? { ...prev, fen: response.fen, currentTurn: response.currentTurn }
-          : null
+          : null,
       );
 
       // Track the last move for board highlighting
@@ -165,8 +165,8 @@ export default function GameScreen() {
     difficulty === "EASY"
       ? "Stockfish (800)"
       : difficulty === "MEDIUM"
-      ? "Stockfish (1500)"
-      : "Stockfish (2500)";
+        ? "Stockfish (1500)"
+        : "Stockfish (2500)";
 
   return (
     <SafeAreaView
@@ -190,7 +190,7 @@ export default function GameScreen() {
         <View style={styles.errorBanner}>
           <Text style={styles.errorBannerText}>{error}</Text>
           <Pressable onPress={() => setError(null)} style={styles.errorClose}>
-            <Ionicons name="close" size={16} color={colors.white} />
+            <Ionicons name="close" size={16} color="#FFFFFF" />
           </Pressable>
         </View>
       )}
@@ -203,8 +203,8 @@ export default function GameScreen() {
             {winner === playerColor
               ? "🏆 You Won!"
               : winner === opponentColor
-              ? "💔 You Lost"
-              : "🤝 It's a Draw"}
+                ? "💔 You Lost"
+                : "🤝 It's a Draw"}
           </Text>
         </View>
       )}
@@ -219,7 +219,7 @@ export default function GameScreen() {
               backgroundColor: colors.card,
               borderColor: colors.cardBorder,
             },
-            !isMyTurn && !gameOver && styles.activePlayerCard,
+            !isMyTurn && !gameOver ? styles.activePlayerCard : undefined,
           ]}
         >
           <View style={styles.playerInfoRow}>
@@ -234,9 +234,7 @@ export default function GameScreen() {
                   name="person"
                   size={22}
                   color={
-                    opponentColor === "WHITE"
-                      ? colors.white
-                      : colors.textSecondary
+                    opponentColor === "WHITE" ? "#FFFFFF" : colors.textSecondary
                   }
                 />
               </View>
@@ -255,18 +253,20 @@ export default function GameScreen() {
                 {opponentName}
               </Text>
               <View style={styles.ratingRow}>
-                <Text style={[styles.ratingText, { color: colors.textSecondary }]}>
+                <Text
+                  style={[styles.ratingText, { color: colors.textSecondary }]}
+                >
                   {difficulty === "EASY"
                     ? "800"
                     : difficulty === "MEDIUM"
-                    ? "1500"
-                    : "2500"}
+                      ? "1500"
+                      : "2500"}
                 </Text>
                 <Ionicons
                   name="people-outline"
                   size={14}
                   color={colors.textSecondary}
-                  style={{ marginLeft: 6 }}
+                  style={styles.iconMargin}
                 />
               </View>
             </View>
@@ -308,7 +308,7 @@ export default function GameScreen() {
               backgroundColor: colors.card,
               borderColor: colors.cardBorder,
             },
-            isMyTurn && !gameOver && styles.activePlayerCard,
+            isMyTurn && !gameOver ? styles.activePlayerCard : undefined,
           ]}
         >
           <View style={styles.playerInfoRow}>
@@ -322,7 +322,7 @@ export default function GameScreen() {
                 <Ionicons
                   name="person"
                   size={22}
-                  color={playerColor === "WHITE" ? colors.white : colors.green}
+                  color={playerColor === "WHITE" ? "#FFFFFF" : colors.green}
                 />
               </View>
               <View
@@ -340,10 +340,7 @@ export default function GameScreen() {
                 You
               </Text>
               <Text
-                style={[
-                  styles.playerSubtitle,
-                  { color: colors.textSecondary },
-                ]}
+                style={[styles.playerSubtitle, { color: colors.textSecondary }]}
               >
                 ({user?.username || "Player"})
               </Text>
@@ -351,10 +348,12 @@ export default function GameScreen() {
                 <View
                   style={[
                     styles.ratingBadge,
-                    { backgroundColor: colors.green + "1A" },
+                    { backgroundColor: `${colors.green}1A` },
                   ]}
                 >
-                  <Text style={[styles.ratingBadgeText, { color: colors.green }]}>
+                  <Text
+                    style={[styles.ratingBadgeText, { color: colors.green }]}
+                  >
                     {user?.rating || "1200"}
                   </Text>
                 </View>
@@ -362,7 +361,7 @@ export default function GameScreen() {
                   name="people-outline"
                   size={14}
                   color={colors.textSecondary}
-                  style={{ marginLeft: 6 }}
+                  style={styles.iconMargin}
                 />
               </View>
             </View>
@@ -373,7 +372,7 @@ export default function GameScreen() {
               styles.playerClock,
               {
                 backgroundColor: colors.cardBorder,
-                borderColor: colors.green + "40",
+                borderColor: `${colors.green}40`,
               },
             ]}
           >
@@ -396,7 +395,7 @@ export default function GameScreen() {
                     backgroundColor: colors.card,
                     borderColor: colors.cardBorder,
                   },
-                  makingMove && styles.disabledBtn,
+                  makingMove ? styles.disabledBtn : undefined,
                 ]}
               >
                 <MaterialCommunityIcons
@@ -404,7 +403,9 @@ export default function GameScreen() {
                   size={22}
                   color={colors.textPrimary}
                 />
-                <Text style={[styles.actionBtnText, { color: colors.textPrimary }]}>
+                <Text
+                  style={[styles.actionBtnText, { color: colors.textPrimary }]}
+                >
                   Draw
                 </Text>
               </Pressable>
@@ -416,11 +417,11 @@ export default function GameScreen() {
                   styles.actionBtn,
                   styles.resignBtn,
                   { backgroundColor: colors.loss },
-                  makingMove && styles.disabledBtn,
+                  makingMove ? styles.disabledBtn : undefined,
                 ]}
               >
-                <Ionicons name="flag" size={18} color={colors.white} />
-                <Text style={[styles.actionBtnText, { color: colors.white }]}>
+                <Ionicons name="flag" size={18} color="#FFFFFF" />
+                <Text style={[styles.actionBtnText, { color: "#FFFFFF" }]}>
                   Resign
                 </Text>
               </Pressable>
@@ -430,7 +431,7 @@ export default function GameScreen() {
               onPress={() => router.replace("/(tabs)")}
               style={[styles.newGameBtn, { backgroundColor: colors.green }]}
             >
-              <Text style={[styles.actionBtnText, { color: colors.white }]}>
+              <Text style={[styles.actionBtnText, { color: "#FFFFFF" }]}>
                 New Game
               </Text>
             </Pressable>
@@ -447,7 +448,7 @@ const styles = StyleSheet.create({
   },
   center: {
     flex: 1,
-    justify: "center",
+    justifyContent: "center",
     alignItems: "center",
   },
   loadingText: {
@@ -485,7 +486,7 @@ const styles = StyleSheet.create({
   errorBanner: {
     flexDirection: "row",
     alignItems: "center",
-    justify: "space-between",
+    justifyContent: "space-between",
     paddingVertical: 10,
     paddingHorizontal: 16,
   },
@@ -517,12 +518,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 16,
-    justify: "space-evenly",
+    justifyContent: "space-evenly",
     paddingBottom: 16,
   },
   playerCard: {
     flexDirection: "row",
-    justify: "space-between",
+    justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 12,
     padding: 12,
@@ -547,7 +548,7 @@ const styles = StyleSheet.create({
     height: 46,
     borderRadius: 8,
     alignItems: "center",
-    justify: "center",
+    justifyContent: "center",
   },
   statusDot: {
     position: "absolute",
@@ -559,7 +560,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   nameColumn: {
-    justify: "center",
+    justifyContent: "center",
   },
   playerName: {
     fontSize: 15,
@@ -592,13 +593,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
   },
+  iconMargin: {
+    marginLeft: 6,
+  },
   clockContainer: {
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
     minWidth: 70,
     alignItems: "center",
-    justify: "center",
+    justifyContent: "center",
   },
   playerClock: {
     borderWidth: 1,
@@ -610,7 +614,7 @@ const styles = StyleSheet.create({
   },
   boardWrapper: {
     alignItems: "center",
-    justify: "center",
+    justifyContent: "center",
     paddingVertical: 8,
     position: "relative",
   },
@@ -622,7 +626,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     alignItems: "center",
-    justify: "center",
+    justifyContent: "center",
     borderRadius: 8,
   },
   loadingOverlayText: {
@@ -632,7 +636,7 @@ const styles = StyleSheet.create({
   },
   actionsRow: {
     flexDirection: "row",
-    justify: "space-between",
+    justifyContent: "space-between",
   },
   actionBtn: {
     flex: 1,
@@ -640,7 +644,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginHorizontal: 4,
     alignItems: "center",
-    justify: "center",
+    justifyContent: "center",
     borderWidth: 1,
   },
   resignBtn: {
@@ -651,7 +655,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 12,
     alignItems: "center",
-    justify: "center",
+    justifyContent: "center",
   },
   disabledBtn: {
     opacity: 0.5,

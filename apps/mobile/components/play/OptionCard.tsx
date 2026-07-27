@@ -45,9 +45,7 @@ export function OptionCard({
         <Ionicons name={icon} size={28} color={colors.green} />
       </View>
 
-      <Text style={[styles.title, { color: colors.textPrimary }]}>
-        {title}
-      </Text>
+      <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>
         {description}
       </Text>

@@ -32,7 +32,9 @@ export function PracticeScreen() {
           hitSlop={12}
           style={styles.backButton}
         >
-          <Text style={[styles.backIcon, { color: colors.textPrimary }]}>‹</Text>
+          <Text style={[styles.backIcon, { color: colors.textPrimary }]}>
+            ‹
+          </Text>
         </Pressable>
       </View>
 

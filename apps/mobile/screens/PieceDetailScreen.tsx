@@ -35,7 +35,11 @@ export function PieceDetailScreen() {
   if (!piece) {
     return (
       <SafeAreaView
-        style={[styles.safe, styles.center, { backgroundColor: colors.background }]}
+        style={[
+          styles.safe,
+          styles.center,
+          { backgroundColor: colors.background },
+        ]}
       >
         <Text style={{ color: colors.textSecondary }}>Piece not found.</Text>
       </SafeAreaView>

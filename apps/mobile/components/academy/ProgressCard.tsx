@@ -25,19 +25,12 @@ export function ProgressCard({ progress }: Props) {
 
   return (
     <View
-      style={[
-        styles.track,
-        { backgroundColor: colors.cardBorder },
-      ]}
+      style={[styles.track, { backgroundColor: colors.cardBorder }]}
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: 100, now: progress }}
     >
       <Animated.View
-        style={[
-          styles.fill,
-          animatedStyle,
-          { backgroundColor: colors.green },
-        ]}
+        style={[styles.fill, animatedStyle, { backgroundColor: colors.green }]}
       />
     </View>
   );

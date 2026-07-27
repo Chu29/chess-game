@@ -28,10 +28,7 @@ export function RuleCard({ rule, index = 0, onPress }: Props) {
         ]}
       >
         <View
-          style={[
-            styles.iconWrap,
-            { backgroundColor: colors.green + "1A" },
-          ]}
+          style={[styles.iconWrap, { backgroundColor: colors.green + "1A" }]}
         >
           <Text style={styles.icon}>{rule.icon}</Text>
         </View>

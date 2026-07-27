@@ -103,9 +103,7 @@ export default function GameScreen() {
             style={[
               styles.connectionDot,
               {
-                backgroundColor: isConnected
-                  ? colors.green
-                  : "#D9534F",
+                backgroundColor: isConnected ? colors.green : "#D9534F",
               },
             ]}
           />
@@ -157,10 +155,7 @@ export default function GameScreen() {
             </View>
           </View>
           <View
-            style={[
-              styles.turnBadge,
-              { backgroundColor: colors.cardBorder },
-            ]}
+            style={[styles.turnBadge, { backgroundColor: colors.cardBorder }]}
           >
             {!isMyTurn && gameState.gameStatus === "ACTIVE" ? (
               <Text style={[styles.turnTextActive, { color: colors.green }]}>
@@ -222,10 +217,7 @@ export default function GameScreen() {
             </View>
           </View>
           <View
-            style={[
-              styles.turnBadge,
-              { backgroundColor: colors.cardBorder },
-            ]}
+            style={[styles.turnBadge, { backgroundColor: colors.cardBorder }]}
           >
             {isMyTurn && gameState.gameStatus === "ACTIVE" ? (
               <Text style={[styles.turnTextActive, { color: colors.green }]}>
@@ -334,7 +326,11 @@ export default function GameScreen() {
               onPress={resign}
               style={[
                 styles.actionBtn,
-                { backgroundColor: "#D9534F20", borderWidth: 1, borderColor: "#D9534F50" },
+                {
+                  backgroundColor: "#D9534F20",
+                  borderWidth: 1,
+                  borderColor: "#D9534F50",
+                },
               ]}
             >
               <MaterialCommunityIcons name="flag" size={20} color="#D9534F" />
