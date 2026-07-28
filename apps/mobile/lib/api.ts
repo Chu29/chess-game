@@ -147,6 +147,10 @@ export const authApi = {
   },
 };
 
+// ============================================================
+// Player vs AI (teammate's work)
+// ============================================================
+
 export type AIDifficulty = "EASY" | "MEDIUM" | "HARD";
 export type PlayerColor = "WHITE" | "BLACK";
 
@@ -237,5 +241,20 @@ export const gamesApi = {
         body: JSON.stringify(request),
       },
     );
+  },
+};
+
+export interface HintResponse {
+  bestMove: string;
+  score: string;
+  explanation: string;
+}
+
+export const aiApi = {
+  getHint(fen: string, player: "white" | "black", gameId: string) {
+    return apiFetch<HintResponse>("/ai/hint", {
+      method: "POST",
+      body: JSON.stringify({ fen, player, gameId }),
+    });
   },
 };
