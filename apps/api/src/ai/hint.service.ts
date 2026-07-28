@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GameStateService } from '../game-gateway/game-state.service';
 
 const MAX_HINTS_PER_GAME = 5;

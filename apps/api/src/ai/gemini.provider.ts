@@ -31,7 +31,9 @@ export class GeminiProvider {
     }
 
     try {
-      const model = this.client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = this.client.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+      });
 
       const prompt = [
         'You are a professional chess coach.',
