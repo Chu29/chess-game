@@ -19,6 +19,11 @@ import {
 } from "../../components/ai-coach";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { Chess } from "chess.js";
+import { useChessSounds } from "../../hooks/useChessSounds";
+import { getCapturedPieces } from "../../lib/chessUtils";
+import { CapturedPieces } from "../../components/game/CapturedPieces";
+import { GameEndPopup } from "../../components/game/GameEndPopup";
 
 export default function GameScreen() {
   const params = useLocalSearchParams<{
@@ -42,6 +47,9 @@ export default function GameScreen() {
     declineDraw,
     acceptDraw,
     resign,
+    offerRematch,
+    declineRematch,
+    acceptRematch,
     clearError,
   } = useGameSocket(params.gameId, {
     fen: params.fen,
@@ -62,6 +70,60 @@ export default function GameScreen() {
     requestHint,
     closeModal: closeHintModal,
   } = useHint({ gameId: params.gameId });
+
+  const previousFenRef = React.useRef<string | null>(null);
+  const { playMove, playCapture, playCheck } = useChessSounds();
+  const [showEndPopup, setShowEndPopup] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!gameState?.fen) return;
+    const oldFen = previousFenRef.current;
+    if (oldFen && oldFen !== gameState.fen && gameState.lastMove) {
+      if (gameState.currentTurn === gameState.playerColor) {
+        try {
+          const tempChess = new Chess(oldFen);
+          const moves = tempChess.moves({ verbose: true });
+          const moveObj = moves.find(
+            (m) =>
+              m.from === gameState.lastMove!.from &&
+              m.to === gameState.lastMove!.to,
+          );
+          if (
+            moveObj &&
+            (moveObj.san.endsWith("+") || moveObj.san.endsWith("#"))
+          ) {
+            playCheck();
+          } else if (
+            moveObj &&
+            (moveObj.captured || moveObj.flags.includes("c"))
+          ) {
+            playCapture();
+          } else {
+            playMove();
+          }
+        } catch (e) {}
+      }
+    }
+    previousFenRef.current = gameState.fen;
+  }, [
+    gameState?.fen,
+    gameState?.lastMove,
+    gameState?.currentTurn,
+    gameState?.playerColor,
+  ]);
+
+  React.useEffect(() => {
+    if (gameState?.rematchOfferedBy === "DECLINED") {
+      setShowEndPopup(false);
+      router.replace("/(tabs)");
+    } else if (gameState?.rematchAcceptedId) {
+      setShowEndPopup(false);
+      router.replace({
+        pathname: "/game/[gameId]",
+        params: { gameId: gameState.rematchAcceptedId },
+      });
+    }
+  }, [gameState?.rematchOfferedBy, gameState?.rematchAcceptedId]);
 
   // Debug: log initial params
   console.log("Game params:", {
@@ -99,6 +161,10 @@ export default function GameScreen() {
     ? gameState.blackUsername || "Unknown"
     : gameState.whiteUsername || "Unknown";
   const opponentColor = isWhite ? "BLACK" : "WHITE";
+
+  const { whiteCaptured, blackCaptured } = getCapturedPieces(gameState.fen);
+  const myCaptured = isWhite ? whiteCaptured : blackCaptured;
+  const opponentCaptured = isWhite ? blackCaptured : whiteCaptured;
 
   return (
     <SafeAreaView
@@ -180,6 +246,7 @@ export default function GameScreen() {
               >
                 ID: {opponentId.slice(0, 8)}
               </Text>
+              <CapturedPieces counts={opponentCaptured} color={opponentColor} />
             </View>
           </View>
           <View
@@ -242,6 +309,10 @@ export default function GameScreen() {
               >
                 ID: {myId?.slice(0, 8)}
               </Text>
+              <CapturedPieces
+                counts={myCaptured}
+                color={gameState.playerColor || "WHITE"}
+              />
             </View>
           </View>
           <View
@@ -298,26 +369,6 @@ export default function GameScreen() {
               </View>
             </View>
           )}
-        </View>
-      )}
-
-      {gameState.gameStatus === "FINISHED" && (
-        <View
-          style={[
-            styles.alertBanner,
-            { backgroundColor: colors.card, borderColor: colors.cardBorder },
-          ]}
-        >
-          <Text style={[styles.endTitle, { color: colors.textPrimary }]}>
-            Game Ended ({gameState.endReason})
-          </Text>
-          <Text style={[styles.endSubtitle, { color: colors.green }]}>
-            {gameState.winnerId
-              ? gameState.winnerId === myId
-                ? "🏆 Victory is yours!"
-                : "💔 You were defeated."
-              : "🤝 It's a Draw."}
-          </Text>
         </View>
       )}
 
@@ -398,6 +449,29 @@ export default function GameScreen() {
         hint={hint}
         error={hintError}
         onClose={closeHintModal}
+      />
+
+      <GameEndPopup
+        visible={gameState.gameStatus === "FINISHED" && showEndPopup}
+        result={
+          gameState.winnerId
+            ? gameState.winnerId === myId
+              ? "WIN"
+              : "LOSS"
+            : "DRAW"
+        }
+        reason={`Game Ended (${gameState.endReason || ""})`}
+        primaryButtonLabel="Rematch"
+        onPrimaryAction={offerRematch}
+        secondaryButtonLabel="Lobby"
+        onSecondaryAction={() => {
+          setShowEndPopup(false);
+          router.replace("/(tabs)");
+        }}
+        isRematchOffered={!!gameState.rematchOfferedBy}
+        isRematchOfferedByMe={gameState.rematchOfferedBy === myId}
+        onAcceptRematch={acceptRematch}
+        onDeclineRematch={declineRematch}
       />
     </SafeAreaView>
   );
@@ -552,15 +626,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "700",
-  },
-  endTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  endSubtitle: {
-    fontSize: 14,
-    fontWeight: "600",
   },
   footer: {
     padding: 16,

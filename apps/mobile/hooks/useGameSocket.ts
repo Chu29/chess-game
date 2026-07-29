@@ -17,6 +17,8 @@ export interface GameState {
   gameStatus: "ACTIVE" | "FINISHED";
   endReason: string | null;
   drawOfferedBy: string | null;
+  rematchOfferedBy: string | null;
+  rematchAcceptedId: string | null;
 }
 
 export function useGameSocket(
@@ -48,6 +50,8 @@ export function useGameSocket(
           gameStatus: "ACTIVE",
           endReason: null,
           drawOfferedBy: null,
+          rematchOfferedBy: null,
+          rematchAcceptedId: null,
         }
       : null,
   );
@@ -123,6 +127,8 @@ export function useGameSocket(
               gameStatus: "ACTIVE",
               endReason: null,
               drawOfferedBy: data.drawOfferedBy,
+              rematchOfferedBy: null,
+              rematchAcceptedId: null,
             }));
           },
         );
@@ -198,6 +204,48 @@ export function useGameSocket(
               return {
                 ...prev,
                 drawOfferedBy: null,
+              };
+            });
+          },
+        );
+
+        socket.on(
+          "rematchOffered",
+          (data: { gameId: string; offeredBy: string }) => {
+            if (!isMounted) return;
+            setGameState((prev) => {
+              if (!prev) return null;
+              return {
+                ...prev,
+                rematchOfferedBy: data.offeredBy,
+              };
+            });
+          },
+        );
+
+        socket.on(
+          "rematchDeclined",
+          (data: { gameId: string; declinedBy: string }) => {
+            if (!isMounted) return;
+            setGameState((prev) => {
+              if (!prev) return null;
+              return {
+                ...prev,
+                rematchOfferedBy: "DECLINED",
+              };
+            });
+          },
+        );
+
+        socket.on(
+          "rematchAccepted",
+          (data: { gameId: string; newGameId: string }) => {
+            if (!isMounted) return;
+            setGameState((prev) => {
+              if (!prev) return null;
+              return {
+                ...prev,
+                rematchAcceptedId: data.newGameId,
               };
             });
           },
@@ -285,6 +333,36 @@ export function useGameSocket(
     });
   }, [gameId, isConnected, user]);
 
+  const offerRematch = useCallback(() => {
+    if (!socketRef.current || !isConnected || !user) return;
+    setError(null);
+    socketRef.current.emit("gameAction", {
+      gameId,
+      playerId: user.id,
+      action: "rematchOffer",
+    });
+  }, [gameId, isConnected, user]);
+
+  const declineRematch = useCallback(() => {
+    if (!socketRef.current || !isConnected || !user) return;
+    setError(null);
+    socketRef.current.emit("gameAction", {
+      gameId,
+      playerId: user.id,
+      action: "declineRematch",
+    });
+  }, [gameId, isConnected, user]);
+
+  const acceptRematch = useCallback(() => {
+    if (!socketRef.current || !isConnected || !user) return;
+    setError(null);
+    socketRef.current.emit("gameAction", {
+      gameId,
+      playerId: user.id,
+      action: "acceptRematch",
+    });
+  }, [gameId, isConnected, user]);
+
   const clearError = useCallback(() => {
     setError(null);
   }, []);
@@ -298,6 +376,9 @@ export function useGameSocket(
     declineDraw,
     acceptDraw,
     resign,
+    offerRematch,
+    declineRematch,
+    acceptRematch,
     clearError,
   };
 }
