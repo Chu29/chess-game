@@ -14,7 +14,12 @@ interface Props {
 
 export function HintModal({ visible, hint, error, onApply, onClose }: Props) {
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
@@ -45,11 +50,17 @@ export function HintModal({ visible, hint, error, onApply, onClose }: Props) {
 
           <View style={styles.actions}>
             {onApply && hint?.bestMove ? (
-              <Pressable onPress={onApply} style={[styles.actionBtn, styles.applyBtn]}>
+              <Pressable
+                onPress={onApply}
+                style={[styles.actionBtn, styles.applyBtn]}
+              >
                 <Text style={styles.applyText}>Apply Hint</Text>
               </Pressable>
             ) : null}
-            <Pressable onPress={onClose} style={[styles.actionBtn, styles.closeBtn]}>
+            <Pressable
+              onPress={onClose}
+              style={[styles.actionBtn, styles.closeBtn]}
+            >
               <Text style={styles.closeText}>Close</Text>
             </Pressable>
           </View>

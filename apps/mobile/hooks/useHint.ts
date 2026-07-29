@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
-import { aiApi, ApiError } from '../lib/api';
-import type { HintResponse } from '../lib/api';
+import { useCallback, useState } from "react";
+import { aiApi, ApiError } from "../lib/api";
+import type { HintResponse } from "../lib/api";
 
 interface UseHintOptions {
   gameId: string;
@@ -22,7 +22,7 @@ export function useHint({ gameId, maxHints = 5 }: UseHintOptions) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const requestHint = useCallback(
-    async (fen: string, player: 'white' | 'black') => {
+    async (fen: string, player: "white" | "black") => {
       if (remaining <= 0 || loading) return;
 
       setLoading(true);
@@ -34,7 +34,7 @@ export function useHint({ gameId, maxHints = 5 }: UseHintOptions) {
         setRemaining((r) => Math.max(0, r - 1));
         setModalVisible(true);
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : 'No hint available.');
+        setError(err instanceof ApiError ? err.message : "No hint available.");
         setModalVisible(true);
       } finally {
         setLoading(false);
@@ -55,5 +55,14 @@ export function useHint({ gameId, maxHints = 5 }: UseHintOptions) {
     setModalVisible(false);
   }, [maxHints]);
 
-  return { remaining, loading, hint, error, modalVisible, requestHint, closeModal, reset };
+  return {
+    remaining,
+    loading,
+    hint,
+    error,
+    modalVisible,
+    requestHint,
+    closeModal,
+    reset,
+  };
 }
