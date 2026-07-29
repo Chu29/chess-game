@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { colors } from "../constants/colors";
+import { useTheme } from "../context/ThemeContext";
 import { pieces, getPieceById } from "../data/pieces";
 import {
   PieceIllustration,
@@ -26,6 +26,7 @@ const TABS = ["Overview", "Movement", "Strategy", "Examples"];
 export function PieceDetailScreen() {
   const { pieceId } = useLocalSearchParams<{ pieceId: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
   const [activeId, setActiveId] = useState<string>(pieceId);
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -33,14 +34,20 @@ export function PieceDetailScreen() {
 
   if (!piece) {
     return (
-      <SafeAreaView style={[styles.safe, styles.center]}>
+      <SafeAreaView
+        style={[
+          styles.safe,
+          styles.center,
+          { backgroundColor: colors.background },
+        ]}
+      >
         <Text style={{ color: colors.textSecondary }}>Piece not found.</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <View style={styles.closeRow}>
         <Pressable
           onPress={() => router.back()}
@@ -49,7 +56,9 @@ export function PieceDetailScreen() {
           hitSlop={12}
           style={styles.closeButton}
         >
-          <Text style={styles.closeIcon}>✕</Text>
+          <Text style={[styles.closeIcon, { color: colors.textPrimary }]}>
+            ✕
+          </Text>
         </Pressable>
       </View>
 
@@ -59,9 +68,13 @@ export function PieceDetailScreen() {
       >
         <View style={styles.hero}>
           <PieceIllustration symbol={piece.symbol} size={180} variant="hero" />
-          <Text style={styles.pieceName}>{piece.name}</Text>
+          <Text style={[styles.pieceName, { color: colors.textPrimary }]}>
+            {piece.name}
+          </Text>
           {piece.value !== null && (
-            <Text style={styles.pieceValue}>Material Value: {piece.value}</Text>
+            <Text style={[styles.pieceValue, { color: colors.green }]}>
+              Material Value: {piece.value}
+            </Text>
           )}
         </View>
 
@@ -82,8 +95,15 @@ export function PieceDetailScreen() {
         </View>
 
         <View style={styles.movementBlock}>
-          <Text style={styles.movementTitle}>How to Move the {piece.name}</Text>
-          <Text style={styles.movementDescription}>
+          <Text style={[styles.movementTitle, { color: colors.textPrimary }]}>
+            How to Move the {piece.name}
+          </Text>
+          <Text
+            style={[
+              styles.movementDescription,
+              { color: colors.textSecondary },
+            ]}
+          >
             {piece.movement.description}
           </Text>
         </View>
@@ -103,7 +123,12 @@ export function PieceDetailScreen() {
         >
           {tabIndex === 0 && (
             <>
-              <Text style={styles.overviewSummary}>
+              <Text
+                style={[
+                  styles.overviewSummary,
+                  { color: colors.textSecondary },
+                ]}
+              >
                 {piece.overview.summary}
               </Text>
               <TipCard
@@ -182,7 +207,7 @@ export function PieceDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
+  safe: { flex: 1 },
   center: { alignItems: "center", justifyContent: "center" },
   closeRow: {
     flexDirection: "row",
@@ -196,11 +221,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  closeIcon: { color: colors.textPrimary, fontSize: 20, fontWeight: "600" },
+  closeIcon: { fontSize: 20, fontWeight: "600" },
   scrollContent: { paddingBottom: 48 },
   hero: { alignItems: "center", marginBottom: 8 },
   pieceName: {
-    color: colors.textPrimary,
     fontWeight: "800",
     fontSize: 32,
     letterSpacing: 2,
@@ -211,13 +235,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     marginTop: 4,
-    color: colors.accent,
   },
   switcherWrap: { marginTop: 16 },
   badgeRow: { alignItems: "center", marginBottom: 20 },
   movementBlock: { paddingHorizontal: 16, marginBottom: 20 },
   movementTitle: {
-    color: colors.textPrimary,
     fontSize: 20,
     fontWeight: "700",
     marginBottom: 8,
@@ -225,13 +247,11 @@ const styles = StyleSheet.create({
   movementDescription: {
     fontSize: 14,
     lineHeight: 21,
-    color: colors.textSecondary,
   },
   tabsWrap: { paddingHorizontal: 16, marginBottom: 20 },
   tabContent: { paddingHorizontal: 16 },
   overviewSummary: {
     fontSize: 14,
     marginBottom: 16,
-    color: colors.textSecondary,
   },
 });

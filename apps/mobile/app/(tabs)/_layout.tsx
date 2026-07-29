@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { colors } from "../../constants/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function TabsLayout() {
   return (
@@ -16,7 +16,6 @@ export default function TabsLayout() {
         options={
           {
             title: "Lobby",
-            // Custom properties for custom tab bar
             tabBarIconName: "home",
           } as any
         }
@@ -53,13 +52,22 @@ export default function TabsLayout() {
 }
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const bottomInset = insets.bottom > 0 ? insets.bottom : 4;
   const tabHeight = insets.bottom > 0 ? 58 + insets.bottom : 62;
 
   return (
     <View
-      style={[styles.tabBar, { height: tabHeight, paddingBottom: bottomInset }]}
+      style={[
+        styles.tabBar,
+        {
+          height: tabHeight,
+          paddingBottom: bottomInset,
+          backgroundColor: colors.card,
+          borderTopColor: colors.cardBorder,
+        },
+      ]}
     >
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
@@ -83,17 +91,20 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
           iconName = `${iconName}-outline`;
         }
 
+        const activeColor = colors.green;
+        const inactiveColor = colors.textSecondary;
+
         return (
           <Pressable key={route.key} onPress={onPress} style={styles.tabItem}>
             <Ionicons
               name={iconName as any}
               size={20}
-              color={isFocused ? colors.green : colors.textSecondary}
+              color={isFocused ? activeColor : inactiveColor}
             />
             <Text
               style={[
                 styles.tabLabel,
-                { color: isFocused ? colors.green : colors.textSecondary },
+                { color: isFocused ? activeColor : inactiveColor },
               ]}
             >
               {label}
@@ -109,9 +120,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     height: 62,
-    backgroundColor: "#080C0A",
     borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
     justifyContent: "space-around",
     alignItems: "center",
     paddingBottom: 4,

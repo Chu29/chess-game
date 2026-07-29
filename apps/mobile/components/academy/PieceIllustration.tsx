@@ -6,7 +6,7 @@ import Animated, {
   withSpring,
   withDelay,
 } from "react-native-reanimated";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   symbol: string;
@@ -22,6 +22,7 @@ export function PieceIllustration({
   delay = 0,
   variant = "card",
 }: Props) {
+  const { colors } = useTheme();
   const scale = useSharedValue(0.6);
   const opacity = useSharedValue(0);
 
@@ -59,11 +60,13 @@ export function PieceIllustration({
             width: glowSize,
             height: glowSize,
             borderRadius: glowSize / 2,
-            backgroundColor: colors.accentMuted,
+            backgroundColor: colors.green + "1A",
             opacity: 0.5,
           }}
         />
-        <Text style={{ fontSize: size * 0.5, color: "#8A8A8A" }}>{symbol}</Text>
+        <Text style={{ fontSize: size * 0.5, color: colors.textSecondary }}>
+          {symbol}
+        </Text>
       </Animated.View>
     );
   }
@@ -75,17 +78,17 @@ export function PieceIllustration({
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: colors.accentMuted,
+          backgroundColor: colors.green + "1A",
           alignItems: "center",
           justifyContent: "center",
           borderWidth: 1,
-          borderColor: colors.border,
+          borderColor: colors.cardBorder,
         },
         animatedStyle,
       ]}
       accessibilityRole="image"
     >
-      <Text style={{ fontSize: size * 0.42, color: colors.accent }}>
+      <Text style={{ fontSize: size * 0.42, color: colors.green }}>
         {symbol}
       </Text>
     </Animated.View>

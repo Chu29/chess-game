@@ -11,7 +11,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 
 interface Props {
   tabs: string[];
@@ -20,6 +20,7 @@ interface Props {
 }
 
 export function SegmentedTabs({ tabs, activeIndex, onChange }: Props) {
+  const { colors } = useTheme();
   const [segmentWidth, setSegmentWidth] = useState(0);
   const translateX = useSharedValue(0);
 
@@ -43,9 +44,24 @@ export function SegmentedTabs({ tabs, activeIndex, onChange }: Props) {
   }));
 
   return (
-    <View onLayout={onLayout} style={styles.container}>
+    <View
+      onLayout={onLayout}
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.cardBorder,
+        },
+      ]}
+    >
       {segmentWidth > 0 && (
-        <Animated.View style={[styles.indicator, indicatorStyle]} />
+        <Animated.View
+          style={[
+            styles.indicator,
+            indicatorStyle,
+            { backgroundColor: colors.green },
+          ]}
+        />
       )}
       {tabs.map((tab, index) => (
         <Pressable
@@ -79,9 +95,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 999,
     padding: 4,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
     position: "relative",
     overflow: "hidden",
   },
@@ -91,7 +105,6 @@ const styles = StyleSheet.create({
     bottom: 4,
     left: 4,
     borderRadius: 999,
-    backgroundColor: colors.accent,
   },
   tab: {
     flex: 1,

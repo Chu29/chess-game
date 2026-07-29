@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 import { ChessPiece } from "../../types/academy";
 
 interface Props {
@@ -10,8 +10,18 @@ interface Props {
 }
 
 export function PieceSwitcher({ pieces, activeId, onSelect }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.cardBorder,
+        },
+      ]}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -26,12 +36,18 @@ export function PieceSwitcher({ pieces, activeId, onSelect }: Props) {
               accessibilityRole="button"
               accessibilityState={{ selected: active }}
               accessibilityLabel={`Switch to ${piece.name}`}
-              style={[styles.pill, active && styles.pillActive]}
+              style={[
+                styles.pill,
+                active && {
+                  borderWidth: 2,
+                  borderColor: colors.green,
+                },
+              ]}
             >
               <Text
                 style={[
                   styles.glyph,
-                  { color: active ? colors.accent : colors.textTertiary },
+                  { color: active ? colors.green : colors.textSecondary },
                 ]}
               >
                 {piece.symbol}
@@ -52,9 +68,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
     marginBottom: 24,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
     maxWidth: "92%",
   },
   scrollContent: {
@@ -67,10 +81,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 4,
-  },
-  pillActive: {
-    borderWidth: 2,
-    borderColor: colors.accent,
   },
   glyph: {
     fontSize: 20,
