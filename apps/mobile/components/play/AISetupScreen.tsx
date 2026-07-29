@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { colors } from "../../constants/theme";
+import { useTheme } from "../../context/ThemeContext";
 import { AIDifficulty, PlayerColor } from "../../lib/api";
 
 interface DifficultyOption {
@@ -38,6 +38,7 @@ const DIFFICULTY_OPTIONS: DifficultyOption[] = [
 
 export default function AISetupScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const [difficulty, setDifficulty] = useState<AIDifficulty>("MEDIUM");
   const [playerColor, setPlayerColor] = useState<PlayerColor>("WHITE");
 
@@ -49,18 +50,24 @@ export default function AISetupScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
+          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
         </Pressable>
-        <Text style={styles.headerTitle}>Play vs AI</Text>
+        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+          Play vs AI
+        </Text>
         <View style={{ width: 24 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.sectionTitle}>Select Difficulty</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+          Select Difficulty
+        </Text>
 
         <View style={styles.optionsList}>
           {DIFFICULTY_OPTIONS.map((opt) => {
@@ -71,32 +78,74 @@ export default function AISetupScreen() {
                 onPress={() => setDifficulty(opt.key)}
                 style={[
                   styles.optionCard,
-                  isSelected && styles.selectedOptionCard,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: isSelected ? colors.green : colors.cardBorder,
+                  },
+                  isSelected && {
+                    backgroundColor: `${colors.green}15`,
+                  },
                 ]}
               >
                 <View style={styles.optionHeader}>
                   <View style={styles.labelRow}>
-                    <Text style={styles.optionLabel}>{opt.label}</Text>
-                    <View style={styles.eloBadge}>
-                      <Text style={styles.eloBadgeText}>{opt.elo} ELO</Text>
+                    <Text
+                      style={[
+                        styles.optionLabel,
+                        { color: colors.textPrimary },
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                    <View
+                      style={[
+                        styles.eloBadge,
+                        { backgroundColor: `${colors.green}20` },
+                      ]}
+                    >
+                      <Text
+                        style={[styles.eloBadgeText, { color: colors.green }]}
+                      >
+                        {opt.elo} ELO
+                      </Text>
                     </View>
                   </View>
                   <View
                     style={[
                       styles.radioCircle,
-                      isSelected && styles.radioCircleSelected,
+                      { borderColor: colors.textSecondary },
+                      isSelected && { borderColor: colors.green },
                     ]}
                   >
-                    {isSelected && <View style={styles.radioInnerCircle} />}
+                    {isSelected && (
+                      <View
+                        style={[
+                          styles.radioInnerCircle,
+                          { backgroundColor: colors.green },
+                        ]}
+                      />
+                    )}
                   </View>
                 </View>
-                <Text style={styles.optionDescription}>{opt.description}</Text>
+                <Text
+                  style={[
+                    styles.optionDescription,
+                    { color: colors.textSecondary },
+                  ]}
+                >
+                  {opt.description}
+                </Text>
               </Pressable>
             );
           })}
         </View>
 
-        <Text style={[styles.sectionTitle, { marginTop: 28 }]}>
+        <Text
+          style={[
+            styles.sectionTitle,
+            { color: colors.textPrimary, marginTop: 28 },
+          ]}
+        >
           Choose Your Side
         </Text>
 
@@ -105,7 +154,14 @@ export default function AISetupScreen() {
             onPress={() => setPlayerColor("WHITE")}
             style={[
               styles.colorCard,
-              playerColor === "WHITE" && styles.selectedColorCard,
+              {
+                backgroundColor: colors.card,
+                borderColor:
+                  playerColor === "WHITE" ? colors.green : colors.cardBorder,
+              },
+              playerColor === "WHITE" && {
+                backgroundColor: `${colors.green}15`,
+              },
             ]}
           >
             <View style={[styles.pieceIconCircle, styles.whitePieceCircle]}>
@@ -115,33 +171,71 @@ export default function AISetupScreen() {
                 color="#1C2418"
               />
             </View>
-            <Text style={styles.colorCardTitle}>White</Text>
-            <Text style={styles.colorCardSubtitle}>Moves First</Text>
+            <Text
+              style={[styles.colorCardTitle, { color: colors.textPrimary }]}
+            >
+              White
+            </Text>
+            <Text
+              style={[
+                styles.colorCardSubtitle,
+                { color: colors.textSecondary },
+              ]}
+            >
+              Moves First
+            </Text>
           </Pressable>
 
           <Pressable
             onPress={() => setPlayerColor("BLACK")}
             style={[
               styles.colorCard,
-              playerColor === "BLACK" && styles.selectedColorCard,
+              {
+                backgroundColor: colors.card,
+                borderColor:
+                  playerColor === "BLACK" ? colors.green : colors.cardBorder,
+              },
+              playerColor === "BLACK" && {
+                backgroundColor: `${colors.green}15`,
+              },
             ]}
           >
-            <View style={[styles.pieceIconCircle, styles.blackPieceCircle]}>
+            <View
+              style={[
+                styles.pieceIconCircle,
+                styles.blackPieceCircle,
+                { borderColor: colors.cardBorder },
+              ]}
+            >
               <MaterialCommunityIcons
                 name="chess-king"
                 size={32}
                 color="#F2F4F0"
               />
             </View>
-            <Text style={styles.colorCardTitle}>Black</Text>
-            <Text style={styles.colorCardSubtitle}>Moves Second</Text>
+            <Text
+              style={[styles.colorCardTitle, { color: colors.textPrimary }]}
+            >
+              Black
+            </Text>
+            <Text
+              style={[
+                styles.colorCardSubtitle,
+                { color: colors.textSecondary },
+              ]}
+            >
+              Moves Second
+            </Text>
           </Pressable>
         </View>
       </ScrollView>
 
       {/* Start Game Button */}
-      <View style={styles.footer}>
-        <Pressable onPress={handleStartGame} style={styles.startButton}>
+      <View style={[styles.footer, { borderTopColor: colors.cardBorder }]}>
+        <Pressable
+          onPress={handleStartGame}
+          style={[styles.startButton, { backgroundColor: colors.green }]}
+        >
           <Text style={styles.startButtonText}>Start Game</Text>
         </Pressable>
       </View>
@@ -152,7 +246,6 @@ export default function AISetupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     flexDirection: "row",
@@ -167,7 +260,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: colors.white,
   },
   content: {
     paddingHorizontal: 16,
@@ -177,22 +269,15 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: colors.white,
     marginBottom: 12,
   },
   optionsList: {
     gap: 10,
   },
   optionCard: {
-    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
-  },
-  selectedOptionCard: {
-    borderColor: colors.green,
-    backgroundColor: colors.greenDark,
   },
   optionHeader: {
     flexDirection: "row",
@@ -208,10 +293,8 @@ const styles = StyleSheet.create({
   optionLabel: {
     fontSize: 16,
     fontWeight: "700",
-    color: colors.white,
   },
   eloBadge: {
-    backgroundColor: colors.cardBorder,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
@@ -219,29 +302,22 @@ const styles = StyleSheet.create({
   eloBadgeText: {
     fontSize: 12,
     fontWeight: "600",
-    color: colors.green,
   },
   radioCircle: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: colors.textSecondary,
     alignItems: "center",
     justifyContent: "center",
-  },
-  radioCircleSelected: {
-    borderColor: colors.green,
   },
   radioInnerCircle: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: colors.green,
   },
   optionDescription: {
     fontSize: 13,
-    color: colors.textSecondary,
   },
   colorSelectorRow: {
     flexDirection: "row",
@@ -249,16 +325,10 @@ const styles = StyleSheet.create({
   },
   colorCard: {
     flex: 1,
-    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: colors.cardBorder,
-  },
-  selectedColorCard: {
-    borderColor: colors.green,
-    backgroundColor: colors.greenDark,
   },
   pieceIconCircle: {
     width: 56,
@@ -274,32 +344,27 @@ const styles = StyleSheet.create({
   blackPieceCircle: {
     backgroundColor: "#161B17",
     borderWidth: 1,
-    borderColor: colors.cardBorder,
   },
   colorCardTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: colors.white,
     marginBottom: 2,
   },
   colorCardSubtitle: {
     fontSize: 12,
-    color: colors.textSecondary,
   },
   footer: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
   },
   startButton: {
-    backgroundColor: colors.green,
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
   },
   startButtonText: {
-    color: colors.white,
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
   },
