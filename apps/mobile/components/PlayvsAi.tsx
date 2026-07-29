@@ -20,6 +20,8 @@ import {
   Game,
   MoveResponse,
 } from "../lib/api";
+import { useHint } from "../hooks/useHint";
+import { AIHintButton, HintLoading, HintModal } from "./ai-coach";
 
 export default function GameScreen() {
   const router = useRouter();
@@ -30,19 +32,19 @@ export default function GameScreen() {
     playerColor?: PlayerColor;
   }>();
 
+  const difficulty: AIDifficulty = params.difficulty ?? "MEDIUM";
+  const playerColor: PlayerColor = params.playerColor ?? "WHITE";
+
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
-  const [makingMove, setMakingMove] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [gameResult, setGameResult] = useState<string | null>(null);
   const [winner, setWinner] = useState<PlayerColor | null>(null);
+  const [makingMove, setMakingMove] = useState(false);
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null,
   );
-
-  const difficulty = (params.difficulty as AIDifficulty) || "MEDIUM";
-  const playerColor = (params.playerColor as PlayerColor) || "WHITE";
 
   const createGame = useCallback(async () => {
     try {
@@ -134,6 +136,16 @@ export default function GameScreen() {
       setError("Failed to offer draw");
     }
   };
+
+  const {
+    remaining: hintsRemaining,
+    loading: hintLoading,
+    hint,
+    error: hintError,
+    modalVisible: hintModalVisible,
+    requestHint,
+    closeModal: closeHintModal,
+  } = useHint({ gameId: game?.id ?? "" });
 
   if (loading) {
     return (
@@ -288,16 +300,10 @@ export default function GameScreen() {
           <ChessBoard
             fen={game.fen}
             playerColor={playerColor}
-            onMove={handleMove}
-            interactive={isMyTurn && !gameOver && !makingMove}
             lastMove={lastMove}
+            onMove={handleMove}
+            interactive={isMyTurn && !makingMove && !gameOver}
           />
-          {makingMove && (
-            <View style={styles.loadingOverlay}>
-              <ActivityIndicator color={colors.green} size="large" />
-              <Text style={styles.loadingOverlayText}>AI thinking...</Text>
-            </View>
-          )}
         </View>
 
         {/* Player Box */}
@@ -377,7 +383,7 @@ export default function GameScreen() {
             ]}
           >
             <Text style={[styles.clockText, { color: colors.green }]}>
-              Casual
+              00:00
             </Text>
           </View>
         </View>
@@ -438,6 +444,24 @@ export default function GameScreen() {
           )}
         </View>
       </View>
+
+      {/* AI Coach */}
+      {!gameOver && (
+        <AIHintButton
+          remaining={hintsRemaining}
+          loading={hintLoading}
+          onPress={() =>
+            requestHint(game.fen, playerColor === "WHITE" ? "white" : "black")
+          }
+        />
+      )}
+      <HintLoading visible={hintLoading} />
+      <HintModal
+        visible={hintModalVisible}
+        hint={hint}
+        error={hintError}
+        onClose={closeHintModal}
+      />
     </SafeAreaView>
   );
 }
