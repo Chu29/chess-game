@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -8,46 +8,61 @@ import {
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../context/ThemeContext";
+import { usersApi, UserStats, UserRank, RecentGame } from "../../lib/usersApi";
 
-interface GameHistory {
-  id: string;
-  opponent: string;
-  details: string;
-  outcome: "WIN" | "LOSS" | "DRAW";
-  eloChange: string;
-  getOutcomeColor: (colors: any) => string;
+function formatGameMeta(game: RecentGame) {
+  const date = new Date(game.endedAt);
+  const dateLabel = date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+  const modeLabel = game.mode === "AI" ? "vs AI" : "Blitz";
+  return `${dateLabel} · ${modeLabel}`;
 }
 
-const RECENT_GAMES: GameHistory[] = [
-  {
-    id: "1",
-    opponent: "Magnus_2024",
-    details: "2h ago • Blitz",
-    outcome: "WIN",
-    eloChange: "+12 ELO",
-    getOutcomeColor: (colors) => colors.green,
-  },
-  {
-    id: "2",
-    opponent: "QueenGambit_9",
-    details: "Yesterday • Rapid",
-    outcome: "LOSS",
-    eloChange: "-8 ELO",
-    getOutcomeColor: () => "#D9534F",
-  },
-  {
-    id: "3",
-    opponent: "DeepBlue_Bot",
-    details: "3 days ago • AI",
-    outcome: "DRAW",
-    eloChange: "0 ELO",
-    getOutcomeColor: (colors) => colors.textSecondary,
-  },
-];
+function getResultColor(result: "WIN" | "LOSS" | "DRAW", colors: any) {
+  if (result === "WIN") return colors.green;
+  if (result === "LOSS") return "#D9534F";
+  return colors.textSecondary;
+}
 
 export default function LobbyScreen() {
   const router = useRouter();
   const { colors } = useTheme();
+
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [rank, setRank] = useState<UserRank | null>(null);
+  const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadLobbyData = async () => {
+      try {
+        const [statsResult, rankResult, gamesResult] = await Promise.all([
+          usersApi.getStats(),
+          usersApi.getRank(),
+          usersApi.getRecentGames(3),
+        ]);
+        if (isMounted) {
+          setStats(statsResult);
+          setRank(rankResult);
+          setRecentGames(gamesResult);
+        }
+      } catch (err) {
+        console.error("Failed to load lobby data:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void loadLobbyData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <SafeAreaView
@@ -71,7 +86,7 @@ export default function LobbyScreen() {
               CURRENT RANKING
             </Text>
             <Text style={[styles.statsValueLarge, { color: colors.green }]}>
-              #1,204
+              {loading ? "—" : `#${(rank?.rank ?? 0).toLocaleString()}`}
             </Text>
           </View>
           <View
@@ -95,7 +110,7 @@ export default function LobbyScreen() {
               WIN RATE
             </Text>
             <Text style={[styles.statsValueMedium, { color: colors.green }]}>
-              64% ↗
+              {loading ? "—" : `${stats?.winRate ?? 0}%`}
             </Text>
           </View>
           <View
@@ -110,7 +125,7 @@ export default function LobbyScreen() {
             <Text
               style={[styles.statsValueMedium, { color: colors.textPrimary }]}
             >
-              342
+              {loading ? "—" : (stats?.gamesPlayed ?? 0)}
             </Text>
           </View>
         </View>
@@ -145,7 +160,7 @@ export default function LobbyScreen() {
 
         <View style={styles.rowGrid}>
           <Pressable
-            onPress={() => router.push("/play/ai-setup")}
+            onPress={() => router.push("/play/ai")}
             style={[
               styles.actionCard,
               {
@@ -207,9 +222,15 @@ export default function LobbyScreen() {
           </Text>
         </View>
 
+        {!loading && recentGames.length === 0 && (
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No games played yet.
+          </Text>
+        )}
+
         <View style={styles.gameHistoryList}>
-          {RECENT_GAMES.map((game) => {
-            const outcomeColor = game.getOutcomeColor(colors);
+          {recentGames.map((game) => {
+            const outcomeColor = getResultColor(game.result, colors);
             return (
               <View
                 key={game.id}
@@ -243,7 +264,7 @@ export default function LobbyScreen() {
                         { color: colors.textSecondary },
                       ]}
                     >
-                      {game.details}
+                      {formatGameMeta(game)}
                     </Text>
                   </View>
                 </View>
@@ -255,7 +276,7 @@ export default function LobbyScreen() {
                     ]}
                   >
                     <Text style={[styles.outcomeText, { color: outcomeColor }]}>
-                      {game.outcome}
+                      {game.result}
                     </Text>
                   </View>
                   <Text
@@ -264,7 +285,7 @@ export default function LobbyScreen() {
                       { color: colors.textSecondary },
                     ]}
                   >
-                    {game.eloChange}
+                    —
                   </Text>
                 </View>
               </View>
@@ -374,6 +395,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
+  emptyText: { fontSize: 13, marginTop: 4 },
   gameHistoryList: { marginTop: 12 },
   gameRow: {
     flexDirection: "row",

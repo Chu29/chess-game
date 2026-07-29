@@ -1,44 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { ThemeSwitch } from "../../components/ThemeSwitch";
+import { usersApi, UserStats, RecentGame } from "../../lib/usersApi";
 
-const mockProfile = {
-  name: "Grandmaster-K",
-  rating: 1848,
-  totalGames: 1402,
-  wins: 842,
-  losses: 410,
-  draws: 150,
-  winRate: 60.1,
-};
-
-const mockRecentMatches = [
-  {
-    id: "1",
-    opponent: "Magnus_2O",
-    meta: "Oct 12 · Blitz",
-    result: "WIN" as const,
-    eloChange: "+12",
-  },
-  {
-    id: "2",
-    opponent: "ChessMaster99",
-    meta: "Oct 11 · Rapid",
-    result: "LOSS" as const,
-    eloChange: "-8",
-  },
-  {
-    id: "3",
-    opponent: "DeepThinking",
-    meta: "Oct 10 · Rapid",
-    result: "DRAW" as const,
-    eloChange: "0",
-  },
-];
+function formatGameMeta(game: RecentGame) {
+  const date = new Date(game.endedAt);
+  const dateLabel = date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+  const modeLabel = game.mode === "AI" ? "vs AI" : "Blitz";
+  return `${dateLabel} · ${modeLabel}`;
+}
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
@@ -50,6 +27,37 @@ export default function ProfileScreen() {
     return colors.draw;
   }
 
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfileData = async () => {
+      try {
+        const [statsResult, gamesResult] = await Promise.all([
+          usersApi.getStats(),
+          usersApi.getRecentGames(5),
+        ]);
+        if (isMounted) {
+          setStats(statsResult);
+          setRecentGames(gamesResult);
+        }
+      } catch (err) {
+        console.error("Failed to load profile data:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void loadProfileData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -60,8 +68,9 @@ export default function ProfileScreen() {
         >
           <Ionicons name="person" size={40} color={colors.green} />
         </View>
+
         <Text style={[styles.name, { color: colors.textPrimary }]}>
-          {user?.username ?? mockProfile.name}
+          {user?.username ?? "Player"}
         </Text>
 
         <View
@@ -74,7 +83,7 @@ export default function ProfileScreen() {
           <Text
             style={[styles.ratingPillText, { color: colors.textSecondary }]}
           >
-            {user?.rating ?? mockProfile.rating} ELO
+            {user?.rating ?? 0} ELO
           </Text>
         </View>
 
@@ -88,7 +97,7 @@ export default function ProfileScreen() {
             TOTAL GAMES
           </Text>
           <Text style={[styles.totalValue, { color: colors.textPrimary }]}>
-            {mockProfile.totalGames.toLocaleString()}
+            {loading ? "—" : (stats?.gamesPlayed ?? 0).toLocaleString()}
           </Text>
         </View>
 
@@ -100,7 +109,7 @@ export default function ProfileScreen() {
             ]}
           >
             <Text style={[styles.statValue, { color: colors.win }]}>
-              {mockProfile.wins}
+              {loading ? "—" : (stats?.wins ?? 0)}
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
               WINS
@@ -113,7 +122,7 @@ export default function ProfileScreen() {
             ]}
           >
             <Text style={[styles.statValue, { color: colors.loss }]}>
-              {mockProfile.losses}
+              {loading ? "—" : (stats?.losses ?? 0)}
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
               LOSSES
@@ -126,7 +135,7 @@ export default function ProfileScreen() {
             ]}
           >
             <Text style={[styles.statValue, { color: colors.textPrimary }]}>
-              {mockProfile.draws}
+              {loading ? "—" : (stats?.draws ?? 0)}
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
               DRAWS
@@ -139,7 +148,7 @@ export default function ProfileScreen() {
             ]}
           >
             <Text style={[styles.statValue, { color: colors.green }]}>
-              {mockProfile.winRate}%
+              {loading ? "—" : `${stats?.winRate ?? 0}%`}
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
               WIN RATE
@@ -156,9 +165,15 @@ export default function ProfileScreen() {
           </Text>
         </View>
 
-        {mockRecentMatches.map((match) => (
+        {!loading && recentGames.length === 0 && (
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No games played yet.
+          </Text>
+        )}
+
+        {recentGames.map((game) => (
           <View
-            key={match.id}
+            key={game.id}
             style={[
               styles.matchRow,
               { backgroundColor: colors.card, borderColor: colors.cardBorder },
@@ -168,23 +183,23 @@ export default function ProfileScreen() {
               <Text
                 style={[styles.matchOpponent, { color: colors.textPrimary }]}
               >
-                {match.opponent}
+                {game.opponent}
               </Text>
               <Text style={[styles.matchMeta, { color: colors.textSecondary }]}>
-                {match.meta}
+                {formatGameMeta(game)}
               </Text>
             </View>
             <View style={{ alignItems: "flex-end" }}>
               <Text
                 style={[
                   styles.matchResult,
-                  { color: resultColor(match.result) },
+                  { color: resultColor(game.result) },
                 ]}
               >
-                {match.result}
+                {game.result}
               </Text>
               <Text style={[styles.matchElo, { color: colors.textSecondary }]}>
-                {match.eloChange} ELO
+                —
               </Text>
             </View>
           </View>
@@ -293,6 +308,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 13, fontWeight: "600" },
   viewAll: { fontSize: 12, fontWeight: "600" },
+  emptyText: { fontSize: 13, marginBottom: 10 },
   matchRow: {
     flexDirection: "row",
     justifyContent: "space-between",
