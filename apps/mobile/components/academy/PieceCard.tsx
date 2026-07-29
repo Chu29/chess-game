@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { ChessPiece } from "../../types/academy";
-import { colors } from "../../constants/colors";
+import { useTheme } from "../../context/ThemeContext";
 import { PieceIllustration } from "./PieceIllustration";
 
 interface Props {
@@ -12,6 +12,8 @@ interface Props {
 }
 
 export function PieceCard({ piece, index = 0, onPress }: Props) {
+  const { colors } = useTheme();
+
   return (
     <Animated.View
       entering={FadeInDown.delay(index * 60).duration(400)}
@@ -21,7 +23,13 @@ export function PieceCard({ piece, index = 0, onPress }: Props) {
         onPress={() => onPress(piece)}
         accessibilityRole="button"
         accessibilityLabel={`${piece.name}, ${piece.tagline}`}
-        style={styles.card}
+        style={[
+          styles.card,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.cardBorder,
+          },
+        ]}
       >
         <View style={styles.illustrationWrap}>
           <PieceIllustration
@@ -30,11 +38,18 @@ export function PieceCard({ piece, index = 0, onPress }: Props) {
             delay={index * 60}
           />
         </View>
-        <Text style={styles.name}>{piece.name}</Text>
+        <Text style={[styles.name, { color: colors.textPrimary }]}>
+          {piece.name}
+        </Text>
         {piece.value !== null && (
-          <Text style={styles.value}>Value: {piece.value}</Text>
+          <Text style={[styles.value, { color: colors.green }]}>
+            Value: {piece.value}
+          </Text>
         )}
-        <Text style={styles.tagline} numberOfLines={2}>
+        <Text
+          style={[styles.tagline, { color: colors.textSecondary }]}
+          numberOfLines={2}
+        >
           {piece.tagline}
         </Text>
       </Pressable>
@@ -52,15 +67,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     minHeight: 44,
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
   },
   illustrationWrap: {
     alignItems: "center",
     marginBottom: 12,
   },
   name: {
-    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: "700",
     textAlign: "center",
@@ -70,12 +82,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     marginTop: 2,
-    color: colors.accent,
   },
   tagline: {
     textAlign: "center",
     fontSize: 12,
     marginTop: 8,
-    color: colors.textSecondary,
   },
 });

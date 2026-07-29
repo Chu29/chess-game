@@ -2,21 +2,28 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { colors } from "../constants/theme";
+import { useTheme } from "../context/ThemeContext";
 import { OptionCard } from "../components/play/OptionCard";
 
 export function PlayScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chuvinjab Chess</Text>
+        <Text style={[styles.headerTitle, { color: colors.green }]}>
+          Chuvinjab Chess
+        </Text>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.heading}>Ready to play?</Text>
-        <Text style={styles.subheading}>
+        <Text style={[styles.heading, { color: colors.textPrimary }]}>
+          Ready to play?
+        </Text>
+        <Text style={[styles.subheading, { color: colors.textSecondary }]}>
           Choose how you'd like to start your next game.
         </Text>
 
@@ -44,7 +51,6 @@ export function PlayScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 16,
@@ -53,7 +59,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 19,
     fontWeight: "800",
-    color: colors.green,
     letterSpacing: 0.5,
     textAlign: "center",
   },
@@ -63,13 +68,11 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   heading: {
-    color: colors.white,
     fontSize: 26,
     fontWeight: "800",
     marginBottom: 6,
   },
   subheading: {
-    color: colors.textSecondary,
     fontSize: 14,
     marginBottom: 24,
   },

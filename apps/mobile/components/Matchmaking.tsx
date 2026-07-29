@@ -17,22 +17,10 @@ import Animated, {
   withSequence,
   Easing,
 } from "react-native-reanimated";
+import { useTheme } from "../context/ThemeContext";
 import { MOCK_OPPONENT_PROFILES } from "../data/mockOpponents";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-
-const colors = {
-  background: "#151310",
-  surface: "#1E1B18",
-  surfaceContainerHigh: "#2C2927",
-  surfaceContainerLow: "#1E1B18",
-  primary: "#9FD668",
-  secondary: "#A1C9FF",
-  textOnSurface: "#E8E1DC",
-  textOnSurfaceVariant: "#C2C9B6",
-  softRed: "#FF5F5F",
-  outlineVariant: "rgba(255, 255, 255, 0.05)",
-};
 
 interface MatchmakingScreenProps {
   onCancel: () => void;
@@ -45,6 +33,7 @@ export default function MatchmakingScreen({
   ratingRange,
   timeControlLabel = "Blitz • 3 | 2",
 }: MatchmakingScreenProps) {
+  const { colors } = useTheme();
   const [seconds, setSeconds] = useState(0);
   const [scanIndex, setScanIndex] = useState(0);
 
@@ -147,23 +136,48 @@ export default function MatchmakingScreen({
   const scanningProfile = MOCK_OPPONENT_PROFILES[scanIndex];
 
   return (
-    <View style={styles.masterWrapper}>
+    <View
+      style={[styles.masterWrapper, { backgroundColor: colors.background }]}
+    >
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.topBar}>
           <View style={styles.topBarLeft}>
             <Pressable style={styles.circularIconButton} onPress={onCancel}>
-              <Ionicons name="arrow-back" size={22} color={colors.primary} />
+              <Ionicons name="arrow-back" size={22} color={colors.green} />
             </Pressable>
-            <Text style={styles.topBarTitle}>Chuvinjab Chess</Text>
+            <Text style={[styles.topBarTitle, { color: colors.green }]}>
+              Chuvinjab Chess
+            </Text>
           </View>
         </View>
 
         <View style={styles.centerCanvas}>
           <View style={styles.radarWrapper}>
-            <Animated.View style={[styles.radarRing, animatedRing1Style]} />
-            <Animated.View style={[styles.radarRing, animatedRing2Style]} />
+            <Animated.View
+              style={[
+                styles.radarRing,
+                { borderColor: `${colors.green}40` },
+                animatedRing1Style,
+              ]}
+            />
+            <Animated.View
+              style={[
+                styles.radarRing,
+                { borderColor: `${colors.green}40` },
+                animatedRing2Style,
+              ]}
+            />
 
-            <Animated.View style={[styles.centralAnchor, animatedAnchorStyle]}>
+            <Animated.View
+              style={[
+                styles.centralAnchor,
+                {
+                  backgroundColor: colors.card,
+                  borderColor: colors.cardBorder,
+                },
+                animatedAnchorStyle,
+              ]}
+            >
               <Image
                 source={{ uri: scanningProfile.avatarUrl }}
                 style={styles.orbitAvatarImage}
@@ -173,29 +187,69 @@ export default function MatchmakingScreen({
             <Animated.View
               style={[StyleSheet.absoluteFill, animatedOrbitStyle]}
             >
-              <View style={styles.orbitAvatar}></View>
+              <View style={styles.orbitAvatar} />
             </Animated.View>
           </View>
         </View>
 
         <View style={styles.statusBlock}>
-          <Text style={styles.statusHeading}>Finding your opponent...</Text>
+          <Text style={[styles.statusHeading, { color: colors.textPrimary }]}>
+            Finding your opponent...
+          </Text>
 
-          <View style={styles.scanCard}>
+          <View
+            key={scanningProfile.username}
+            style={[
+              styles.scanCard,
+              {
+                backgroundColor: colors.card,
+                borderColor: `${colors.green}40`,
+              },
+            ]}
+          >
             <Image
               source={{ uri: scanningProfile.avatarUrl }}
               style={styles.scanAvatarImage}
             />
-            <Text style={styles.scanName}>{scanningProfile.username}</Text>
-            <Text style={styles.scanDot}>·</Text>
-            <Text style={styles.scanRating}>{scanningProfile.rating}</Text>
+            <Text style={[styles.scanName, { color: colors.textPrimary }]}>
+              {scanningProfile.username}
+            </Text>
+            <Text style={[styles.scanDot, { color: colors.textSecondary }]}>
+              ·
+            </Text>
+            <Text style={[styles.scanRating, { color: colors.green }]}>
+              {scanningProfile.rating}
+            </Text>
           </View>
+
           <View style={styles.badgeRow}>
-            <View style={styles.metaBadge}>
-              <Text style={styles.metaBadgeText}>{timeControlLabel}</Text>
+            <View
+              style={[
+                styles.metaBadge,
+                {
+                  backgroundColor: colors.card,
+                  borderColor: colors.cardBorder,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.metaBadgeText, { color: colors.textSecondary }]}
+              >
+                {timeControlLabel}
+              </Text>
             </View>
-            <View style={styles.metaBadge}>
-              <Text style={styles.metaBadgeText}>
+            <View
+              style={[
+                styles.metaBadge,
+                {
+                  backgroundColor: colors.card,
+                  borderColor: colors.cardBorder,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.metaBadgeText, { color: colors.textSecondary }]}
+              >
                 {ratingRange
                   ? `${ratingRange.min} - ${ratingRange.max} ELO`
                   : "Matching by rating…"}
@@ -204,31 +258,53 @@ export default function MatchmakingScreen({
           </View>
 
           <View style={styles.bentoContainer}>
-            <View style={styles.glassCard}>
-              <Text style={styles.glassCardLabel}>ESTIMATED</Text>
-              <Text style={[styles.glassCardValue, { color: colors.primary }]}>
+            <View
+              style={[
+                styles.glassCard,
+                {
+                  backgroundColor: colors.card,
+                  borderColor: colors.cardBorder,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.glassCardLabel, { color: colors.textSecondary }]}
+              >
+                ESTIMATED
+              </Text>
+              <Text style={[styles.glassCardValue, { color: colors.green }]}>
                 {formatTime(seconds)}
               </Text>
             </View>
-            <View style={styles.glassCard}>
-              <Text style={styles.glassCardLabel}>ONLINE</Text>
+            <View
+              style={[
+                styles.glassCard,
+                {
+                  backgroundColor: colors.card,
+                  borderColor: colors.cardBorder,
+                },
+              ]}
+            >
               <Text
-                style={[styles.glassCardValue, { color: colors.secondary }]}
+                style={[styles.glassCardLabel, { color: colors.textSecondary }]}
               >
+                ONLINE
+              </Text>
+              <Text style={[styles.glassCardValue, { color: "#5B9BD5" }]}>
                 {formatOnlineCount(onlineCount)}
               </Text>
             </View>
           </View>
 
-          <View style={styles.tipBox}>
+          <View style={[styles.tipBox, { backgroundColor: colors.card }]}>
             <Ionicons
               name="bulb"
               size={20}
-              color={colors.primary}
+              color={colors.green}
               style={styles.tipIcon}
             />
-            <Text style={styles.tipText}>
-              <Text style={{ color: colors.textOnSurface, fontWeight: "700" }}>
+            <Text style={[styles.tipText, { color: colors.textSecondary }]}>
+              <Text style={{ color: colors.textPrimary, fontWeight: "700" }}>
                 Grandmaster Tip:{" "}
               </Text>
               Controlling the center in the opening gives your pieces more
@@ -242,11 +318,14 @@ export default function MatchmakingScreen({
             onPress={onCancel}
             style={({ pressed }) => [
               styles.tactileCancelButton,
+              { backgroundColor: colors.cardBorder },
               pressed && styles.tactileCancelButtonPressed,
             ]}
           >
-            <Ionicons name="close" size={20} color={colors.softRed} />
-            <Text style={styles.cancelText}>Cancel Search</Text>
+            <Ionicons name="close" size={20} color="#FF5F5F" />
+            <Text style={[styles.cancelText, { color: colors.textPrimary }]}>
+              Cancel Search
+            </Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -255,7 +334,7 @@ export default function MatchmakingScreen({
 }
 
 const styles = StyleSheet.create({
-  masterWrapper: { flex: 1, backgroundColor: colors.background },
+  masterWrapper: { flex: 1 },
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -272,7 +351,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  topBarTitle: { color: colors.primary, fontSize: 22, fontWeight: "700" },
+  topBarTitle: { fontSize: 22, fontWeight: "700" },
   centerCanvas: { flex: 1, alignItems: "center", justifyContent: "center" },
   radarWrapper: {
     width: SCREEN_WIDTH * 0.75,
@@ -287,19 +366,15 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 55,
     borderWidth: 2,
-    borderColor: "rgba(159, 214, 104, 0.3)",
   },
   centralAnchor: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: colors.surfaceContainerHigh,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: colors.outlineVariant,
     elevation: 8,
-    boxShadow: "0px 10px 12px rgba(0,0,0,0.3)",
   },
   orbitAvatar: {
     position: "absolute",
@@ -322,7 +397,6 @@ const styles = StyleSheet.create({
   },
   statusBlock: { paddingHorizontal: 24, alignItems: "center" },
   statusHeading: {
-    color: colors.textOnSurface,
     fontSize: 24,
     fontWeight: "700",
     textAlign: "center",
@@ -332,28 +406,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: "rgba(159, 214, 104, 0.3)",
     borderRadius: 14,
     paddingVertical: 8,
     paddingHorizontal: 14,
     marginBottom: 14,
   },
-  scanName: { color: colors.textOnSurface, fontSize: 14, fontWeight: "600" },
-  scanDot: { color: "#5F5E5A", fontSize: 13 },
-  scanRating: { color: colors.primary, fontSize: 14, fontWeight: "600" },
+  scanName: { fontSize: 14, fontWeight: "600" },
+  scanDot: { fontSize: 13 },
+  scanRating: { fontSize: 14, fontWeight: "600" },
   badgeRow: { flexDirection: "row", gap: 8, marginBottom: 24 },
   metaBadge: {
-    backgroundColor: colors.surface,
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.outlineVariant,
   },
   metaBadgeText: {
-    color: colors.textOnSurfaceVariant,
     fontSize: 13,
     fontWeight: "500",
   },
@@ -366,16 +435,13 @@ const styles = StyleSheet.create({
   },
   glassCard: {
     flex: 1,
-    backgroundColor: "rgba(44, 41, 39, 0.6)",
     borderRadius: 16,
     paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: colors.outlineVariant,
   },
   glassCardLabel: {
-    color: colors.textOnSurfaceVariant,
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1,
@@ -384,7 +450,6 @@ const styles = StyleSheet.create({
   glassCardValue: { fontSize: 24, fontWeight: "700" },
   tipBox: {
     flexDirection: "row",
-    backgroundColor: colors.surfaceContainerLow,
     padding: 16,
     borderRadius: 16,
     width: "100%",
@@ -394,7 +459,6 @@ const styles = StyleSheet.create({
   },
   tipIcon: { marginRight: 10, marginTop: 2 },
   tipText: {
-    color: colors.textOnSurfaceVariant,
     fontSize: 12,
     lineHeight: 18,
     flex: 1,
@@ -410,7 +474,6 @@ const styles = StyleSheet.create({
     maxWidth: 360,
     alignSelf: "center",
     height: 54,
-    backgroundColor: colors.surfaceContainerHigh,
     borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
@@ -419,7 +482,6 @@ const styles = StyleSheet.create({
   },
   tactileCancelButtonPressed: {
     transform: [{ translateY: 2 }],
-    borderBottomWidth: 1,
   },
-  cancelText: { color: colors.textOnSurface, fontSize: 16, fontWeight: "700" },
+  cancelText: { fontSize: 16, fontWeight: "700" },
 });
