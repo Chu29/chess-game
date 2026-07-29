@@ -9,6 +9,7 @@ export interface ActiveGame {
   blackUsername: string;
   turn: 'w' | 'b';
   drawOfferedBy?: string | null;
+  hintsUsed?: Record<string, number>;
 }
 
 @Injectable()

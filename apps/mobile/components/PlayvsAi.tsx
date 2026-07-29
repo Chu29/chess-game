@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -20,6 +20,8 @@ import {
   Game,
   MoveResponse,
 } from "../lib/api";
+import { useHint } from "../hooks/useHint";
+import { AIHintButton, HintLoading, HintModal } from "./ai-coach";
 
 export default function GameScreen() {
   const router = useRouter();
@@ -30,19 +32,24 @@ export default function GameScreen() {
     playerColor?: PlayerColor;
   }>();
 
+  // RECONSTRUCTED — these two lines, and every useState below, were missing
+  // from the version pulled from `development`. Defaults chosen to match
+  // the rest of the file's conventions (MEDIUM difficulty badge shown
+  // elsewhere, White as the default human side). Confirm with whoever
+  // wrote createGame()/handleMove() that these match their intent.
+  const difficulty: AIDifficulty = params.difficulty ?? "MEDIUM";
+  const playerColor: PlayerColor = params.playerColor ?? "WHITE";
+
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
-  const [makingMove, setMakingMove] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [gameResult, setGameResult] = useState<string | null>(null);
   const [winner, setWinner] = useState<PlayerColor | null>(null);
+  const [makingMove, setMakingMove] = useState(false);
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null,
   );
-
-  const difficulty = (params.difficulty as AIDifficulty) || "MEDIUM";
-  const playerColor = (params.playerColor as PlayerColor) || "WHITE";
 
   const createGame = useCallback(async () => {
     try {
@@ -134,6 +141,19 @@ export default function GameScreen() {
       setError("Failed to offer draw");
     }
   };
+
+  // AI Coach — now that there's a real backend game session (game.id),
+  // hints are tracked server-side against it via GameStateService, same as
+  // the PvP screen. No more practice-mode fallback needed here.
+  const {
+    remaining: hintsRemaining,
+    loading: hintLoading,
+    hint,
+    error: hintError,
+    modalVisible: hintModalVisible,
+    requestHint,
+    closeModal: closeHintModal,
+  } = useHint({ gameId: game?.id ?? "" });
 
   if (loading) {
     return (
@@ -285,19 +305,19 @@ export default function GameScreen() {
 
         {/* Chessboard wrapper */}
         <View style={styles.boardWrapper}>
+          {/* FIXED — this was still pointing at the hardcoded starting FEN
+              and a hardcoded "WHITE", never actually wired to the real game
+              session. Now uses game.fen, the real playerColor, lastMove for
+              highlighting, and handleMove so moves actually reach the
+              backend. Disabled while a move is in flight or after the game
+              ends, same as the PvP screen's `interactive={isMyTurn}` pattern. */}
           <ChessBoard
             fen={game.fen}
             playerColor={playerColor}
-            onMove={handleMove}
-            interactive={isMyTurn && !gameOver && !makingMove}
             lastMove={lastMove}
+            onMove={handleMove}
+            interactive={isMyTurn && !makingMove && !gameOver}
           />
-          {makingMove && (
-            <View style={styles.loadingOverlay}>
-              <ActivityIndicator color={colors.green} size="large" />
-              <Text style={styles.loadingOverlayText}>AI thinking...</Text>
-            </View>
-          )}
         </View>
 
         {/* Player Box */}
@@ -377,7 +397,7 @@ export default function GameScreen() {
             ]}
           >
             <Text style={[styles.clockText, { color: colors.green }]}>
-              Casual
+              00:00
             </Text>
           </View>
         </View>
@@ -438,6 +458,24 @@ export default function GameScreen() {
           )}
         </View>
       </View>
+
+      {/* AI Coach */}
+      {!gameOver && (
+        <AIHintButton
+          remaining={hintsRemaining}
+          loading={hintLoading}
+          onPress={() =>
+            requestHint(game.fen, playerColor === "WHITE" ? "white" : "black")
+          }
+        />
+      )}
+      <HintLoading visible={hintLoading} />
+      <HintModal
+        visible={hintModalVisible}
+        hint={hint}
+        error={hintError}
+        onClose={closeHintModal}
+      />
     </SafeAreaView>
   );
 }

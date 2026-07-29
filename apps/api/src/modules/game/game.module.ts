@@ -13,5 +13,6 @@ import { ReconnectHandler } from '../../game-gateway/handlers/reconnect.handler'
     GameActionHandler,
     ReconnectHandler,
   ],
+  exports: [GameStateService],
 })
 export class GameModule {}

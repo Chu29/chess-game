@@ -11,6 +11,12 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ChessBoard from "../../components/game/ChessBoard";
 import { useGameSocket } from "../../hooks/useGameSocket";
+import { useHint } from "../../hooks/useHint";
+import {
+  AIHintButton,
+  HintLoading,
+  HintModal,
+} from "../../components/ai-coach";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -44,6 +50,28 @@ export default function GameScreen() {
     whiteUsername: params.whiteUsername,
     blackUsername: params.blackUsername,
   });
+
+  // AI Coach — real game session, so hints are tracked server-side against
+  // this gameId via GameStateService.
+  const {
+    remaining: hintsRemaining,
+    loading: hintLoading,
+    hint,
+    error: hintError,
+    modalVisible: hintModalVisible,
+    requestHint,
+    closeModal: closeHintModal,
+  } = useHint({ gameId: params.gameId });
+
+  // Debug: log initial params
+  console.log("Game params:", {
+    gameId: params.gameId,
+    whiteUsername: params.whiteUsername,
+    blackUsername: params.blackUsername,
+  });
+
+  // Debug: log game state when it changes
+  console.log("Current game state:", gameState);
 
   if (!gameState) {
     return (
@@ -350,6 +378,27 @@ export default function GameScreen() {
           </Pressable>
         )}
       </View>
+
+      {/* AI Coach */}
+      {gameState.gameStatus === "ACTIVE" && (
+        <AIHintButton
+          remaining={hintsRemaining}
+          loading={hintLoading}
+          onPress={() =>
+            requestHint(
+              gameState.fen,
+              gameState.playerColor === "WHITE" ? "white" : "black",
+            )
+          }
+        />
+      )}
+      <HintLoading visible={hintLoading} />
+      <HintModal
+        visible={hintModalVisible}
+        hint={hint}
+        error={hintError}
+        onClose={closeHintModal}
+      />
     </SafeAreaView>
   );
 }

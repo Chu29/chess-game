@@ -82,6 +82,7 @@ export class GameStateService {
           : row.drawOfferedBy === PlayerColor.BLACK
             ? row.blackPlayerId
             : null,
+      hintsUsed: {},
     };
 
     this.activeGames.set(gameId, game);

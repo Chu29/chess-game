@@ -174,6 +174,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         blackUsername: player2.username,
         turn: 'w',
         drawOfferedBy: null,
+        hintsUsed: {},
       });
 
       console.log(`⚔️ Match found: ${player1.userId} vs ${player2.userId}`);
