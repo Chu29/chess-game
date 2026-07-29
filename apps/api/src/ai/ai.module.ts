@@ -11,6 +11,6 @@ import { GameModule } from '../modules/game/game.module';
   imports: [PrismaModule, GameModule],
   controllers: [AiController],
   providers: [AiService, HintService, StockfishService, GeminiProvider],
-  exports: [StockfishService], // shared engine instance for PvAI move generation elsewhere
+  exports: [StockfishService],
 })
 export class AiModule {}
