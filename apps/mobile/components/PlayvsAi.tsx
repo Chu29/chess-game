@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -32,11 +32,6 @@ export default function GameScreen() {
     playerColor?: PlayerColor;
   }>();
 
-  // RECONSTRUCTED — these two lines, and every useState below, were missing
-  // from the version pulled from `development`. Defaults chosen to match
-  // the rest of the file's conventions (MEDIUM difficulty badge shown
-  // elsewhere, White as the default human side). Confirm with whoever
-  // wrote createGame()/handleMove() that these match their intent.
   const difficulty: AIDifficulty = params.difficulty ?? "MEDIUM";
   const playerColor: PlayerColor = params.playerColor ?? "WHITE";
 
@@ -142,9 +137,6 @@ export default function GameScreen() {
     }
   };
 
-  // AI Coach — now that there's a real backend game session (game.id),
-  // hints are tracked server-side against it via GameStateService, same as
-  // the PvP screen. No more practice-mode fallback needed here.
   const {
     remaining: hintsRemaining,
     loading: hintLoading,
@@ -305,12 +297,6 @@ export default function GameScreen() {
 
         {/* Chessboard wrapper */}
         <View style={styles.boardWrapper}>
-          {/* FIXED — this was still pointing at the hardcoded starting FEN
-              and a hardcoded "WHITE", never actually wired to the real game
-              session. Now uses game.fen, the real playerColor, lastMove for
-              highlighting, and handleMove so moves actually reach the
-              backend. Disabled while a move is in flight or after the game
-              ends, same as the PvP screen's `interactive={isMyTurn}` pattern. */}
           <ChessBoard
             fen={game.fen}
             playerColor={playerColor}
