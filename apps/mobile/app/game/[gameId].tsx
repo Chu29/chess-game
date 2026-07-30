@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -26,6 +26,8 @@ import { CapturedPieces } from "../../components/game/CapturedPieces";
 import { GameEndPopup } from "../../components/game/GameEndPopup";
 import { useSound } from "../../context/SoundContext";
 import { countPieces, isPositionInCheck } from "../../lib/fen-sound-helpers";
+
+const INITIAL_TIME_SECONDS = 180; // 3 minutes per player
 
 export default function GameScreen() {
   const params = useLocalSearchParams<{
@@ -71,9 +73,53 @@ export default function GameScreen() {
     closeModal: closeHintModal,
   } = useHint({ gameId: params.gameId });
 
+  // 3-Minute Timers State
+  const [whiteTime, setWhiteTime] = useState<number>(INITIAL_TIME_SECONDS);
+  const [blackTime, setBlackTime] = useState<number>(INITIAL_TIME_SECONDS);
+
   const previousFenRef = React.useRef<string | null>(null);
   const { playMove, playCapture, playCheck } = useChessSounds();
   const [showEndPopup, setShowEndPopup] = React.useState(true);
+
+  // Synchronize clocks if server provides remaining time, or reset on new game
+  useEffect(() => {
+    if (gameState?.whiteTime !== undefined) setWhiteTime(gameState.whiteTime);
+    if (gameState?.blackTime !== undefined) setBlackTime(gameState.blackTime);
+  }, [gameState?.whiteTime, gameState?.blackTime]);
+
+  // Timer Tick Logic
+  useEffect(() => {
+    if (gameState?.gameStatus !== "ACTIVE") return;
+
+    const interval = setInterval(() => {
+      if (gameState.currentTurn === "WHITE") {
+        setWhiteTime((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            if (gameState.playerColor === "WHITE") resign();
+            return 0;
+          }
+          return prev - 1;
+        });
+      } else {
+        setBlackTime((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            if (gameState.playerColor === "BLACK") resign();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [
+    gameState?.gameStatus,
+    gameState?.currentTurn,
+    gameState?.playerColor,
+    resign,
+  ]);
 
   React.useEffect(() => {
     if (!gameState?.fen) return;
@@ -130,13 +176,6 @@ export default function GameScreen() {
     }
   }, [gameState?.rematchOfferedBy, gameState?.rematchAcceptedId, router]);
 
-  // Debug: log initial params
-  console.log("Game params:", {
-    gameId: params.gameId,
-    whiteUsername: params.whiteUsername,
-    blackUsername: params.blackUsername,
-  });
-
   const { playSfx } = useSound();
   const prevFenRef = useRef<string | null>(null);
   const prevStatusRef = useRef<string | null>(null);
@@ -148,8 +187,7 @@ export default function GameScreen() {
     if (prevFen && prevFen !== gameState.fen) {
       if (isPositionInCheck(gameState.fen)) {
         playSfx("check");
-      } else countPieces(gameState.fen) < countPieces(prevFen);
-      {
+      } else if (countPieces(gameState.fen) < countPieces(prevFen)) {
         playSfx("capture");
       }
     }
@@ -166,7 +204,13 @@ export default function GameScreen() {
     prevStatusRef.current = gameState?.gameStatus ?? null;
   }, [gameState?.gameStatus, playSfx]);
 
-  console.log("Current game state:", gameState);
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   if (!gameState) {
     return (
@@ -198,6 +242,9 @@ export default function GameScreen() {
   const { whiteCaptured, blackCaptured } = getCapturedPieces(gameState.fen);
   const myCaptured = isWhite ? whiteCaptured : blackCaptured;
   const opponentCaptured = isWhite ? blackCaptured : whiteCaptured;
+
+  const myTime = isWhite ? whiteTime : blackTime;
+  const opponentTime = isWhite ? blackTime : whiteTime;
 
   return (
     <SafeAreaView
@@ -283,22 +330,27 @@ export default function GameScreen() {
             </View>
           </View>
           <View
-            style={[styles.turnBadge, { backgroundColor: colors.cardBorder }]}
+            style={[
+              styles.timerBadge,
+              { backgroundColor: colors.cardBorder },
+              opponentTime <= 30 && styles.lowTimeBadge,
+            ]}
           >
-            {!isMyTurn && gameState.gameStatus === "ACTIVE" ? (
-              <Text style={[styles.turnTextActive, { color: colors.green }]}>
-                Thinking...
-              </Text>
-            ) : (
-              <Text
-                style={[
-                  styles.turnTextInactive,
-                  { color: colors.textSecondary },
-                ]}
-              >
-                {opponentColor}
-              </Text>
-            )}
+            <MaterialCommunityIcons
+              name="clock-outline"
+              size={14}
+              color={opponentTime <= 30 ? "#D9534F" : colors.textPrimary}
+            />
+            <Text
+              style={[
+                styles.timerText,
+                {
+                  color: opponentTime <= 30 ? "#D9534F" : colors.textPrimary,
+                },
+              ]}
+            >
+              {formatTime(opponentTime)}
+            </Text>
           </View>
         </View>
 
@@ -349,22 +401,27 @@ export default function GameScreen() {
             </View>
           </View>
           <View
-            style={[styles.turnBadge, { backgroundColor: colors.cardBorder }]}
+            style={[
+              styles.timerBadge,
+              { backgroundColor: colors.cardBorder },
+              myTime <= 30 && styles.lowTimeBadge,
+            ]}
           >
-            {isMyTurn && gameState.gameStatus === "ACTIVE" ? (
-              <Text style={[styles.turnTextActive, { color: colors.green }]}>
-                Your Turn
-              </Text>
-            ) : (
-              <Text
-                style={[
-                  styles.turnTextInactive,
-                  { color: colors.textSecondary },
-                ]}
-              >
-                {gameState.playerColor}
-              </Text>
-            )}
+            <MaterialCommunityIcons
+              name="clock-outline"
+              size={14}
+              color={myTime <= 30 ? "#D9534F" : colors.textPrimary}
+            />
+            <Text
+              style={[
+                styles.timerText,
+                {
+                  color: myTime <= 30 ? "#D9534F" : colors.textPrimary,
+                },
+              ]}
+            >
+              {formatTime(myTime)}
+            </Text>
           </View>
         </View>
       </View>
@@ -611,18 +668,21 @@ const styles = StyleSheet.create({
   playerMeta: {
     fontSize: 12,
   },
-  turnBadge: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 6,
+  timerBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    gap: 4,
   },
-  turnTextActive: {
-    fontSize: 12,
-    fontWeight: "600",
+  lowTimeBadge: {
+    backgroundColor: "#D9534F1A",
   },
-  turnTextInactive: {
-    fontSize: 12,
-    fontWeight: "500",
+  timerText: {
+    fontSize: 14,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
   },
   boardWrapper: {
     alignSelf: "center",
