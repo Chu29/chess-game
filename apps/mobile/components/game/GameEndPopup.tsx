@@ -8,12 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  ZoomIn,
-  ZoomOut,
-} from "react-native-reanimated";
+import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 import { useTheme } from "../../context/ThemeContext";
 
 export type GameEndResult = "WIN" | "LOSS" | "DRAW";

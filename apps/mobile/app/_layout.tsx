@@ -3,6 +3,8 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import SplashScreen from "../components/SplashScreen";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { ThemeProvider } from "../context/ThemeContext";
+import { SoundProvider } from "../context/SoundContext";
+import { BackgroundMusicController } from "../components/BackgroundMusicController";
 
 const MIN_SPLASH_MS = 2000;
 
@@ -36,6 +38,7 @@ function RootNavigator() {
 
   return (
     <ThemeProvider>
+      <BackgroundMusicController />
       <Stack screenOptions={{ headerShown: false }} />
     </ThemeProvider>
   );
@@ -43,8 +46,10 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    <SoundProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </SoundProvider>
   );
 }

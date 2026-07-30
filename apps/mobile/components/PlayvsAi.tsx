@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,8 @@ import { useChessSounds } from "../hooks/useChessSounds";
 import { getCapturedPieces } from "../lib/chessUtils";
 import { CapturedPieces } from "./game/CapturedPieces";
 import { GameEndPopup } from "./game/GameEndPopup";
+import { useSound } from "../context/SoundContext";
+import { countPieces, isPositionInCheck } from "../lib/fen-sound-helpers";
 
 export default function GameScreen() {
   const router = useRouter();
@@ -119,7 +121,9 @@ export default function GameScreen() {
             } else {
               playMove();
             }
-          } catch (e) {}
+          } catch {
+            // Ignored
+          }
         }
       } else if (response.playerMove) {
         setLastMove({
@@ -176,6 +180,32 @@ export default function GameScreen() {
     requestHint,
     closeModal: closeHintModal,
   } = useHint({ gameId: game?.id ?? "" });
+
+  const { playSfx } = useSound();
+  const prevFenRef = useRef<string | null>(null);
+  const prevStatusRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!game?.fen) return;
+
+    const prevFen = prevFenRef.current;
+    if (prevFen && prevFen !== game.fen) {
+      if (isPositionInCheck(game.fen)) {
+        playSfx("check");
+      } else countPieces(game.fen) < countPieces(prevFen);
+      {
+        playSfx("capture");
+      }
+    }
+    prevFenRef.current = game.fen;
+  }, [game?.fen, playSfx]);
+
+  useEffect(() => {
+    if (gameOver && prevStatusRef.current !== "FINISHED") {
+      playSfx("gameEnd");
+    }
+    prevStatusRef.current = gameOver ? "FINISHED" : null;
+  }, [gameOver, playSfx]);
 
   if (loading) {
     return (
@@ -666,22 +696,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 8,
     position: "relative",
-  },
-  loadingOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 8,
-  },
-  loadingOverlayText: {
-    marginTop: 8,
-    fontSize: 14,
-    fontWeight: "600",
   },
   actionsRow: {
     flexDirection: "row",

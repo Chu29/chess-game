@@ -6,7 +6,6 @@ import {
   Pressable,
   useWindowDimensions,
 } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Chess } from "chess.js";
 import * as Haptics from "expo-haptics";
 import { useChessSounds } from "../../hooks/useChessSounds";
