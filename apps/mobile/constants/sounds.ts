@@ -5,7 +5,7 @@ export const sfxAssets = {
 } as const;
 
 export const musicAssets = {
-  lobby: require("../assets/sounds/music/lobby-them.mp3"),
+  lobby: require("../assets/sounds/music/lobby-theme.mp3"),
 } as const;
 
 export type SfxName = keyof typeof sfxAssets;

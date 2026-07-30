@@ -61,8 +61,6 @@ export default function GameScreen() {
     blackUsername: params.blackUsername,
   });
 
-  // AI Coach — real game session, so hints are tracked server-side against
-  // this gameId via GameStateService.
   const {
     remaining: hintsRemaining,
     loading: hintLoading,
@@ -103,7 +101,9 @@ export default function GameScreen() {
           } else {
             playMove();
           }
-        } catch (e) {}
+        } catch {
+          // Ignored
+        }
       }
     }
     previousFenRef.current = gameState.fen;
@@ -112,6 +112,9 @@ export default function GameScreen() {
     gameState?.lastMove,
     gameState?.currentTurn,
     gameState?.playerColor,
+    playCheck,
+    playCapture,
+    playMove,
   ]);
 
   React.useEffect(() => {
@@ -125,7 +128,7 @@ export default function GameScreen() {
         params: { gameId: gameState.rematchAcceptedId },
       });
     }
-  }, [gameState?.rematchOfferedBy, gameState?.rematchAcceptedId]);
+  }, [gameState?.rematchOfferedBy, gameState?.rematchAcceptedId, router]);
 
   // Debug: log initial params
   console.log("Game params:", {
