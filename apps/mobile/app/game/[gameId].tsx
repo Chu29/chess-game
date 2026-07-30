@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -24,6 +24,8 @@ import { useChessSounds } from "../../hooks/useChessSounds";
 import { getCapturedPieces } from "../../lib/chessUtils";
 import { CapturedPieces } from "../../components/game/CapturedPieces";
 import { GameEndPopup } from "../../components/game/GameEndPopup";
+import { useSound } from "../../context/SoundContext";
+import { countPieces, isPositionInCheck } from "../../lib/fen-sound-helpers";
 
 export default function GameScreen() {
   const params = useLocalSearchParams<{
@@ -132,7 +134,35 @@ export default function GameScreen() {
     blackUsername: params.blackUsername,
   });
 
-  // Debug: log game state when it changes
+  const { playSfx } = useSound();
+  const prevFenRef = useRef<string | null>(null);
+  const prevStatusRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!gameState?.fen) return;
+
+    const prevFen = prevFenRef.current;
+    if (prevFen && prevFen !== gameState.fen) {
+      if (isPositionInCheck(gameState.fen)) {
+        playSfx("check");
+      } else countPieces(gameState.fen) < countPieces(prevFen);
+      {
+        playSfx("capture");
+      }
+    }
+    prevFenRef.current = gameState.fen;
+  }, [gameState?.fen, playSfx]);
+
+  useEffect(() => {
+    if (
+      gameState?.gameStatus === "FINISHED" &&
+      prevStatusRef.current !== "FINISHED"
+    ) {
+      playSfx("gameEnd");
+    }
+    prevStatusRef.current = gameState?.gameStatus ?? null;
+  }, [gameState?.gameStatus, playSfx]);
+
   console.log("Current game state:", gameState);
 
   if (!gameState) {
