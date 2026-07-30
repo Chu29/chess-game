@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import ConfettiCannon from "react-native-confetti-cannon";
 import ChessBoard from "./game/ChessBoard";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
@@ -20,8 +21,6 @@ import {
   Game,
   MoveResponse,
 } from "../lib/api";
-import { useHint } from "../hooks/useHint";
-import { AIHintButton, HintLoading, HintModal } from "./ai-coach";
 
 export default function GameScreen() {
   const router = useRouter();
@@ -32,19 +31,28 @@ export default function GameScreen() {
     playerColor?: PlayerColor;
   }>();
 
-  const difficulty: AIDifficulty = params.difficulty ?? "MEDIUM";
-  const playerColor: PlayerColor = params.playerColor ?? "WHITE";
+  const confettiRef = useRef<ConfettiCannon | null>(null);
 
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
+  const [makingMove, setMakingMove] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [gameResult, setGameResult] = useState<string | null>(null);
   const [winner, setWinner] = useState<PlayerColor | null>(null);
-  const [makingMove, setMakingMove] = useState(false);
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null,
   );
+
+  const difficulty = (params.difficulty as AIDifficulty) || "MEDIUM";
+  const playerColor = (params.playerColor as PlayerColor) || "WHITE";
+
+  // Trigger confetti whenever the player wins (checkmate, resignation, etc.)
+  useEffect(() => {
+    if (gameOver && winner === playerColor) {
+      confettiRef.current?.start();
+    }
+  }, [gameOver, winner, playerColor]);
 
   const createGame = useCallback(async () => {
     try {
@@ -118,6 +126,7 @@ export default function GameScreen() {
       await gamesApi.performGameAction(game.id, { action: "RESIGN" });
       setGameOver(true);
       setGameResult("RESIGNATION");
+      // Player clicked resign -> Opponent wins
       setWinner(playerColor === "WHITE" ? "BLACK" : "WHITE");
     } catch {
       setError("Failed to resign");
@@ -136,16 +145,6 @@ export default function GameScreen() {
       setError("Failed to offer draw");
     }
   };
-
-  const {
-    remaining: hintsRemaining,
-    loading: hintLoading,
-    hint,
-    error: hintError,
-    modalVisible: hintModalVisible,
-    requestHint,
-    closeModal: closeHintModal,
-  } = useHint({ gameId: game?.id ?? "" });
 
   if (loading) {
     return (
@@ -300,10 +299,16 @@ export default function GameScreen() {
           <ChessBoard
             fen={game.fen}
             playerColor={playerColor}
-            lastMove={lastMove}
             onMove={handleMove}
-            interactive={isMyTurn && !makingMove && !gameOver}
+            interactive={isMyTurn && !gameOver && !makingMove}
+            lastMove={lastMove}
           />
+          {makingMove && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator color={colors.green} size="large" />
+              <Text style={styles.loadingOverlayText}>AI thinking...</Text>
+            </View>
+          )}
         </View>
 
         {/* Player Box */}
@@ -383,7 +388,7 @@ export default function GameScreen() {
             ]}
           >
             <Text style={[styles.clockText, { color: colors.green }]}>
-              00:00
+              Casual
             </Text>
           </View>
         </View>
@@ -445,22 +450,13 @@ export default function GameScreen() {
         </View>
       </View>
 
-      {/* AI Coach */}
-      {!gameOver && (
-        <AIHintButton
-          remaining={hintsRemaining}
-          loading={hintLoading}
-          onPress={() =>
-            requestHint(game.fen, playerColor === "WHITE" ? "white" : "black")
-          }
-        />
-      )}
-      <HintLoading visible={hintLoading} />
-      <HintModal
-        visible={hintModalVisible}
-        hint={hint}
-        error={hintError}
-        onClose={closeHintModal}
+      {/* Confetti Animation Component */}
+      <ConfettiCannon
+        ref={confettiRef}
+        count={200}
+        origin={{ x: -10, y: 0 }}
+        autoStart={false}
+        fadeOut
       />
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import ConfettiCannon from "react-native-confetti-cannon";
 import ChessBoard from "../../components/game/ChessBoard";
 import { useGameSocket } from "../../hooks/useGameSocket";
 import { useHint } from "../../hooks/useHint";
@@ -32,6 +33,8 @@ export default function GameScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { colors } = useTheme();
+
+  const confettiRef = useRef<ConfettiCannon | null>(null);
 
   const {
     isConnected,
@@ -63,6 +66,20 @@ export default function GameScreen() {
     closeModal: closeHintModal,
   } = useHint({ gameId: params.gameId });
 
+  const myId = user?.id;
+
+  // Trigger confetti when the current player wins the PvP match
+  useEffect(() => {
+    if (
+      gameState &&
+      gameState.gameStatus === "FINISHED" &&
+      gameState.winnerId &&
+      gameState.winnerId === myId
+    ) {
+      confettiRef.current?.start();
+    }
+  }, [gameState?.gameStatus, gameState?.winnerId, myId]);
+
   // Debug: log initial params
   console.log("Game params:", {
     gameId: params.gameId,
@@ -91,7 +108,6 @@ export default function GameScreen() {
     gameState.currentTurn === gameState.playerColor;
 
   const isWhite = gameState.playerColor === "WHITE";
-  const myId = user?.id;
   const opponentId = isWhite
     ? gameState.blackPlayerId
     : gameState.whitePlayerId;
@@ -398,6 +414,15 @@ export default function GameScreen() {
         hint={hint}
         error={hintError}
         onClose={closeHintModal}
+      />
+
+      {/* Confetti Explosion Component */}
+      <ConfettiCannon
+        ref={confettiRef}
+        count={200}
+        origin={{ x: -10, y: 0 }}
+        autoStart={false}
+        fadeOut
       />
     </SafeAreaView>
   );
