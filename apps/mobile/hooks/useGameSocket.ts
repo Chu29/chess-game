@@ -19,6 +19,9 @@ export interface GameState {
   drawOfferedBy: string | null;
   rematchOfferedBy: string | null;
   rematchAcceptedId: string | null;
+  whiteTime?: number;
+  blackTime?: number;
+  hasMovedFirst?: boolean; // Flag to check if the first move has been played
 }
 
 export function useGameSocket(
@@ -52,9 +55,37 @@ export function useGameSocket(
           drawOfferedBy: null,
           rematchOfferedBy: null,
           rematchAcceptedId: null,
+          hasMovedFirst: false,
         }
       : null,
   );
+
+  // Interval timer for local active countdown when game has started and first move is played
+  useEffect(() => {
+    if (
+      !gameState ||
+      gameState.gameStatus !== "ACTIVE" ||
+      !gameState.hasMovedFirst
+    ) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setGameState((prev) => {
+        if (!prev || prev.gameStatus !== "ACTIVE") return prev;
+
+        const isWhiteTurn = prev.currentTurn === "WHITE";
+        if (isWhiteTurn && prev.whiteTime && prev.whiteTime > 0) {
+          return { ...prev, whiteTime: prev.whiteTime - 1 };
+        } else if (!isWhiteTurn && prev.blackTime && prev.blackTime > 0) {
+          return { ...prev, blackTime: prev.blackTime - 1 };
+        }
+        return prev;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [gameState?.currentTurn, gameState?.gameStatus, gameState?.hasMovedFirst]);
 
   // Setup the socket connection and register events
   useEffect(() => {
@@ -79,7 +110,6 @@ export function useGameSocket(
           if (!isMounted) return;
           setIsConnected(true);
           setError(null);
-          // On successful connection, request game reconnection/sync
           socket.emit("reconnect", { gameId, playerId: user.id });
         });
 
@@ -110,6 +140,9 @@ export function useGameSocket(
             turn: "w" | "b";
             color: "w" | "b";
             drawOfferedBy: string | null;
+            whiteTime?: number;
+            blackTime?: number;
+            lastMove?: { from: string; to: string } | null;
           }) => {
             if (!isMounted) return;
             setGameState((prev) => ({
@@ -122,13 +155,16 @@ export function useGameSocket(
                 data.blackUsername || prev?.blackUsername || "Unknown",
               currentTurn: data.turn === "w" ? "WHITE" : "BLACK",
               playerColor: data.color === "w" ? "WHITE" : "BLACK",
-              lastMove: null,
+              lastMove: data.lastMove || null,
               winnerId: null,
               gameStatus: "ACTIVE",
               endReason: null,
               drawOfferedBy: data.drawOfferedBy,
               rematchOfferedBy: null,
               rematchAcceptedId: null,
+              whiteTime: data.whiteTime ?? prev?.whiteTime,
+              blackTime: data.blackTime ?? prev?.blackTime,
+              hasMovedFirst: Boolean(data.lastMove),
             }));
           },
         );
@@ -141,6 +177,8 @@ export function useGameSocket(
             nextTurn: "w" | "b";
             san: string;
             isCheck: boolean;
+            whiteTime?: number;
+            blackTime?: number;
           }) => {
             if (!isMounted) return;
             setGameState((prev) => {
@@ -150,7 +188,10 @@ export function useGameSocket(
                 fen: data.fen,
                 currentTurn: data.nextTurn === "w" ? "WHITE" : "BLACK",
                 lastMove: data.lastMove,
-                drawOfferedBy: null, // Move clears any active draw offers
+                drawOfferedBy: null,
+                whiteTime: data.whiteTime ?? prev.whiteTime,
+                blackTime: data.blackTime ?? prev.blackTime,
+                hasMovedFirst: true, // First move has now been made
               };
             });
           },
