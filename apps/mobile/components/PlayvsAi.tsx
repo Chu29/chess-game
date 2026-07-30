@@ -22,6 +22,11 @@ import {
 } from "../lib/api";
 import { useHint } from "../hooks/useHint";
 import { AIHintButton, HintLoading, HintModal } from "./ai-coach";
+import { Chess } from "chess.js";
+import { useChessSounds } from "../hooks/useChessSounds";
+import { getCapturedPieces } from "../lib/chessUtils";
+import { CapturedPieces } from "./game/CapturedPieces";
+import { GameEndPopup } from "./game/GameEndPopup";
 
 export default function GameScreen() {
   const router = useRouter();
@@ -45,6 +50,7 @@ export default function GameScreen() {
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
     null,
   );
+  const { playMove, playCapture, playCheck } = useChessSounds();
 
   const createGame = useCallback(async () => {
     try {
@@ -91,6 +97,30 @@ export default function GameScreen() {
       // Track the last move for board highlighting
       if (response.aiMove) {
         setLastMove({ from: response.aiMove.from, to: response.aiMove.to });
+        if (game.fen) {
+          try {
+            const tempChess = new Chess(game.fen);
+            const moves = tempChess.moves({ verbose: true });
+            const moveObj = moves.find(
+              (m) =>
+                m.from === response.aiMove!.from &&
+                m.to === response.aiMove!.to,
+            );
+            if (
+              moveObj &&
+              (moveObj.san.endsWith("+") || moveObj.san.endsWith("#"))
+            ) {
+              playCheck();
+            } else if (
+              moveObj &&
+              (moveObj.captured || moveObj.flags.includes("c"))
+            ) {
+              playCapture();
+            } else {
+              playMove();
+            }
+          } catch (e) {}
+        }
       } else if (response.playerMove) {
         setLastMove({
           from: response.playerMove.from,
@@ -180,6 +210,11 @@ export default function GameScreen() {
         ? "Stockfish (1500)"
         : "Stockfish (2500)";
 
+  const { whiteCaptured, blackCaptured } = getCapturedPieces(game.fen);
+  const myCaptured = playerColor === "WHITE" ? whiteCaptured : blackCaptured;
+  const opponentCaptured =
+    playerColor === "WHITE" ? blackCaptured : whiteCaptured;
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -204,20 +239,6 @@ export default function GameScreen() {
           <Pressable onPress={() => setError(null)} style={styles.errorClose}>
             <Ionicons name="close" size={16} color="#FFFFFF" />
           </Pressable>
-        </View>
-      )}
-
-      {/* Game Over Alert */}
-      {gameOver && (
-        <View style={styles.gameOverBanner}>
-          <Text style={styles.gameOverTitle}>Game Over ({gameResult})</Text>
-          <Text style={styles.gameOverSubtitle}>
-            {winner === playerColor
-              ? "🏆 You Won!"
-              : winner === opponentColor
-                ? "💔 You Lost"
-                : "🤝 It's a Draw"}
-          </Text>
         </View>
       )}
 
@@ -281,6 +302,7 @@ export default function GameScreen() {
                   style={styles.iconMargin}
                 />
               </View>
+              <CapturedPieces counts={opponentCaptured} color={opponentColor} />
             </View>
           </View>
           <View
@@ -370,6 +392,7 @@ export default function GameScreen() {
                   style={styles.iconMargin}
                 />
               </View>
+              <CapturedPieces counts={myCaptured} color={playerColor} />
             </View>
           </View>
           <View
@@ -462,6 +485,25 @@ export default function GameScreen() {
         error={hintError}
         onClose={closeHintModal}
       />
+
+      <GameEndPopup
+        visible={gameOver}
+        result={
+          winner === playerColor
+            ? "WIN"
+            : winner === opponentColor
+              ? "LOSS"
+              : "DRAW"
+        }
+        reason={`Game Over (${gameResult || ""})`}
+        primaryButtonLabel="Replay"
+        onPrimaryAction={() => {
+          setGameOver(false);
+          createGame();
+        }}
+        secondaryButtonLabel="View Board"
+        onSecondaryAction={() => setGameOver(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -521,23 +563,6 @@ const styles = StyleSheet.create({
   },
   errorClose: {
     padding: 4,
-  },
-  gameOverBanner: {
-    marginHorizontal: 16,
-    marginTop: 12,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: "center",
-  },
-  gameOverTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  gameOverSubtitle: {
-    fontSize: 14,
-    fontWeight: "600",
   },
   content: {
     flex: 1,

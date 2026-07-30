@@ -8,6 +8,14 @@ import {
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Chess } from "chess.js";
+import * as Haptics from "expo-haptics";
+import { useChessSounds } from "../../hooks/useChessSounds";
+import {
+  calculateNewPieces,
+  TrackedPiece,
+  parseFen,
+} from "../../lib/chessUtils";
+import { AnimatedPiece } from "./AnimatedPiece";
 
 export interface ChessBoardProps {
   fen?: string;
@@ -28,10 +36,34 @@ export default function ChessBoard({
   const [selectedSquare, setSelectedSquare] = React.useState<string | null>(
     null,
   );
+  const { playMove, playCapture, playCheck } = useChessSounds();
+
+  const [piecesInfo, setPiecesInfo] = React.useState<{
+    fen: string;
+    pieces: TrackedPiece[];
+  }>({ fen: "", pieces: [] });
+
+  if (piecesInfo.fen !== fen) {
+    const newPieces = calculateNewPieces(piecesInfo.pieces, fen, lastMove);
+    setPiecesInfo({ fen, pieces: newPieces });
+  }
+  const currentPieces =
+    piecesInfo.fen === fen
+      ? piecesInfo.pieces
+      : calculateNewPieces(piecesInfo.pieces, fen, lastMove);
 
   // Clear selected square if FEN changes
   React.useEffect(() => {
     setSelectedSquare(null);
+  }, [fen]);
+
+  const { isCheck, currentTurn } = React.useMemo(() => {
+    try {
+      const chess = new Chess(fen);
+      return { isCheck: chess.isCheck(), currentTurn: chess.turn() };
+    } catch (e) {
+      return { isCheck: false, currentTurn: "w" };
+    }
   }, [fen]);
 
   // Parse FEN to get piece positions
@@ -89,6 +121,7 @@ export default function ChessBoard({
 
       if (selectedSquare === square) {
         setSelectedSquare(null);
+        Haptics.selectionAsync();
         return;
       }
 
@@ -101,6 +134,18 @@ export default function ChessBoard({
         const validMove = moves.find((m) => m.to === square);
 
         if (validMove) {
+          const isMoveCheck =
+            validMove.san.endsWith("+") || validMove.san.endsWith("#");
+          if (isMoveCheck) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            playCheck();
+          } else if (validMove.captured || validMove.flags.includes("c")) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            playCapture();
+          } else {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            playMove();
+          }
           onMove?.(selectedSquare, square);
           setSelectedSquare(null);
           return;
@@ -113,6 +158,7 @@ export default function ChessBoard({
         const isPlayerTurn = turn === (playerColor === "WHITE" ? "w" : "b");
         if (isPlayerTurn && piece.color === turn) {
           setSelectedSquare(square);
+          Haptics.selectionAsync();
           return;
         }
       }
@@ -138,6 +184,8 @@ export default function ChessBoard({
             const isLastMoveDst = lastMove && square === lastMove.to;
             const isSelected = square === selectedSquare;
             const isPossibleMove = possibleMoves.includes(square as any);
+            const isKingInCheck =
+              isCheck && piece?.type === "k" && piece?.color === currentTurn;
 
             // Labels
             const showRankLabel = col === cols[0]; // Show rank numbers on left edge
@@ -161,6 +209,7 @@ export default function ChessBoard({
                   squareStyle,
                   (isLastMoveSrc || isLastMoveDst) && styles.yellowHighlight,
                   isSelected && styles.selectedHighlight,
+                  isKingInCheck && styles.checkHighlight,
                 ]}
               >
                 {/* Rank Number Label */}
@@ -177,14 +226,7 @@ export default function ChessBoard({
                   </Text>
                 )}
 
-                {piece && (
-                  <MaterialCommunityIcons
-                    name={getPieceIcon(piece.type)}
-                    size={cellSize * 0.7}
-                    color={piece.color === "w" ? "#F2F4F0" : "#1C2418"}
-                    style={styles.pieceIcon}
-                  />
-                )}
+                {/* Pieces are now rendered in the overlay layer above */}
 
                 {/* Possible Move Indicator Dot / Circle */}
                 {isPossibleMove && (
@@ -202,63 +244,23 @@ export default function ChessBoard({
           })}
         </View>
       ))}
+
+      {/* Piece Overlay Layer */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        {currentPieces.map((p) => (
+          <AnimatedPiece
+            key={p.id}
+            id={p.id}
+            type={p.type}
+            color={p.color}
+            square={p.square}
+            cellSize={cellSize}
+            playerColor={playerColor}
+          />
+        ))}
+      </View>
     </View>
   );
-}
-
-// Simple FEN Parser returning 8x8 array of pieces or null
-interface Piece {
-  type: string;
-  color: string;
-}
-
-function parseFen(fen: string): (Piece | null)[][] {
-  const board: (Piece | null)[][] = Array(8)
-    .fill(null)
-    .map(() => Array(8).fill(null));
-
-  const parts = fen.split(" ");
-  const boardPart = parts[0];
-  const rows = boardPart.split("/");
-
-  for (let r = 0; r < 8; r++) {
-    let c = 0;
-    const rowStr = rows[r];
-    for (let i = 0; i < rowStr.length; i++) {
-      const char = rowStr[i];
-      if (/\d/.test(char)) {
-        c += parseInt(char, 10);
-      } else {
-        const color = char === char.toUpperCase() ? "w" : "b";
-        const type = char.toLowerCase();
-        board[r][c] = { type, color };
-        c++;
-      }
-    }
-  }
-
-  return board;
-}
-
-function getPieceIcon(
-  type: string,
-): keyof typeof MaterialCommunityIcons.glyphMap {
-  switch (type) {
-    case "k":
-      return "chess-king";
-    case "q":
-      return "chess-queen";
-    case "r":
-      return "chess-rook";
-    case "b":
-      return "chess-bishop";
-    case "n":
-      return "chess-knight";
-    case "p":
-      return "chess-pawn";
-    default:
-      return "chess-pawn";
-  }
 }
 
 const styles = StyleSheet.create({
@@ -290,6 +292,11 @@ const styles = StyleSheet.create({
   selectedHighlight: {
     backgroundColor: "#7B9F35",
     borderColor: "rgba(123, 159, 53, 0.6)",
+    borderWidth: 1.5,
+  },
+  checkHighlight: {
+    backgroundColor: "rgba(235, 97, 80, 0.8)",
+    borderColor: "rgba(235, 97, 80, 1)",
     borderWidth: 1.5,
   },
   possibleMoveIndicator: {

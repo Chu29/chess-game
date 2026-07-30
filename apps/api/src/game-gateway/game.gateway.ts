@@ -294,7 +294,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     payload: {
       gameId: string;
       playerId: string;
-      action: 'resign' | 'drawOffer' | 'declineDraw' | 'acceptDraw';
+      action:
+        | 'resign'
+        | 'drawOffer'
+        | 'declineDraw'
+        | 'acceptDraw'
+        | 'rematchOffer'
+        | 'declineRematch'
+        | 'acceptRematch';
     },
   ) {
     const game = await this.gameState.getOrLoad(payload.gameId);
@@ -392,6 +399,89 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.gameState.persistGameEnd(payload.gameId, {
           reason: result.reason,
           winnerId: null,
+        });
+        break;
+      }
+      case 'rematchOffer': {
+        const result = this.gameActionHandler.handleRematchOffer(
+          game,
+          actionPayload,
+        );
+        if (!result.success) {
+          client.emit('actionRejected', { message: result.error });
+          return;
+        }
+        if (result.action === 'rematchAccept') {
+          // If it triggered an accept
+          const newGameId = `game_${Date.now()}`;
+          this.gameState.register(newGameId, {
+            fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            white: game.black,
+            black: game.white,
+            whiteUsername: game.blackUsername,
+            blackUsername: game.whiteUsername,
+            turn: 'w',
+            drawOfferedBy: null,
+            rematchOfferedBy: null,
+            hintsUsed: {},
+          });
+          this.server.to(roomName).emit('rematchAccepted', {
+            gameId: payload.gameId,
+            newGameId,
+            whitePlayerId: game.black,
+            blackPlayerId: game.white,
+          });
+        } else {
+          this.server.to(roomName).emit('rematchOffered', {
+            gameId: payload.gameId,
+            offeredBy: result.offeredBy,
+          });
+        }
+        break;
+      }
+      case 'declineRematch': {
+        const result = this.gameActionHandler.handleDeclineRematch(
+          game,
+          actionPayload,
+        );
+        if (!result.success) {
+          client.emit('actionRejected', { message: result.error });
+          return;
+        }
+        this.server.to(roomName).emit('rematchDeclined', {
+          gameId: payload.gameId,
+          declinedBy: result.declinedBy,
+        });
+        break;
+      }
+      case 'acceptRematch': {
+        const result = this.gameActionHandler.handleAcceptRematch(
+          game,
+          actionPayload,
+        );
+        if (!result.success) {
+          client.emit('actionRejected', { message: result.error });
+          return;
+        }
+
+        const newGameId = `game_${Date.now()}`;
+        this.gameState.register(newGameId, {
+          fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          white: game.black,
+          black: game.white,
+          whiteUsername: game.blackUsername,
+          blackUsername: game.whiteUsername,
+          turn: 'w',
+          drawOfferedBy: null,
+          rematchOfferedBy: null,
+          hintsUsed: {},
+        });
+
+        this.server.to(roomName).emit('rematchAccepted', {
+          gameId: payload.gameId,
+          newGameId,
+          whitePlayerId: game.black,
+          blackPlayerId: game.white,
         });
         break;
       }

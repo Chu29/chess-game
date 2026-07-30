@@ -120,4 +120,79 @@ export class GameActionHandler {
       reason: 'agreement',
     };
   }
+
+  handleRematchOffer(
+    game: ActiveGame,
+    payload: { gameId: string; playerId: string },
+  ) {
+    if (payload.playerId !== game.white && payload.playerId !== game.black) {
+      return { success: false as const, error: 'Not a player in this game' };
+    }
+
+    if (game.rematchOfferedBy) {
+      if (game.rematchOfferedBy === payload.playerId) {
+        return {
+          success: false as const,
+          error: 'Rematch already offered by you',
+        };
+      } else {
+        return this.handleAcceptRematch(game, payload);
+      }
+    }
+
+    game.rematchOfferedBy = payload.playerId;
+
+    return {
+      success: true as const,
+      action: 'rematchOffer' as const,
+      offeredBy: payload.playerId,
+    };
+  }
+
+  handleDeclineRematch(
+    game: ActiveGame,
+    payload: { gameId: string; playerId: string },
+  ) {
+    if (payload.playerId !== game.white && payload.playerId !== game.black) {
+      return { success: false as const, error: 'Not a player in this game' };
+    }
+
+    game.rematchOfferedBy = null;
+
+    return {
+      success: true as const,
+      action: 'rematchDecline' as const,
+      declinedBy: payload.playerId,
+    };
+  }
+
+  handleAcceptRematch(
+    game: ActiveGame,
+    payload: { gameId: string; playerId: string },
+  ) {
+    if (payload.playerId !== game.white && payload.playerId !== game.black) {
+      return { success: false as const, error: 'Not a player in this game' };
+    }
+
+    if (!game.rematchOfferedBy) {
+      return {
+        success: false as const,
+        error: 'No active rematch offer to accept',
+      };
+    }
+
+    if (game.rematchOfferedBy === payload.playerId) {
+      return {
+        success: false as const,
+        error: 'Cannot accept your own rematch offer',
+      };
+    }
+
+    game.rematchOfferedBy = null;
+
+    return {
+      success: true as const,
+      action: 'rematchAccept' as const,
+    };
+  }
 }
