@@ -1,121 +1,69 @@
-import { useState } from "react";
-import heroImg from "./assets/hero.png";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import "./App.css";
+import { useState, useEffect } from "react";
+import { Navbar } from "./components/landing/Navbar";
+import { HeroSection } from "./components/landing/HeroSection";
+import { InteractiveBoardDemo } from "./components/landing/InteractiveBoardDemo";
+import { FeatureGridSection } from "./components/landing/FeatureGridSection";
+import { DailyPuzzleSection } from "./components/landing/DailyPuzzleSection";
+import { StatsAndTestimonialsSection } from "./components/landing/StatsAndTestimonialsSection";
+import { Footer } from "./components/landing/Footer";
+import { QuickPlayModal } from "./components/landing/QuickPlayModal";
 
-function App() {
-  const [count, setCount] = useState(0);
+const MOBILE_APP_URL =
+  import.meta.env.VITE_MOBILE_APP_URL || "http://localhost:8081";
+
+export function App() {
+  const [playModalOpen, setPlayModalOpen] = useState(false);
+
+  // If user visits /login, /register, /game, or /play on the landing site,
+  // immediately redirect them to the Expo mobile web app
+  useEffect(() => {
+    const path = window.location.pathname.toLowerCase();
+    if (["/login", "/register", "/game", "/play"].includes(path)) {
+      const targetPath = path === "/play" || path === "/game" ? "" : path;
+      window.location.href = `${MOBILE_APP_URL}${targetPath}`;
+    }
+  }, []);
+
+  // When clicking any Play button, open the Expo mobile web app in a new tab
+  const handlePlayClick = () => {
+    window.open(MOBILE_APP_URL, "_blank", "noopener,noreferrer");
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-[#050705] text-white flex flex-col selection:bg-[#00E676]/20 selection:text-[#00E676]">
+      {/* Top Tournament Navigation Bar */}
+      <Navbar
+        onPlayClick={handlePlayClick}
+        onDownloadClick={() => setPlayModalOpen(true)}
+      />
 
-      <div className="ticks"></div>
+      {/* Main Content Sections Matching Original Design */}
+      <main className="flex-grow">
+        {/* 1. Hero: Master the Board. Outthink the World. + Direct Mobile Play CTA */}
+        <HeroSection onPlayClick={handlePlayClick} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {/* 2. Tactile Mobile Simulation: Phone Frame + Green Tournament Board + Telemetry */}
+        <InteractiveBoardDemo />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        {/* 3. Pure Chess. Zero Clutter: 6 Feature Cards */}
+        <FeatureGridSection />
+
+        {/* 4. Daily Grandmaster Puzzle: Queen Sacrifice on h7 + Tal Attack */}
+        <DailyPuzzleSection />
+
+        {/* 5. Metrics & Testimonials: 1.2M+, 15M+, 4.9★, 99.98% + 3 Player Reviews */}
+        <StatsAndTestimonialsSection />
+      </main>
+
+      {/* 6. Conversion Banner & 4-Column Specifications Footer */}
+      <Footer onPlayClick={handlePlayClick} />
+
+      {/* App Launchpad / Installation Modal */}
+      <QuickPlayModal
+        isOpen={playModalOpen}
+        onClose={() => setPlayModalOpen(false)}
+      />
+    </div>
   );
 }
 
