@@ -29,7 +29,10 @@ export const FeatureGridSection: React.FC = () => {
   };
 
   return (
-    <section id="features" className="relative py-20 lg:py-28 bg-[#050705] border-t border-[#161B17]">
+    <section
+      id="features"
+      className="relative py-20 lg:py-28 bg-[#050705] border-t border-[#161B17]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto">
@@ -40,7 +43,8 @@ export const FeatureGridSection: React.FC = () => {
             Pure Chess. Zero Clutter.
           </h2>
           <p className="mt-3 text-xs sm:text-sm text-[#889088] leading-relaxed">
-            Crafted from the ground up with a strict focus on ergonomics, speed, and analytical precision.
+            Crafted from the ground up with a strict focus on ergonomics, speed,
+            and analytical precision.
           </p>
         </div>
 

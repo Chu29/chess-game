@@ -182,19 +182,22 @@ export const STATS_DATA = [
   {
     value: "Stockfish 17",
     label: "Neural Chess Engine",
-    description: "Cold NNUE move computation combined with human-friendly natural language coaching.",
+    description:
+      "Cold NNUE move computation combined with human-friendly natural language coaching.",
     badge: "32 Ply",
   },
   {
     value: "< 14ms",
     label: "Edge WebSocket Gateway",
-    description: "NestJS Socket.IO architecture ensuring instant board state synchronization.",
+    description:
+      "NestJS Socket.IO architecture ensuring instant board state synchronization.",
     badge: "Low Latency",
   },
   {
     value: "99.8%",
     label: "Fair-Play Shield",
-    description: "Continuous behavioral move-vector & touch curvature evaluation per ply.",
+    description:
+      "Continuous behavioral move-vector & touch curvature evaluation per ply.",
     badge: "Fair Play",
   },
   {
@@ -229,7 +232,8 @@ export const CHESS_RULES: ChessRule[] = [
     id: "castling",
     title: "Castling",
     tag: "King Safety",
-    description: "King moves two squares toward a rook, and the rook hops over.",
+    description:
+      "King moves two squares toward a rook, and the rook hops over.",
     keyRule: "Neither piece can have moved previously.",
   },
 ];

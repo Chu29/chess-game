@@ -9,7 +9,11 @@ import { Platform } from "react-native";
  *   (10.0.2.2 for Android emulator, localhost for iOS simulator).
  */
 function resolveApiUrl(): string {
-  if (Platform.OS === "web" && typeof window !== "undefined" && window.location?.hostname) {
+  if (
+    Platform.OS === "web" &&
+    typeof window !== "undefined" &&
+    window.location?.hostname
+  ) {
     const host = window.location.hostname;
     return `http://${host}:3000/api/v1`;
   }

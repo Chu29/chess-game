@@ -18,12 +18,17 @@ import {
 } from "../../data/landingContent";
 
 export const AcademySection: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<"pieces" | "rules" | "challenges">("pieces");
+  const [activeCategory, setActiveCategory] = useState<
+    "pieces" | "rules" | "challenges"
+  >("pieces");
   const [selectedPieceIndex, setSelectedPieceIndex] = useState(0);
   const currentPiece = PIECE_MASTERIES[selectedPieceIndex];
 
   return (
-    <section id="academy" className="relative py-20 lg:py-28 bg-[#161B17]/40 border-t border-[#232A24]">
+    <section
+      id="academy"
+      className="relative py-20 lg:py-28 bg-[#161B17]/40 border-t border-[#232A24]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
@@ -35,7 +40,9 @@ export const AcademySection: React.FC = () => {
             From First Pawn Push to Grandmaster Precision
           </h2>
           <p className="mt-4 text-base sm:text-lg text-[#8A9086] leading-relaxed">
-            Master the fundamentals, learn esoteric tournament rules like En Passant, and conquer progressive tactical challenges designed to boost your ELO rating step-by-step.
+            Master the fundamentals, learn esoteric tournament rules like En
+            Passant, and conquer progressive tactical challenges designed to
+            boost your ELO rating step-by-step.
           </p>
         </div>
 
@@ -105,7 +112,8 @@ export const AcademySection: React.FC = () => {
                       {piece.name}
                     </div>
                     <div className="text-[11px] text-[#8A9086]">
-                      Value: {piece.value} {typeof piece.value === "number" ? "Pts" : ""}
+                      Value: {piece.value}{" "}
+                      {typeof piece.value === "number" ? "Pts" : ""}
                     </div>
                   </div>
                 </button>
@@ -130,7 +138,8 @@ export const AcademySection: React.FC = () => {
                     </div>
                   </div>
                   <span className="rounded-full bg-[#DDAA55]/10 border border-[#DDAA55]/30 px-3 py-1 text-xs font-bold text-[#DDAA55]">
-                    {currentPiece.value} {typeof currentPiece.value === "number" ? "Points" : ""}
+                    {currentPiece.value}{" "}
+                    {typeof currentPiece.value === "number" ? "Points" : ""}
                   </span>
                 </div>
 
@@ -157,7 +166,9 @@ export const AcademySection: React.FC = () => {
               </div>
 
               <div className="mt-6 pt-4 border-t border-[#232A24] flex items-center justify-between text-xs text-[#8A9086]">
-                <span>Interactive movement diagrams accessible in Academy mode.</span>
+                <span>
+                  Interactive movement diagrams accessible in Academy mode.
+                </span>
                 <span className="text-[#DDAA55] font-semibold flex items-center gap-1">
                   Learn in App <ChevronRight className="h-3.5 w-3.5" />
                 </span>

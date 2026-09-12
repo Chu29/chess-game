@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 
 export const AiCoachSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"hints" | "evaluation" | "position" | "review">("hints");
+  const [activeTab, setActiveTab] = useState<
+    "hints" | "evaluation" | "position" | "review"
+  >("hints");
 
   return (
     <section id="ai-coach" className="relative py-20 lg:py-28 overflow-hidden">
@@ -32,10 +34,17 @@ export const AiCoachSection: React.FC = () => {
             Why Play with a Cold Engine When You Can Play with a Coach?
           </h2>
           <p className="mt-4 text-base sm:text-lg text-[#8A9086] leading-relaxed">
-            Traditional chess engines tell you that you made a blunder with an abstract number like{" "}
-            <code className="text-[#E4574C] font-mono font-bold">-3.8</code>. Chuvinjab Chess pairs{" "}
-            <span className="text-[#5B9BD5] font-semibold">Stockfish 16+ NNUE</span> for infallible calculation with{" "}
-            <span className="text-[#8FC24A] font-semibold">Google Gemini</span> to explain the tactics, psychology, and positional concepts behind every move in plain English.
+            Traditional chess engines tell you that you made a blunder with an
+            abstract number like{" "}
+            <code className="text-[#E4574C] font-mono font-bold">-3.8</code>.
+            Chuvinjab Chess pairs{" "}
+            <span className="text-[#5B9BD5] font-semibold">
+              Stockfish 16+ NNUE
+            </span>{" "}
+            for infallible calculation with{" "}
+            <span className="text-[#8FC24A] font-semibold">Google Gemini</span>{" "}
+            to explain the tactics, psychology, and positional concepts behind
+            every move in plain English.
           </p>
         </div>
 
@@ -51,16 +60,24 @@ export const AiCoachSection: React.FC = () => {
                     Standard Raw Engine
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-[#8A9086]">UCI Protocol</span>
+                <span className="text-[10px] font-mono text-[#8A9086]">
+                  UCI Protocol
+                </span>
               </div>
               <div className="mt-4 rounded-lg bg-[#161B17] p-3.5 font-mono text-xs text-[#8A9086] space-y-1.5 border border-[#232A24]">
-                <p className="text-[#E4574C]">info depth 24 score cp -340 nodes 18200000</p>
+                <p className="text-[#E4574C]">
+                  info depth 24 score cp -340 nodes 18200000
+                </p>
                 <p className="text-[#8A9086]">bestmove f3d4 ponder c7c5</p>
-                <p className="text-[#8A9086]">eval error: pv e2e4 e7e5 g1f3 b8c6 f1c4</p>
+                <p className="text-[#8A9086]">
+                  eval error: pv e2e4 e7e5 g1f3 b8c6 f1c4
+                </p>
               </div>
             </div>
             <div className="mt-4 pt-4 border-t border-[#232A24] flex items-center gap-2 text-xs text-[#E4574C]">
-              <span>✕ Leaves 95% of players confused about why a move failed.</span>
+              <span>
+                ✕ Leaves 95% of players confused about why a move failed.
+              </span>
             </div>
           </div>
 
@@ -81,18 +98,26 @@ export const AiCoachSection: React.FC = () => {
               </div>
               <div className="mt-4 rounded-lg bg-[#0D110F] p-3.5 text-xs text-[#F2F4F0] border border-[#232A24] space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[#8FC24A]">Stockfish: Nd4 (+1.8)</span>
+                  <span className="font-bold text-[#8FC24A]">
+                    Stockfish: Nd4 (+1.8)
+                  </span>
                   <span className="text-[10px] bg-[#8FC24A]/20 text-[#8FC24A] font-semibold px-2 py-0.5 rounded">
                     BEST MOVE
                   </span>
                 </div>
                 <p className="text-[#8A9086] text-xs leading-relaxed italic">
-                  &ldquo;Gemini Coach: &lsquo;Nd4 centralizes your knight on a powerful forward outpost while dislodging Black&rsquo;s queen from the e-file and opening line-of-sight for your dark-squared bishop to enter the attack.&rsquo;&rdquo;
+                  &ldquo;Gemini Coach: &lsquo;Nd4 centralizes your knight on a
+                  powerful forward outpost while dislodging Black&rsquo;s queen
+                  from the e-file and opening line-of-sight for your
+                  dark-squared bishop to enter the attack.&rsquo;&rdquo;
                 </p>
               </div>
             </div>
             <div className="mt-4 pt-4 border-t border-[#232A24] flex items-center gap-2 text-xs text-[#8FC24A]">
-              <span>✓ Instant tactical understanding and retention for every skill level.</span>
+              <span>
+                ✓ Instant tactical understanding and retention for every skill
+                level.
+              </span>
             </div>
           </div>
         </div>
@@ -163,16 +188,25 @@ export const AiCoachSection: React.FC = () => {
                     Never Stay Stuck: On-Demand Tactical Guidance
                   </h3>
                   <p className="text-sm text-[#8A9086] leading-relaxed">
-                    Stuck in a complex mid-game tactical bind? Tap the Hint button. Our backend queries Stockfish inside a safe queue, isolates the candidate move, passes the FEN context to Gemini, and decrements your game hint quota while coaching you on how to exploit the opponent&rsquo;s blunder.
+                    Stuck in a complex mid-game tactical bind? Tap the Hint
+                    button. Our backend queries Stockfish inside a safe queue,
+                    isolates the candidate move, passes the FEN context to
+                    Gemini, and decrements your game hint quota while coaching
+                    you on how to exploit the opponent&rsquo;s blunder.
                   </p>
                   <div className="pt-2 flex flex-col gap-2 text-xs text-[#F2F4F0]">
                     <div className="flex items-center gap-2">
                       <ArrowRight className="h-3.5 w-3.5 text-[#8FC24A]" />
-                      <span>Configurable hints-per-game quotas for focused learning</span>
+                      <span>
+                        Configurable hints-per-game quotas for focused learning
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <ArrowRight className="h-3.5 w-3.5 text-[#8FC24A]" />
-                      <span>Zero hallucination: Gemini only explains moves validated by Stockfish</span>
+                      <span>
+                        Zero hallucination: Gemini only explains moves validated
+                        by Stockfish
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -182,7 +216,7 @@ export const AiCoachSection: React.FC = () => {
                     <span className="text-[#8FC24A]">200 OK</span>
                   </div>
                   <pre className="mt-3 text-[11px] font-mono text-[#8A9086] overflow-x-auto leading-relaxed">
-{`{
+                    {`{
   "bestMove": "Nf3",
   "score": "+0.7",
   "explanation": "Develops the knight
@@ -205,16 +239,37 @@ export const AiCoachSection: React.FC = () => {
                     Pre-Move & Live Move Evaluation
                   </h3>
                   <p className="text-sm text-[#8A9086] leading-relaxed">
-                    Each move is categorized across 5 official tiers: <span className="text-[#8FC24A] font-semibold">BEST</span>, <span className="text-[#A0D656] font-semibold">GOOD</span>, <span className="text-[#DDAA55] font-semibold">INACCURACY</span>, <span className="text-orange-400 font-semibold">MISTAKE</span>, and <span className="text-[#E4574C] font-semibold">BLUNDER</span>. Learn immediately when a candidate move leaves a square unguarded or allows a devastating tactic.
+                    Each move is categorized across 5 official tiers:{" "}
+                    <span className="text-[#8FC24A] font-semibold">BEST</span>,{" "}
+                    <span className="text-[#A0D656] font-semibold">GOOD</span>,{" "}
+                    <span className="text-[#DDAA55] font-semibold">
+                      INACCURACY
+                    </span>
+                    ,{" "}
+                    <span className="text-orange-400 font-semibold">
+                      MISTAKE
+                    </span>
+                    , and{" "}
+                    <span className="text-[#E4574C] font-semibold">
+                      BLUNDER
+                    </span>
+                    . Learn immediately when a candidate move leaves a square
+                    unguarded or allows a devastating tactic.
                   </p>
                   <div className="grid grid-cols-2 gap-2 pt-2 text-xs">
                     <div className="rounded-lg bg-[#0D110F] p-2.5 border border-[#232A24]">
-                      <span className="font-bold text-[#8FC24A]">BEST / GOOD</span>
-                      <p className="text-[11px] text-[#8A9086] mt-0.5">Optimizes piece coordination and king safety.</p>
+                      <span className="font-bold text-[#8FC24A]">
+                        BEST / GOOD
+                      </span>
+                      <p className="text-[11px] text-[#8A9086] mt-0.5">
+                        Optimizes piece coordination and king safety.
+                      </p>
                     </div>
                     <div className="rounded-lg bg-[#0D110F] p-2.5 border border-[#232A24]">
                       <span className="font-bold text-[#E4574C]">BLUNDER</span>
-                      <p className="text-[11px] text-[#8A9086] mt-0.5">Drops material or surrenders mate threats.</p>
+                      <p className="text-[11px] text-[#8A9086] mt-0.5">
+                        Drops material or surrenders mate threats.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -224,7 +279,7 @@ export const AiCoachSection: React.FC = () => {
                     <span className="text-[#5B9BD5]">200 OK</span>
                   </div>
                   <pre className="mt-3 text-[11px] font-mono text-[#8A9086] overflow-x-auto leading-relaxed">
-{`{
+                    {`{
   "classification": "GOOD",
   "score": "+1.4",
   "explanation": "Solid developing
@@ -246,16 +301,25 @@ export const AiCoachSection: React.FC = () => {
                     Full Situational Strengths & Weaknesses Breakdown
                   </h3>
                   <p className="text-sm text-[#8A9086] leading-relaxed">
-                    Ever stare at a board and have no idea what the plan is? Request an explanation. Gemini analyzes the pawn structure, active open files, king exposure, and piece coordination to provide an executive summary and actionable bullet points.
+                    Ever stare at a board and have no idea what the plan is?
+                    Request an explanation. Gemini analyzes the pawn structure,
+                    active open files, king exposure, and piece coordination to
+                    provide an executive summary and actionable bullet points.
                   </p>
                   <div className="flex flex-col gap-2 pt-2 text-xs text-[#F2F4F0]">
                     <div className="flex items-center gap-2">
                       <ArrowRight className="h-3.5 w-3.5 text-[#8FC24A]" />
-                      <span>Identifies pawn islands, passed pawns, and backward pawns</span>
+                      <span>
+                        Identifies pawn islands, passed pawns, and backward
+                        pawns
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <ArrowRight className="h-3.5 w-3.5 text-[#5B9BD5]" />
-                      <span>Highlights outposts for minor pieces and open rooks files</span>
+                      <span>
+                        Highlights outposts for minor pieces and open rooks
+                        files
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -265,7 +329,7 @@ export const AiCoachSection: React.FC = () => {
                     <span className="text-[#DDAA55]">200 OK</span>
                   </div>
                   <pre className="mt-3 text-[11px] font-mono text-[#8A9086] overflow-x-auto leading-relaxed">
-{`{
+                    {`{
   "summary": "Balanced middle game.",
   "strengths": [
     "Strong pawn center on d4/c4",
@@ -290,19 +354,29 @@ export const AiCoachSection: React.FC = () => {
                     Comprehensive Match Analytics & Accuracy Scores
                   </h3>
                   <p className="text-sm text-[#8A9086] leading-relaxed">
-                    Once a match concludes (via Checkmate, Resignation, Timeout, or Draw), trigger a comprehensive game analysis. The system calculates your overall Move Accuracy percentage, tallies mistakes and blunders, and generates an overarching tactical summary.
+                    Once a match concludes (via Checkmate, Resignation, Timeout,
+                    or Draw), trigger a comprehensive game analysis. The system
+                    calculates your overall Move Accuracy percentage, tallies
+                    mistakes and blunders, and generates an overarching tactical
+                    summary.
                   </p>
                   <div className="grid grid-cols-3 gap-2 pt-2 text-center text-xs">
                     <div className="rounded-lg bg-[#0D110F] p-2.5 border border-[#232A24]">
-                      <span className="text-lg font-bold text-[#8FC24A]">87.4%</span>
+                      <span className="text-lg font-bold text-[#8FC24A]">
+                        87.4%
+                      </span>
                       <p className="text-[10px] text-[#8A9086]">Accuracy</p>
                     </div>
                     <div className="rounded-lg bg-[#0D110F] p-2.5 border border-[#232A24]">
-                      <span className="text-lg font-bold text-[#DDAA55]">2</span>
+                      <span className="text-lg font-bold text-[#DDAA55]">
+                        2
+                      </span>
                       <p className="text-[10px] text-[#8A9086]">Inaccuracies</p>
                     </div>
                     <div className="rounded-lg bg-[#0D110F] p-2.5 border border-[#232A24]">
-                      <span className="text-lg font-bold text-[#E4574C]">0</span>
+                      <span className="text-lg font-bold text-[#E4574C]">
+                        0
+                      </span>
                       <p className="text-[10px] text-[#8A9086]">Blunders</p>
                     </div>
                   </div>
@@ -313,7 +387,7 @@ export const AiCoachSection: React.FC = () => {
                     <span className="text-[#8FC24A]">200 OK</span>
                   </div>
                   <pre className="mt-3 text-[11px] font-mono text-[#8A9086] overflow-x-auto leading-relaxed">
-{`{
+                    {`{
   "accuracy": 87.4,
   "blunders": 0,
   "mistakes": 1,

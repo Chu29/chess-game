@@ -5,7 +5,10 @@ interface QuickPlayModalProps {
   onClose: () => void;
 }
 
-export const QuickPlayModal: React.FC<QuickPlayModalProps> = ({ isOpen, onClose }) => {
+export const QuickPlayModal: React.FC<QuickPlayModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -51,7 +54,8 @@ export const QuickPlayModal: React.FC<QuickPlayModalProps> = ({ isOpen, onClose 
                   Interactive Web Simulator
                 </div>
                 <div className="text-xs text-[#8A9086]">
-                  Try moves right now on the landing page with live Gemini explanations.
+                  Try moves right now on the landing page with live Gemini
+                  explanations.
                 </div>
               </div>
             </div>
@@ -69,7 +73,9 @@ export const QuickPlayModal: React.FC<QuickPlayModalProps> = ({ isOpen, onClose 
                   Native Mobile App (Expo)
                 </div>
                 <div className="text-xs text-[#8A9086]">
-                  Run <code className="text-[#5B9BD5]">npx expo start</code> in <code className="text-[#5B9BD5]">apps/mobile</code> for iOS & Android.
+                  Run <code className="text-[#5B9BD5]">npx expo start</code> in{" "}
+                  <code className="text-[#5B9BD5]">apps/mobile</code> for iOS &
+                  Android.
                 </div>
               </div>
             </div>
@@ -87,7 +93,9 @@ export const QuickPlayModal: React.FC<QuickPlayModalProps> = ({ isOpen, onClose 
                   NestJS API & Gateway
                 </div>
                 <div className="text-xs text-[#8A9086]">
-                  Running at <code className="text-[#DDAA55]">localhost:3000</code> with Keycloak on <code className="text-[#DDAA55]">8080</code>.
+                  Running at{" "}
+                  <code className="text-[#DDAA55]">localhost:3000</code> with
+                  Keycloak on <code className="text-[#DDAA55]">8080</code>.
                 </div>
               </div>
             </div>

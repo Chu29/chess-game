@@ -4,7 +4,9 @@ interface CtaBannerSectionProps {
   onPlayClick?: () => void;
 }
 
-export const CtaBannerSection: React.FC<CtaBannerSectionProps> = ({ onPlayClick }) => {
+export const CtaBannerSection: React.FC<CtaBannerSectionProps> = ({
+  onPlayClick,
+}) => {
   return (
     <section id="mobile-cta" className="relative py-16 lg:py-20 bg-[#050705]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -24,7 +26,8 @@ export const CtaBannerSection: React.FC<CtaBannerSectionProps> = ({ onPlayClick 
             </h2>
 
             <p className="text-xs sm:text-sm text-[#889088] leading-relaxed">
-              Join 1.2M+ players leveling up their tactics. Available now on iOS, iPadOS, Android, and modern web browsers.
+              Join 1.2M+ players leveling up their tactics. Available now on
+              iOS, iPadOS, Android, and modern web browsers.
             </p>
 
             {/* Store & Web Play Buttons */}
@@ -49,7 +52,9 @@ export const CtaBannerSection: React.FC<CtaBannerSectionProps> = ({ onPlayClick 
                   <div className="text-[9px] uppercase tracking-wider text-[#555E56]">
                     Download on the
                   </div>
-                  <div className="text-xs font-bold text-white">Apple App Store</div>
+                  <div className="text-xs font-bold text-white">
+                    Apple App Store
+                  </div>
                 </div>
               </button>
 
@@ -73,7 +78,9 @@ export const CtaBannerSection: React.FC<CtaBannerSectionProps> = ({ onPlayClick 
                   <div className="text-[9px] uppercase tracking-wider text-[#555E56]">
                     GET IT ON
                   </div>
-                  <div className="text-xs font-bold text-white">Google Play Store</div>
+                  <div className="text-xs font-bold text-white">
+                    Google Play Store
+                  </div>
                 </div>
               </button>
 

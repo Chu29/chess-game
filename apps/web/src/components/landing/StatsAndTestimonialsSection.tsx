@@ -2,7 +2,10 @@ import { BIG_STATS, TESTIMONIALS } from "../../data/landingContent";
 
 export const StatsAndTestimonialsSection: React.FC = () => {
   return (
-    <section id="community" className="relative py-20 lg:py-28 bg-[#050705] border-t border-[#161B17]">
+    <section
+      id="community"
+      className="relative py-20 lg:py-28 bg-[#050705] border-t border-[#161B17]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Big 4 Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto text-center">
@@ -47,9 +50,7 @@ export const StatsAndTestimonialsSection: React.FC = () => {
                   <div className="text-xs font-bold text-white leading-tight">
                     {t.author}
                   </div>
-                  <div className="text-[10px] text-[#555E56]">
-                    {t.title}
-                  </div>
+                  <div className="text-[10px] text-[#555E56]">{t.title}</div>
                 </div>
               </div>
             </div>

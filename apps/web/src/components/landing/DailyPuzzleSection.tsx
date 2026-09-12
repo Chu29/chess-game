@@ -20,12 +20,15 @@ const PIECE_SYMBOLS: Record<string, string> = {
 };
 
 // Mikhail Tal Queen sacrifice puzzle position on h7
-const TAL_PUZZLE_FEN = "r1bq1rk1/ppp2ppp/2n1pn2/8/2BP4/2N1PN2/PP1Q1PPP/R4RK1 w - - 0 10";
+const TAL_PUZZLE_FEN =
+  "r1bq1rk1/ppp2ppp/2n1pn2/8/2BP4/2N1PN2/PP1Q1PPP/R4RK1 w - - 0 10";
 
 export const DailyPuzzleSection: React.FC = () => {
   const [game, setGame] = useState<Chess>(() => new Chess(TAL_PUZZLE_FEN));
   const [board, setBoard] = useState(game.board());
-  const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
+  const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
+    null,
+  );
   const [step, setStep] = useState(0);
 
   const handlePlayBreakthrough = () => {
@@ -42,7 +45,9 @@ export const DailyPuzzleSection: React.FC = () => {
 
         // Delayed King response Kxh7
         setTimeout(() => {
-          g.load("r1bq1r2/ppp2pk1/2n1pn2/8/2BP4/2N1PN2/PP3PPP/R4RK1 w - - 0 11");
+          g.load(
+            "r1bq1r2/ppp2pk1/2n1pn2/8/2BP4/2N1PN2/PP3PPP/R4RK1 w - - 0 11",
+          );
           setGame(g);
           setBoard(g.board());
           setLastMove({ from: "g8", to: "h7" });
@@ -70,7 +75,10 @@ export const DailyPuzzleSection: React.FC = () => {
   };
 
   return (
-    <section id="puzzle-section" className="relative py-20 lg:py-28 bg-[#050705] border-t border-[#161B17]">
+    <section
+      id="puzzle-section"
+      className="relative py-20 lg:py-28 bg-[#050705] border-t border-[#161B17]"
+    >
       {/* Anchor for Academy Navigation Link */}
       <div id="academy" className="scroll-mt-24 absolute top-0" />
 
@@ -80,9 +88,13 @@ export const DailyPuzzleSection: React.FC = () => {
           <div className="lg:col-span-6 space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#1A201B] bg-[#0C0E0D] px-3.5 py-1 text-xs text-[#00E676]">
               <span>♟</span>
-              <span className="font-semibold text-white">Daily Grandmaster Puzzle</span>
+              <span className="font-semibold text-white">
+                Daily Grandmaster Puzzle
+              </span>
               <span className="text-[#555E56]">·</span>
-              <span className="text-xs text-[#00E676] font-medium">Academy Track</span>
+              <span className="text-xs text-[#00E676] font-medium">
+                Academy Track
+              </span>
               <span className="text-[#555E56]">·</span>
               <span className="font-mono text-[#889088]">#1,048</span>
             </div>
@@ -92,7 +104,9 @@ export const DailyPuzzleSection: React.FC = () => {
             </h2>
 
             <p className="text-xs sm:text-sm text-[#889088] leading-relaxed">
-              White to play and mate in 2 moves. Can you identify Mikhail Tal&rsquo;s legendary attacking breakthrough against the French Defense?
+              White to play and mate in 2 moves. Can you identify Mikhail
+              Tal&rsquo;s legendary attacking breakthrough against the French
+              Defense?
             </p>
 
             {/* Position Analysis Box */}
@@ -112,7 +126,9 @@ export const DailyPuzzleSection: React.FC = () => {
               </div>
 
               <p className="text-[11px] text-[#889088] leading-relaxed">
-                By sacrificing the Queen, the Black King is forced to h7, opening the h-file for a decisive Rook checkmate assisted by the Bishop on c4.
+                By sacrificing the Queen, the Black King is forced to h7,
+                opening the h-file for a decisive Rook checkmate assisted by the
+                Bishop on c4.
               </p>
             </div>
 
@@ -167,7 +183,9 @@ export const DailyPuzzleSection: React.FC = () => {
 
                       let bgColor = isDark ? "bg-[#4A7C59]" : "bg-[#DEE3D6]";
                       if (isLastMoveTarget || isLastMoveSource) {
-                        bgColor = isDark ? "bg-[#00E676]/60" : "bg-[#00E676]/45";
+                        bgColor = isDark
+                          ? "bg-[#00E676]/60"
+                          : "bg-[#00E676]/45";
                       }
 
                       const piece = square ? square.type : null;
@@ -196,7 +214,7 @@ export const DailyPuzzleSection: React.FC = () => {
                           )}
                         </div>
                       );
-                    })
+                    }),
                   )}
                 </div>
               </div>

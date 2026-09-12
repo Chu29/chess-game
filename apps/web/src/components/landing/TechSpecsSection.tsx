@@ -10,7 +10,10 @@ import {
 
 export const TechSpecsSection: React.FC = () => {
   return (
-    <section id="architecture" className="relative py-20 lg:py-28 bg-[#0D110F] border-t border-[#232A24]">
+    <section
+      id="architecture"
+      className="relative py-20 lg:py-28 bg-[#0D110F] border-t border-[#232A24]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
@@ -22,7 +25,8 @@ export const TechSpecsSection: React.FC = () => {
             Built for Extreme Low Latency and Zero Desync
           </h2>
           <p className="mt-4 text-base sm:text-lg text-[#8A9086] leading-relaxed">
-            Engineered with strict separation of concerns, server-authoritative validation, and a high-performance C++ & WebSocket pipeline.
+            Engineered with strict separation of concerns, server-authoritative
+            validation, and a high-performance C++ & WebSocket pipeline.
           </p>
         </div>
 
@@ -38,7 +42,9 @@ export const TechSpecsSection: React.FC = () => {
                 NestJS WebSocket Gateway
               </h3>
               <p className="mt-2 text-xs text-[#8A9086] leading-relaxed">
-                Dedicated <code className="text-[#8FC24A]">/game</code> Socket.IO namespace managing per-match isolated rooms. Handles heartbeat, move broadcasts, and reconnect resync.
+                Dedicated <code className="text-[#8FC24A]">/game</code>{" "}
+                Socket.IO namespace managing per-match isolated rooms. Handles
+                heartbeat, move broadcasts, and reconnect resync.
               </p>
             </div>
             <ul className="mt-4 pt-4 border-t border-[#232A24] space-y-1.5 text-[11px] text-[#F2F4F0]">
@@ -63,7 +69,9 @@ export const TechSpecsSection: React.FC = () => {
                 Stockfish + Gemini AI
               </h3>
               <p className="mt-2 text-xs text-[#8A9086] leading-relaxed">
-                Stockfish NNUE calculates optimal candidate moves in a synchronized engine queue, while Google Gemini translates FEN into tactical human coaching.
+                Stockfish NNUE calculates optimal candidate moves in a
+                synchronized engine queue, while Google Gemini translates FEN
+                into tactical human coaching.
               </p>
             </div>
             <ul className="mt-4 pt-4 border-t border-[#232A24] space-y-1.5 text-[11px] text-[#F2F4F0]">
@@ -88,7 +96,9 @@ export const TechSpecsSection: React.FC = () => {
                 PostgreSQL & Prisma
               </h3>
               <p className="mt-2 text-xs text-[#8A9086] leading-relaxed">
-                Relational schema mapping Games, Moves (SAN, FEN after move), Matchmaking Queues, and AI Analyses with transactional integrity.
+                Relational schema mapping Games, Moves (SAN, FEN after move),
+                Matchmaking Queues, and AI Analyses with transactional
+                integrity.
               </p>
             </div>
             <ul className="mt-4 pt-4 border-t border-[#232A24] space-y-1.5 text-[11px] text-[#F2F4F0]">
@@ -113,7 +123,9 @@ export const TechSpecsSection: React.FC = () => {
                 Keycloak 26 OAuth2 / OIDC
               </h3>
               <p className="mt-2 text-xs text-[#8A9086] leading-relaxed">
-                Enterprise identity management providing JWT authentication, single-flight token refresh locks, and end-to-end credential security.
+                Enterprise identity management providing JWT authentication,
+                single-flight token refresh locks, and end-to-end credential
+                security.
               </p>
             </div>
             <ul className="mt-4 pt-4 border-t border-[#232A24] space-y-1.5 text-[11px] text-[#F2F4F0]">
@@ -138,29 +150,51 @@ export const TechSpecsSection: React.FC = () => {
                 System Communication Architecture
               </h3>
             </div>
-            <span className="text-[11px] font-mono text-[#8A9086]">docs/web-socket-contract.md</span>
+            <span className="text-[11px] font-mono text-[#8A9086]">
+              docs/web-socket-contract.md
+            </span>
           </div>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-xs">
             <div className="rounded-xl border border-[#232A24] bg-[#0D110F] p-4 text-center">
-              <span className="text-xs font-bold text-[#8FC24A]">1. Client Tier</span>
-              <p className="text-[11px] text-[#8A9086] mt-1">Web (React 19) & Mobile (Expo / React Native)</p>
+              <span className="text-xs font-bold text-[#8FC24A]">
+                1. Client Tier
+              </span>
+              <p className="text-[11px] text-[#8A9086] mt-1">
+                Web (React 19) & Mobile (Expo / React Native)
+              </p>
             </div>
             <div className="rounded-xl border border-[#232A24] bg-[#0D110F] p-4 text-center">
-              <span className="text-xs font-bold text-[#5B9BD5]">2. Gateway</span>
-              <p className="text-[11px] text-[#8A9086] mt-1">NestJS Socket.IO /game & REST v1 API</p>
+              <span className="text-xs font-bold text-[#5B9BD5]">
+                2. Gateway
+              </span>
+              <p className="text-[11px] text-[#8A9086] mt-1">
+                NestJS Socket.IO /game & REST v1 API
+              </p>
             </div>
             <div className="rounded-xl border border-[#232A24] bg-[#0D110F] p-4 text-center">
-              <span className="text-xs font-bold text-[#DDAA55]">3. Domain Logic</span>
-              <p className="text-[11px] text-[#8A9086] mt-1">ChessBoard Aggregate & Server Move Validation</p>
+              <span className="text-xs font-bold text-[#DDAA55]">
+                3. Domain Logic
+              </span>
+              <p className="text-[11px] text-[#8A9086] mt-1">
+                ChessBoard Aggregate & Server Move Validation
+              </p>
             </div>
             <div className="rounded-xl border border-[#232A24] bg-[#0D110F] p-4 text-center">
-              <span className="text-xs font-bold text-[#8FC24A]">4. AI Pipeline</span>
-              <p className="text-[11px] text-[#8A9086] mt-1">Stockfish Service + Google Gemini Provider</p>
+              <span className="text-xs font-bold text-[#8FC24A]">
+                4. AI Pipeline
+              </span>
+              <p className="text-[11px] text-[#8A9086] mt-1">
+                Stockfish Service + Google Gemini Provider
+              </p>
             </div>
             <div className="rounded-xl border border-[#232A24] bg-[#0D110F] p-4 text-center">
-              <span className="text-xs font-bold text-emerald-400">5. Persistence</span>
-              <p className="text-[11px] text-[#8A9086] mt-1">PostgreSQL 16 via Prisma ORM</p>
+              <span className="text-xs font-bold text-emerald-400">
+                5. Persistence
+              </span>
+              <p className="text-[11px] text-[#8A9086] mt-1">
+                PostgreSQL 16 via Prisma ORM
+              </p>
             </div>
           </div>
         </div>

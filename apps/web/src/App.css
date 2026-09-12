@@ -1,6 +1,7 @@
 /* Animation keyframes for subtle landing page dynamics */
 @keyframes pulseSubtle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }

@@ -24,7 +24,10 @@ export const MobileSection: React.FC = () => {
             </h2>
 
             <p className="text-base sm:text-lg text-[#8A9086] leading-relaxed">
-              Play rapid blitz matches on the commute or review deep opening theories at your desk. The Chuvinjab Chess companion app for iOS and Android brings the full dual-engine experience everywhere with zero compromises.
+              Play rapid blitz matches on the commute or review deep opening
+              theories at your desk. The Chuvinjab Chess companion app for iOS
+              and Android brings the full dual-engine experience everywhere with
+              zero compromises.
             </p>
 
             {/* Feature Bullets */}
@@ -35,7 +38,8 @@ export const MobileSection: React.FC = () => {
                   Atmospheric Audio
                 </div>
                 <p className="text-xs text-[#8A9086]">
-                  Rich lobby theme soundtrack and authentic piece-click, capture, and check soundscapes.
+                  Rich lobby theme soundtrack and authentic piece-click,
+                  capture, and check soundscapes.
                 </p>
               </div>
 
@@ -45,7 +49,8 @@ export const MobileSection: React.FC = () => {
                   Haptic Feedback
                 </div>
                 <p className="text-xs text-[#8A9086]">
-                  Tactile feedback on every move, blunder alert, and victory screen confirmation.
+                  Tactile feedback on every move, blunder alert, and victory
+                  screen confirmation.
                 </p>
               </div>
             </div>
@@ -88,7 +93,9 @@ export const MobileSection: React.FC = () => {
                     Current Ranking
                   </div>
                   <div className="text-xl font-black text-[#8FC24A]">#142</div>
-                  <div className="text-[10px] text-[#8A9086]">1420 ELO · 64% Win Rate</div>
+                  <div className="text-[10px] text-[#8A9086]">
+                    1420 ELO · 64% Win Rate
+                  </div>
                 </div>
 
                 {/* Mobile Quick Start Play Button */}
@@ -104,12 +111,20 @@ export const MobileSection: React.FC = () => {
                 {/* Two Action Cards */}
                 <div className="grid grid-cols-2 gap-2 text-center text-xs">
                   <div className="rounded-lg bg-[#0D110F] p-3 border border-[#1A4F80]">
-                    <div className="text-[11px] font-bold text-[#5B9BD5]">Versus AI</div>
-                    <div className="text-[9px] text-[#8A9086] mt-0.5">Practice skills</div>
+                    <div className="text-[11px] font-bold text-[#5B9BD5]">
+                      Versus AI
+                    </div>
+                    <div className="text-[9px] text-[#8A9086] mt-0.5">
+                      Practice skills
+                    </div>
                   </div>
                   <div className="rounded-lg bg-[#0D110F] p-3 border border-[#7A5B2B]">
-                    <div className="text-[11px] font-bold text-[#DDAA55]">Academy</div>
-                    <div className="text-[9px] text-[#8A9086] mt-0.5">Daily puzzles</div>
+                    <div className="text-[11px] font-bold text-[#DDAA55]">
+                      Academy
+                    </div>
+                    <div className="text-[9px] text-[#8A9086] mt-0.5">
+                      Daily puzzles
+                    </div>
                   </div>
                 </div>
               </div>

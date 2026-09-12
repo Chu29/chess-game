@@ -5,7 +5,10 @@ interface FooterProps {
   showBanner?: boolean;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onPlayClick, showBanner = true }) => {
+export const Footer: React.FC<FooterProps> = ({
+  onPlayClick,
+  showBanner = true,
+}) => {
   return (
     <footer className="relative bg-[#050705] pt-16 pb-12 border-t border-[#161B17]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -23,7 +26,9 @@ export const Footer: React.FC<FooterProps> = ({ onPlayClick, showBanner = true }
             </h2>
 
             <p className="relative mt-4 text-xs sm:text-sm text-[#889088] max-w-xl mx-auto leading-relaxed">
-              Elevate your tactical vision today. Experience sub-50ms matchmaking, Stockfish calculation, and natural language Gemini coaching.
+              Elevate your tactical vision today. Experience sub-50ms
+              matchmaking, Stockfish calculation, and natural language Gemini
+              coaching.
             </p>
 
             <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3.5">
@@ -47,7 +52,9 @@ export const Footer: React.FC<FooterProps> = ({ onPlayClick, showBanner = true }
         )}
 
         {/* 4-Column Footer Information */}
-        <div className={`${showBanner ? "mt-0" : "mt-0"} grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-[#161B17]`}>
+        <div
+          className={`${showBanner ? "mt-0" : "mt-0"} grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-[#161B17]`}
+        >
           {/* Col 1: Brand Info */}
           <div className="space-y-3">
             <div className="flex items-center gap-2.5">
@@ -63,11 +70,14 @@ export const Footer: React.FC<FooterProps> = ({ onPlayClick, showBanner = true }
                   <path d="M19 22H5v-2h14v2M18.8 9.5c-.3-.8-.8-1.5-1.5-2-.3-.2-.7-.4-1.1-.5.3-.6.5-1.3.4-2-.1-1.1-.8-2-1.8-2.4-.9-.4-2-.2-2.8.4-.5.4-.8 1-1 1.6-.6-.4-1.4-.5-2.1-.4-.8.2-1.6.8-2 1.5-.4.8-.5 1.7-.2 2.5.2.5.5.9.8 1.3-.8.7-1.3 1.7-1.3 2.8 0 .8.2 1.5.6 2.1l-1.9 3.8v1.1h13.2l.9-3.7c1-1.3 1.2-3.1.5-4.7z" />
                 </svg>
               </div>
-              <span className="font-bold text-sm text-white">Chuvinjab Chess</span>
+              <span className="font-bold text-sm text-white">
+                Chuvinjab Chess
+              </span>
             </div>
 
             <p className="text-xs text-[#889088] leading-relaxed">
-              Open-source competitive chess platform powered by Stockfish NNUE, Google Gemini 3.5, and NestJS WebSockets.
+              Open-source competitive chess platform powered by Stockfish NNUE,
+              Google Gemini 3.5, and NestJS WebSockets.
             </p>
           </div>
 

@@ -1,4 +1,3 @@
-
 import { STATS_DATA } from "../../data/landingContent";
 
 export const StatStrip: React.FC = () => {

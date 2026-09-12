@@ -26,7 +26,8 @@ export const FaqSection: React.FC = () => {
             Everything You Need to Know
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[#8A9086]">
-            Transparent answers about our AI architecture, competitive integrity, and game matchmaking.
+            Transparent answers about our AI architecture, competitive
+            integrity, and game matchmaking.
           </p>
         </div>
 

@@ -10,7 +10,8 @@ export interface StatItem {
   badge?: string;
 }
 
-export type CoachClassification = "BEST" | "GOOD" | "INACCURACY" | "MISTAKE" | "BLUNDER";
+export type CoachClassification =
+  "BEST" | "GOOD" | "INACCURACY" | "MISTAKE" | "BLUNDER";
 
 export interface DemoPosition {
   id: string;

@@ -1,4 +1,3 @@
-
 import {
   Users,
   Bot,
@@ -15,9 +14,14 @@ interface GameModesSectionProps {
   onPlayClick?: () => void;
 }
 
-export const GameModesSection: React.FC<GameModesSectionProps> = ({ onPlayClick }) => {
+export const GameModesSection: React.FC<GameModesSectionProps> = ({
+  onPlayClick,
+}) => {
   return (
-    <section id="game-modes" className="relative py-20 lg:py-28 bg-[#0D110F] border-t border-[#232A24]">
+    <section
+      id="game-modes"
+      className="relative py-20 lg:py-28 bg-[#0D110F] border-t border-[#232A24]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
@@ -29,7 +33,9 @@ export const GameModesSection: React.FC<GameModesSectionProps> = ({ onPlayClick 
             Two Distinct Arenas, One Flawless Engine
           </h2>
           <p className="mt-4 text-base sm:text-lg text-[#8A9086] leading-relaxed">
-            Whether you want to climb the global multiplayer ELO leaderboard against real competitors or hone your skills against calibrated AI difficulty levels, Chuvinjab Chess gives you a lag-free experience.
+            Whether you want to climb the global multiplayer ELO leaderboard
+            against real competitors or hone your skills against calibrated AI
+            difficulty levels, Chuvinjab Chess gives you a lag-free experience.
           </p>
         </div>
 
@@ -58,7 +64,10 @@ export const GameModesSection: React.FC<GameModesSectionProps> = ({ onPlayClick 
               </div>
 
               <p className="mt-5 text-sm text-[#8A9086] leading-relaxed">
-                Connect directly to our high-concurrency NestJS Socket.IO gateway. Jump into instant matchmaking calibrated to find players within your ±200 rating window, or challenge a friend to a dedicated room.
+                Connect directly to our high-concurrency NestJS Socket.IO
+                gateway. Jump into instant matchmaking calibrated to find
+                players within your ±200 rating window, or challenge a friend to
+                a dedicated room.
               </p>
 
               {/* Feature List */}
@@ -66,29 +75,36 @@ export const GameModesSection: React.FC<GameModesSectionProps> = ({ onPlayClick 
                 <div className="flex items-start gap-2.5">
                   <Zap className="h-4 w-4 text-[#8FC24A] shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-white">Sub-50ms Socket.IO Rooms:</strong>{" "}
-                    Instantaneous move broadcast with authoritative server verification.
+                    <strong className="text-white">
+                      Sub-50ms Socket.IO Rooms:
+                    </strong>{" "}
+                    Instantaneous move broadcast with authoritative server
+                    verification.
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <Clock className="h-4 w-4 text-[#8FC24A] shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-white">Precise Time Controls:</strong>{" "}
-                    Blitz (3+0, 5+0, 10+0), Bullet (1+0), and Rapid clocks with server-synchronized timers.
+                    <strong className="text-white">
+                      Precise Time Controls:
+                    </strong>{" "}
+                    Blitz (3+0, 5+0, 10+0), Bullet (1+0), and Rapid clocks with
+                    server-synchronized timers.
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <RefreshCw className="h-4 w-4 text-[#8FC24A] shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-white">Zero State Loss:</strong> Automatic
-                    reconnection reconciliation if cellular or Wi-Fi drops mid-game.
+                    <strong className="text-white">Zero State Loss:</strong>{" "}
+                    Automatic reconnection reconciliation if cellular or Wi-Fi
+                    drops mid-game.
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <Shield className="h-4 w-4 text-[#8FC24A] shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-white">In-Game Diplomacy:</strong> Official
-                    draw offers, resignations, and rematch queues.
+                    <strong className="text-white">In-Game Diplomacy:</strong>{" "}
+                    Official draw offers, resignations, and rematch queues.
                   </div>
                 </div>
               </div>
@@ -129,7 +145,9 @@ export const GameModesSection: React.FC<GameModesSectionProps> = ({ onPlayClick 
               </div>
 
               <p className="mt-5 text-sm text-[#8A9086] leading-relaxed">
-                Test your openings, refine endgames, and practice stress-free against custom Stockfish difficulty levels while receiving on-demand coaching feedback and move evaluations.
+                Test your openings, refine endgames, and practice stress-free
+                against custom Stockfish difficulty levels while receiving
+                on-demand coaching feedback and move evaluations.
               </p>
 
               {/* 3 Difficulty Tiers */}
@@ -173,11 +191,15 @@ export const GameModesSection: React.FC<GameModesSectionProps> = ({ onPlayClick 
               <div className="mt-5 space-y-2 text-xs text-[#8A9086]">
                 <div className="flex items-center gap-2">
                   <Sliders className="h-3.5 w-3.5 text-[#5B9BD5]" />
-                  <span>Choose White or Black pieces with custom opening books</span>
+                  <span>
+                    Choose White or Black pieces with custom opening books
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-3.5 w-3.5 text-[#8FC24A]" />
-                  <span>Active Gemini coach hint allowances for real-time learning</span>
+                  <span>
+                    Active Gemini coach hint allowances for real-time learning
+                  </span>
                 </div>
               </div>
             </div>

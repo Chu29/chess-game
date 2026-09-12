@@ -26,10 +26,13 @@ const PIECE_SYMBOLS: Record<string, string> = {
 };
 
 // Initial position matching the user's mockup: tactical position where Knight is centralized on d5
-const MOCK_START_FEN = "r1bqkb1r/pppp1ppp/2n5/3Np3/2B1n3/5N2/PPPP1PPP/R1BQK2R w KQkq - 0 6";
+const MOCK_START_FEN =
+  "r1bqkb1r/pppp1ppp/2n5/3Np3/2B1n3/5N2/PPPP1PPP/R1BQK2R w KQkq - 0 6";
 
 export const InteractiveBoardDemo: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"live" | "ai" | "academy" | "telemetry">("live");
+  const [activeTab, setActiveTab] = useState<
+    "live" | "ai" | "academy" | "telemetry"
+  >("live");
 
   useEffect(() => {
     const handleHash = () => {
@@ -50,10 +53,12 @@ export const InteractiveBoardDemo: React.FC = () => {
   const [board, setBoard] = useState(game.board());
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
-  const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>({
-    from: "c3",
-    to: "d5",
-  });
+  const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(
+    {
+      from: "c3",
+      to: "d5",
+    },
+  );
 
   const [evalScore, setEvalScore] = useState("+1.84");
   const [bestMoveLabel, setBestMoveLabel] = useState("Nd5!");
@@ -118,7 +123,10 @@ export const InteractiveBoardDemo: React.FC = () => {
   };
 
   return (
-    <section id="interactive-terminal" className="relative py-16 lg:py-24 bg-[#050705]">
+    <section
+      id="interactive-terminal"
+      className="relative py-16 lg:py-24 bg-[#050705]"
+    >
       {/* Anchor for Grandmaster AI Navigation Link */}
       <div id="grandmaster-ai" className="scroll-mt-24 absolute top-0" />
 
@@ -137,7 +145,8 @@ export const InteractiveBoardDemo: React.FC = () => {
             Tactile Mobile Simulation
           </h2>
           <p className="mt-2 text-xs sm:text-sm text-[#889088]">
-            Engineered precision controls matching official FIDE tournament boards.
+            Engineered precision controls matching official FIDE tournament
+            boards.
           </p>
         </div>
 
@@ -200,29 +209,29 @@ export const InteractiveBoardDemo: React.FC = () => {
                   {activeTab === "ai"
                     ? "GEMINI 3.5 AI"
                     : activeTab === "academy"
-                    ? "TACTICAL OUTPOST"
-                    : activeTab === "telemetry"
-                    ? "EDGE TELEMETRY"
-                    : `EVAL ${evalScore}`}
+                      ? "TACTICAL OUTPOST"
+                      : activeTab === "telemetry"
+                        ? "EDGE TELEMETRY"
+                        : `EVAL ${evalScore}`}
                 </span>
                 <span className="text-[10px] font-mono text-[#555E56] uppercase tracking-wider">
                   {activeTab === "ai"
                     ? "DUAL ENGINE"
                     : activeTab === "academy"
-                    ? "CURRICULUM"
-                    : activeTab === "telemetry"
-                    ? "SOCKET.IO"
-                    : "STOCKFISH 17"}
+                      ? "CURRICULUM"
+                      : activeTab === "telemetry"
+                        ? "SOCKET.IO"
+                        : "STOCKFISH 17"}
                 </span>
               </div>
               <p className="mt-3 text-[11px] text-[#889088] leading-relaxed">
                 {activeTab === "ai"
                   ? "White holds decisive central control. Knight on d5 exerts dominant board pressure, restricting Black's f6 response while opening diagonal tactics."
                   : activeTab === "academy"
-                  ? "Tactical mastery: A central knight outpost on d5 anchors attacking lines against f7 and cannot be dislodged by opponent pawns."
-                  : activeTab === "telemetry"
-                  ? "Direct TCP edge tunneling with sub-14ms sync across global clusters. Authoritative FEN validation prevents illegal board states."
-                  : "White holds central outpost advantage. Knight on d5 exerts dominant board pressure."}
+                    ? "Tactical mastery: A central knight outpost on d5 anchors attacking lines against f7 and cannot be dislodged by opponent pawns."
+                    : activeTab === "telemetry"
+                      ? "Direct TCP edge tunneling with sub-14ms sync across global clusters. Authoritative FEN validation prevents illegal board states."
+                      : "White holds central outpost advantage. Knight on d5 exerts dominant board pressure."}
               </p>
               {/* Progress bar */}
               <div className="mt-3 w-full bg-[#1A201B] h-1.5 rounded-full overflow-hidden">
@@ -233,10 +242,10 @@ export const InteractiveBoardDemo: React.FC = () => {
                       activeTab === "ai"
                         ? "85%"
                         : activeTab === "academy"
-                        ? "75%"
-                        : activeTab === "telemetry"
-                        ? "98%"
-                        : "65%",
+                          ? "75%"
+                          : activeTab === "telemetry"
+                            ? "98%"
+                            : "65%",
                   }}
                 />
               </div>
@@ -253,19 +262,19 @@ export const InteractiveBoardDemo: React.FC = () => {
                     {activeTab === "ai"
                       ? "Stockfish 17 NNUE"
                       : activeTab === "academy"
-                      ? "Mastery Challenge #4"
-                      : activeTab === "telemetry"
-                      ? "Frankfurt Edge Node"
-                      : "Carlsen Neural 17"}
+                        ? "Mastery Challenge #4"
+                        : activeTab === "telemetry"
+                          ? "Frankfurt Edge Node"
+                          : "Carlsen Neural 17"}
                   </div>
                   <div className="text-[10px] text-[#555E56]">
                     {activeTab === "ai"
                       ? "Depth 32 · Alpha-Beta"
                       : activeTab === "academy"
-                      ? "Knight Centralization"
-                      : activeTab === "telemetry"
-                      ? "99.8% Heuristic Filter"
-                      : "2842 FIDE ELIC"}
+                        ? "Knight Centralization"
+                        : activeTab === "telemetry"
+                          ? "99.8% Heuristic Filter"
+                          : "2842 FIDE ELIC"}
                   </div>
                 </div>
               </div>
@@ -277,7 +286,9 @@ export const InteractiveBoardDemo: React.FC = () => {
                   </span>
                 </span>
                 <span className="text-[#00E676] font-mono font-bold">
-                  {activeTab === "academy" ? "Goal: d5 Dominance" : `Best: ${bestMoveLabel}`}
+                  {activeTab === "academy"
+                    ? "Goal: d5 Dominance"
+                    : `Best: ${bestMoveLabel}`}
                 </span>
               </div>
             </div>
@@ -330,7 +341,9 @@ export const InteractiveBoardDemo: React.FC = () => {
                         if (isSelected) {
                           bgColor = "bg-[#00E676]/70 ring-2 ring-[#00E676]";
                         } else if (isLastMoveTarget || isLastMoveSource) {
-                          bgColor = isDark ? "bg-[#00E676]/50" : "bg-[#00E676]/40";
+                          bgColor = isDark
+                            ? "bg-[#00E676]/50"
+                            : "bg-[#00E676]/40";
                         }
 
                         const piece = square ? square.type : null;
@@ -374,7 +387,7 @@ export const InteractiveBoardDemo: React.FC = () => {
                             )}
                           </button>
                         );
-                      })
+                      }),
                     )}
                   </div>
                 </div>
@@ -389,7 +402,9 @@ export const InteractiveBoardDemo: React.FC = () => {
                       <div className="text-[11px] font-bold text-white leading-tight">
                         Alex Mercer
                       </div>
-                      <div className="text-[9px] text-[#555E56]">2284 ELO (Live)</div>
+                      <div className="text-[9px] text-[#555E56]">
+                        2284 ELO (Live)
+                      </div>
                     </div>
                   </div>
                   <div className="rounded bg-[#00E676] px-2 py-0.5 font-mono text-[11px] font-bold text-[#050705]">
@@ -443,7 +458,8 @@ export const InteractiveBoardDemo: React.FC = () => {
                 WEBSOCKET EDGE
               </div>
               <p className="mt-2 text-[11px] text-[#889088] leading-relaxed">
-                Direct TCP edge tunneling guarantees sub-15ms sync for critical bullet time blitzes.
+                Direct TCP edge tunneling guarantees sub-15ms sync for critical
+                bullet time blitzes.
               </p>
               <div className="mt-3 flex items-center gap-1.5 text-[10px] font-mono text-[#00E676]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#00E676] animate-pulse" />
@@ -460,7 +476,8 @@ export const InteractiveBoardDemo: React.FC = () => {
                 </div>
               </div>
               <p className="mt-2 text-[11px] text-[#889088] leading-relaxed">
-                Continuous behavioral move-vector & touch curvature evaluation per ply.
+                Continuous behavioral move-vector & touch curvature evaluation
+                per ply.
               </p>
               <div className="mt-3">
                 <span className="inline-block rounded border border-[#00E676]/30 bg-[#00E676]/10 px-2 py-0.5 text-[10px] font-semibold text-[#00E676]">

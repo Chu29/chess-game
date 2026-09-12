@@ -4,11 +4,12 @@ interface HeroSectionProps {
   onPlayClick?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({
-  onPlayClick,
-}) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onPlayClick }) => {
   return (
-    <section id="hero" className="relative pt-14 pb-16 lg:pt-20 lg:pb-24 overflow-hidden">
+    <section
+      id="hero"
+      className="relative pt-14 pb-16 lg:pt-20 lg:pb-24 overflow-hidden"
+    >
       {/* Subtle radial glow */}
       <div
         className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#00E676]/6 blur-[140px] rounded-full"

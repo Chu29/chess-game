@@ -14,7 +14,11 @@ interface NavLinkItem {
 
 const NAV_LINKS: NavLinkItem[] = [
   { id: "features", label: "Features", href: "#features" },
-  { id: "interactive-terminal", label: "Interactive Demo", href: "#interactive-terminal" },
+  {
+    id: "interactive-terminal",
+    label: "Interactive Demo",
+    href: "#interactive-terminal",
+  },
   { id: "academy", label: "Academy", href: "#academy" },
   { id: "grandmaster-ai", label: "Grandmaster AI", href: "#grandmaster-ai" },
   { id: "community", label: "Community", href: "#community" },
@@ -25,7 +29,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDownloadClick,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>("interactive-terminal");
+  const [activeSection, setActiveSection] = useState<string>(
+    "interactive-terminal",
+  );
 
   // ScrollSpy to dynamically highlight current section in navigation bar
   useEffect(() => {

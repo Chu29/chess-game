@@ -1,4 +1,3 @@
-
 import {
   Trophy,
   BarChart3,
@@ -11,7 +10,10 @@ import { LEADERBOARD_PREVIEW } from "../../data/landingContent";
 
 export const LeaderboardSection: React.FC = () => {
   return (
-    <section id="leaderboard" className="relative py-20 lg:py-28 bg-[#0D110F] border-t border-[#232A24]">
+    <section
+      id="leaderboard"
+      className="relative py-20 lg:py-28 bg-[#0D110F] border-t border-[#232A24]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
@@ -23,7 +25,9 @@ export const LeaderboardSection: React.FC = () => {
             Climb the Ranks. Track Every Milestone.
           </h2>
           <p className="mt-4 text-base sm:text-lg text-[#8A9086] leading-relaxed">
-            Every rated game updates your global ELO standing starting from base 1200. Review comprehensive win rate metrics, historical matchups, and challenge the top rated players in the ecosystem.
+            Every rated game updates your global ELO standing starting from base
+            1200. Review comprehensive win rate metrics, historical matchups,
+            and challenge the top rated players in the ecosystem.
           </p>
         </div>
 
@@ -60,7 +64,9 @@ export const LeaderboardSection: React.FC = () => {
                 <div className="mt-2 text-2xl font-black text-[#8FC24A]">
                   #142
                 </div>
-                <div className="text-[10px] text-[#8A9086] mt-0.5">Top 5% Global</div>
+                <div className="text-[10px] text-[#8A9086] mt-0.5">
+                  Top 5% Global
+                </div>
               </div>
 
               <div className="rounded-xl border border-[#232A24] bg-[#0D110F] p-3.5">
@@ -71,7 +77,9 @@ export const LeaderboardSection: React.FC = () => {
                 <div className="mt-2 text-2xl font-black text-[#F2F4F0]">
                   64.2%
                 </div>
-                <div className="text-[10px] text-[#8A9086] mt-0.5">82 Wins / 46 Losses</div>
+                <div className="text-[10px] text-[#8A9086] mt-0.5">
+                  82 Wins / 46 Losses
+                </div>
               </div>
             </div>
 
@@ -84,8 +92,12 @@ export const LeaderboardSection: React.FC = () => {
                 <div className="flex items-center justify-between rounded-lg border border-[#232A24] bg-[#0D110F] p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#8FC24A]" />
-                    <span className="font-medium text-[#F2F4F0]">vs. KnightRider</span>
-                    <span className="text-[10px] text-[#8A9086]">· Blitz 5+0</span>
+                    <span className="font-medium text-[#F2F4F0]">
+                      vs. KnightRider
+                    </span>
+                    <span className="text-[10px] text-[#8A9086]">
+                      · Blitz 5+0
+                    </span>
                   </div>
                   <span className="rounded bg-[#8FC24A]/20 px-2 py-0.5 text-[10px] font-bold text-[#8FC24A]">
                     WIN (+16)
@@ -95,8 +107,12 @@ export const LeaderboardSection: React.FC = () => {
                 <div className="flex items-center justify-between rounded-lg border border-[#232A24] bg-[#0D110F] p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#5B9BD5]" />
-                    <span className="font-medium text-[#F2F4F0]">vs. Stockfish (Med)</span>
-                    <span className="text-[10px] text-[#8A9086]">· AI Practice</span>
+                    <span className="font-medium text-[#F2F4F0]">
+                      vs. Stockfish (Med)
+                    </span>
+                    <span className="text-[10px] text-[#8A9086]">
+                      · AI Practice
+                    </span>
                   </div>
                   <span className="rounded bg-[#8A9086]/20 px-2 py-0.5 text-[10px] font-bold text-[#8A9086]">
                     DRAW
@@ -106,8 +122,12 @@ export const LeaderboardSection: React.FC = () => {
                 <div className="flex items-center justify-between rounded-lg border border-[#232A24] bg-[#0D110F] p-2.5">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#E4574C]" />
-                    <span className="font-medium text-[#F2F4F0]">vs. BlitzKing99</span>
-                    <span className="text-[10px] text-[#8A9086]">· Rapid 10+0</span>
+                    <span className="font-medium text-[#F2F4F0]">
+                      vs. BlitzKing99
+                    </span>
+                    <span className="text-[10px] text-[#8A9086]">
+                      · Rapid 10+0
+                    </span>
                   </div>
                   <span className="rounded bg-[#E4574C]/20 px-2 py-0.5 text-[10px] font-bold text-[#E4574C]">
                     LOSS (-12)
