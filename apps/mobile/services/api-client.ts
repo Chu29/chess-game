@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://192.168.1.152:3000"; // your LAN IP — re-check with `hostname -I` if it stops connecting
+import { API_URL } from "../lib/config";
+
+const API_BASE_URL = API_URL.replace("/api/v1", "");
 
 // TEMPORARY — matches apps/api's dev-auth.stub.ts.
 // Swap for a real Authorization: Bearer token once Keycloak lands on mobile.
