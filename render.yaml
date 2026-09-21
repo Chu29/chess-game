@@ -6,7 +6,6 @@ version: "1"
 databases:
   - name: chess-postgres
     databaseName: chess_game
-    user: postgres
     plan: free
     region: oregon
     postgresMajorVersion: "16"
@@ -22,24 +21,31 @@ services:
     dockerContext: ./keycloak
     plan: free
     region: oregon
+
     envVars:
       - key: KC_BOOTSTRAP_ADMIN_USERNAME
         value: admin
+
       - key: KC_BOOTSTRAP_ADMIN_PASSWORD
         generateValue: true
+
       - key: KC_HEALTH_ENABLED
         value: "true"
+
       - key: KC_HTTP_ENABLED
         value: "true"
+
       - key: KC_HOSTNAME_STRICT
         value: "false"
+
       - key: KC_PROXY_HEADERS
         value: "xforwarded"
+
       - key: PORT
-        value: 8080
+        value: "8080"
 
   # ---------------------------------------------------------------------------
-  # 2. Backend NestJS API & WebSocket Service (Stockfish + Prisma)
+  # 2. Backend NestJS API + WebSocket + Stockfish + Prisma
   # ---------------------------------------------------------------------------
   - type: web
     name: chess-api
@@ -48,38 +54,53 @@ services:
     dockerContext: .
     plan: free
     region: oregon
+
     envVars:
       - key: NODE_ENV
         value: production
+
       - key: PORT
-        value: 3000
+        value: "3000"
+
+      # PostgreSQL
       - key: DATABASE_URL
         fromDatabase:
           name: chess-postgres
           property: connectionString
+
+      # Keycloak
       - key: KEYCLOAK_URL
         fromService:
           type: web
           name: chess-keycloak
-          property: hosturl
+          property: host
+
       - key: KEYCLOAK_REALM
         value: chess
-      # KEYCLOAK_ISSUER should match KEYCLOAK_URL + /realms/chess
+
       - key: KEYCLOAK_ISSUER
         fromService:
           type: web
           name: chess-keycloak
-          property: hosturl
+          property: host
+
       - key: KEYCLOAK_API_CLIENT_ID
         value: chess-api
+
       - key: KEYCLOAK_API_CLIENT_SECRET
         value: chess-api-secret
+
       - key: KEYCLOAK_ADMIN_CLIENT_ID
         value: chess-admin
+
       - key: KEYCLOAK_ADMIN_CLIENT_SECRET
         value: chess-admin-secret
+
+      # Set this manually in Render
       - key: GEMINI_API_KEY
-        sync: false # Set manually in Render dashboard
+        sync: false
+
+      # Stockfish is installed by apps/api/Dockerfile
       - key: STOCKFISH_PATH
         value: /usr/games/stockfish
 
@@ -89,14 +110,17 @@ services:
   - type: web
     name: chess-web
     runtime: static
+
     buildCommand: npm run build --filter=web
+
     staticPublishPath: ./apps/web/dist
+
     envVars:
       - key: VITE_MOBILE_APP_URL
         fromService:
           type: web
           name: chess-mobile-web
-          property: hosturl
+          property: host
 
   # ---------------------------------------------------------------------------
   # 4. Mobile Web Application (Expo Web Build)
@@ -104,11 +128,14 @@ services:
   - type: web
     name: chess-mobile-web
     runtime: static
+
     buildCommand: cd apps/mobile && npx expo export -p web
+
     staticPublishPath: ./apps/mobile/dist
+
     envVars:
       - key: EXPO_PUBLIC_API_URL
         fromService:
           type: web
           name: chess-api
-          property: hosturl
+          property: host
