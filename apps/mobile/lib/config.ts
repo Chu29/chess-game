@@ -9,6 +9,13 @@ import { Platform } from "react-native";
  *   (10.0.2.2 for Android emulator, localhost for iOS simulator).
  */
 function resolveApiUrl(): string {
+  // If explicitly configured via environment variable (e.g. production Render deployment),
+  // always use it across all platforms.
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+
+  // On Web dev: dynamically resolve against window.location.hostname
   if (
     Platform.OS === "web" &&
     typeof window !== "undefined" &&
@@ -16,10 +23,6 @@ function resolveApiUrl(): string {
   ) {
     const host = window.location.hostname;
     return `http://${host}:3000/api/v1`;
-  }
-
-  if (process.env.EXPO_PUBLIC_API_URL) {
-    return process.env.EXPO_PUBLIC_API_URL;
   }
 
   const defaultHost = Platform.OS === "android" ? "10.0.2.2" : "localhost";
