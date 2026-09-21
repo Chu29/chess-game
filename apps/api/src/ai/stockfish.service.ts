@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 export interface StockfishMove {
   from: string;
@@ -16,6 +17,7 @@ export interface StockfishAnalysis {
 
 @Injectable()
 export class StockfishService {
+  private readonly logger = new Logger(StockfishService.name);
   private engine!: ChildProcessWithoutNullStreams;
   private isReady = false;
   private currentFen =
@@ -26,14 +28,54 @@ export class StockfishService {
     this.initializeEngine();
   }
 
+  private resolveEnginePath(): string {
+    if (process.env.STOCKFISH_PATH && existsSync(process.env.STOCKFISH_PATH)) {
+      return process.env.STOCKFISH_PATH;
+    }
+
+    const candidatePaths = [
+      '/usr/games/stockfish',
+      '/usr/bin/stockfish',
+      join(
+        process.cwd(),
+        'src',
+        'ai',
+        'stockfish',
+        'stockfish-ubuntu-x86-64-avx2',
+      ),
+      join(
+        process.cwd(),
+        'apps',
+        'api',
+        'src',
+        'ai',
+        'stockfish',
+        'stockfish-ubuntu-x86-64-avx2',
+      ),
+      join(__dirname, 'stockfish', 'stockfish-ubuntu-x86-64-avx2'),
+      join(
+        __dirname,
+        '..',
+        'src',
+        'ai',
+        'stockfish',
+        'stockfish-ubuntu-x86-64-avx2',
+      ),
+    ];
+
+    for (const p of candidatePaths) {
+      if (existsSync(p)) {
+        return p;
+      }
+    }
+
+    // Fall back to resolving stockfish from PATH
+    return 'stockfish';
+  }
+
   private initializeEngine() {
-    const enginePath = join(
-      process.cwd(),
-      'src',
-      'ai',
-      'stockfish',
-      'stockfish-ubuntu-x86-64-avx2',
-    );
+    const enginePath = this.resolveEnginePath();
+    this.logger.log(`Starting Stockfish engine from: ${enginePath}`);
 
     this.engine = spawn(enginePath);
 
