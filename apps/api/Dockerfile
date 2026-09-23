@@ -37,7 +37,7 @@ RUN npx prisma generate
 
 # Build API application
 WORKDIR /app
-RUN DATABASE_URL=postgresql://localhost:5432/chess_game npx turbo run build --filter=api
+RUN npx turbo run build --filter=api
 
 FROM base AS runner
 WORKDIR /app
