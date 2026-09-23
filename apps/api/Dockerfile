@@ -28,6 +28,11 @@ COPY packages ./packages
 
 # Generate Prisma Client
 WORKDIR /app/apps/api
+
+# Prisma needs a DATABASE_URL during the build.
+# This is only a dummy URL for prisma generate.
+ENV DATABASE_URL=postgresql://localhost:5432/chess_game
+
 RUN npx prisma generate
 
 # Build API application
@@ -49,10 +54,12 @@ COPY --from=builder /app/apps/api/package.json ./apps/api/
 COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
+COPY --from=builder /app/apps/api/prisma.config.ts ./apps/api/prisma.config.ts
 
 WORKDIR /app/apps/api
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "if [ -n \"$DATABASE_URL\" ]; then echo 'DATABASE_URL is SET'; else echo 'DATABASE_URL is MISSING'; fi && npx prisma migrate deploy && node dist/main"]
-
+# Render provides the real DATABASE_URL at runtime.
+# Apply Prisma migrations before starting NestJS.
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
