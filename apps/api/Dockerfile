@@ -54,5 +54,5 @@ WORKDIR /app/apps/api
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "if [ -n \"$DATABASE_URL\" ]; then echo 'DATABASE_URL is SET'; else echo 'DATABASE_URL is MISSING'; fi && npx prisma migrate deploy && node dist/main"]
 
